@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css"/>
+  <script src="static/lib/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+<h2>Instructions</h2>
+<p>
+1. Select the participant and trial you would like to see below the window.<br>
+2. Click "Load" to load the clip.<br>
+3. Then click "Start" to play the clip.<br>
+4. You can then pause, restart and stop with the other buttons.<br>
+5. Select a different settings and click "Load" again to view different participants and trials.<br>
+6. Refresh the page if it breaks.<br>
+7. If it is still broken email nrbramley@gmail.com :).<br>
+8. The window at the top left gives details of the chosen trial (world index and true relationship and mass).
+</p>
+
+
+  <div>
+      <textarea id="conditionDetails" type="text" readonly="readonly" rows="25" cols="40"></textarea>
+  </div>
+
+  <div id="game">
+    <!-- <iframe src="replay_world_box2dstyle.html" width=600 height=400 id="game-frame"></iframe> -->
+    <iframe src="replay_world.html" width=600 height=400 id="game-frame"></iframe>
+    <!-- <iframe src="replay_world_without_box2d.html" width=600 height=400 id="game-frame"></iframe> -->
+    <!-- <iframe src="replay_world_box2dstyle.html" width=300 height=200 id="game-frame"></iframe> -->
+    <!-- physics_world_settable.html -->
+  </div>
+  
+  <div id="button">
+   <button type="button" name="button"; id="loadButton"; onclick="LoadJS();"; >Load</button>
+    <!-- <p id="start" onclick="Start();">Start</p> -->
+  </div>
+
+  <div id="button">
+   <button type="button" name="button"; id="startButton"; onclick="Start();"; >Start</button>
+    <!-- <p id="start" onclick="Start();">Start</p> -->
+  </div>
+
+  <div id="button">
+     <button type="button" name="button" id="stopButton"; onclick="Stop();"; >Stop</button>
+    <!-- <p id="resume" onclick="Resume();">Resume</p> -->
+  </div>
+
+  <div id="button">
+     <button type="button" name="button" id="pauseButton"; onclick="Pause();"; >Pause</button>
+    <!-- <p id="pause" onclick="Pause();">Pause</p> -->
+  </div>
+  <div id="button">
+     <button type="button" name="button" id="resumeButton"; onclick="Resume();"; >Resume</button>
+    <!-- <p id="resume" onclick="Resume();">Resume</p> -->
+  </div>
+
+
+
+<div id="select_condition">
+ <p> Select the participant and trial you would like to play here (initial selections are random).  When you are ready, click the "Load" button, and then the "Start" button.</p><br>
+      <fieldset>
+            <legend>Select file</legend>
+            
+            <fieldset style="float:left;width:700px;margin:5px">
+                Participant (Rel - overall relationship accuracy, Mass - overall mass accuracy)<br>
+                <input type="radio" name="participant" id="p1"  >1----<b>Active:</b>  <i>Rel = 56%  Mass = 22%</i>----<b>Yoked:</b> <i>Rel = 67%, Mass = 33% </i><br>
+                <input type="radio" name="participant" id="p2"  >2----<b>Active:</b>  <i>Rel = 56%  Mass = 78%</i>----<b>Yoked:</b> <i>Rel = 44%, Mass = 67% </i><br>
+                <input type="radio" name="participant" id="p3"  >3----<b>Active:</b>  <i>Rel = 100% Mass = 89%</i>----<b>Yoked:</b> <i>Rel = 100%, Mass = 44%</i> <br>
+                <input type="radio" name="participant" id="p4"  >4----<b>Active:</b>  <i>Rel = 67%  Mass = 67%</i>----<b>Yoked:</b> <i>Rel = 78%, Mass = 56% </i><br>
+                <input type="radio" name="participant" id="p5"  >5----<b>Active:</b>  <i>Rel = 44%  Mass = 67%</i>----<b>Yoked:</b> <i>Rel = 44%, Mass = 33% </i><br>
+                <input type="radio" name="participant" id="p6"  >6----<b>Active:</b>  <i>Rel = 78%  Mass = 56%</i>----<b>Yoked:</b> <i>Rel = 44%, Mass = 56% </i><br>
+                <input type="radio" name="participant" id="p7"  >7----<b>Active:</b>  <i>Rel = 89%  Mass = 56%</i>----<b>Yoked:</b> <i>Rel = 33%, Mass = 33% </i><br>
+                <input type="radio" name="participant" id="p8"  >8----<b>Active:</b>  <i>Rel = 89%  Mass = 78%</i>----<b>Yoked:</b> <i>Rel = 78%, Mass = 44% </i><br>
+                <input type="radio" name="participant" id="p9"  >9----<b>Active:</b>  <i>Rel = 89%  Mass = 78%</i>----<b>Yoked:</b> <i>Rel = 89%, Mass = 78 %</i><br>
+                <input type="radio" name="participant" id="p10"  >10----<b>Active:</b>  <i>Rel = 56%  Mass = 11%</i>----<b>Yoked:</b> <i>Rel = 44%, Mass = 33% </i><br>
+                <input type="radio" name="participant" id="p11"  >11----<b>Active:</b>  <i>Rel = 67%  Mass = 89%</i>----<b>Yoked:</b> <i>Rel = 67%, Mass = 11% </i><br>
+                <input type="radio" name="participant" id="p12"  >12----<b>Active:</b>  <i>Rel = 89%  Mass = 89%</i>----<b>Yoked:</b> <i>Rel = 78%, Mass = 78% </i><br>
+                <input type="radio" name="participant" id="p13"  >13----<b>Active:</b>  <i>Rel = 78%  Mass = 44%</i>----<b>Yoked:</b> <i>Rel = 78%, Mass = 22% </i><br>
+                <input type="radio" name="participant" id="p14"  >14----<b>Active:</b>  <i>Rel = 78%  Mass = 33%</i>----<b>Yoked:</b> <i>Rel = 67%, Mass = 22% </i><br>
+                <input type="radio" name="participant" id="p15"  >15----<b>Active:</b>  <i>Rel = 100% Mass = 56%</i>----<b>Yoked:</b> <i>Rel = 67%, Mass = 67% </i><br>
+                <input type="radio" name="participant" id="p16"  >16----<b>Active:</b>  <i>Rel = 67%  Mass = 22%</i>----<b>Yoked:</b> <i>Rel = 44%, Mass = 44% </i><br>
+                <input type="radio" name="participant" id="p17"  >17----<b>Active:</b>  <i>Rel = 100% Mass = 56%</i>----<b>Yoked:</b> <i>Rel = 44%, Mass = 22% </i><br>
+                <input type="radio" name="participant" id="p18"  >18----<b>Active:</b>  <i>Rel = 89%  Mass = 56%</i>----<b>Yoked:</b> <i>Rel = 100%, Mass = 67%</i> <br>
+                <input type="radio" name="participant" id="p19"  >19----<b>Active:</b>  <i>Rel = 56%  Mass = 78%</i>----<b>Yoked:</b> <i>Rel = 33%, Mass = 56% </i><br>
+                <input type="radio" name="participant" id="p20"  >20----<b>Active:</b>  <i>Rel = 22%  Mass = 33%</i>----<b>Yoked:</b> <i>Rel = 67%, Mass = 33% </i><br>
+            </fieldset>
+
+<!-- Mapping of participants to worker IDs -->
+<!-- 1  A2MWAXV1YRK5GH -->
+<!-- 2  A1P0NNR8HOQ95R -->
+<!-- 3  A3VMKLJTSGYKHN -->
+<!-- 4  A33QUS4NRVVMTN -->
+<!-- 5  A25MM8IKSW3G19 -->
+<!-- 6  A2N0FUQBDQRBN5 -->
+<!-- 7  A2Z96TK65BB7LC -->
+<!-- 8  A3W6T1WDYXMR3 -->
+<!-- 9  AVC1PLLFS210S -->
+<!-- 10  A28HYRF3QXFAXL -->
+<!-- 11  A4J4GGMKJ68L0 -->
+<!-- 12  A27W025UEXS1G0 -->
+<!-- 13  A2EI075XZT9Y2S -->
+<!-- 14  ANV4TUKMWLA8E -->
+<!-- 15  ASTDBTVY3WP1K -->
+<!-- 16  AHB3QFZSFN9DL -->
+<!-- 17  ANZKTE853UXSD -->
+<!-- 18  A38HFMRXB5Q13M -->
+<!-- 19  AV22FQTJNBUZT -->
+<!-- 20  A7RAVFS10BUZ1 -->
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Trial<br>
+                <input type="radio" name="trial" id="t1"  >1 (practice)<br>
+                <input type="radio" name="trial" id="t2"  >2 (practice)<br>
+                <input type="radio" name="trial" id="t3"  >3<br>
+                <input type="radio" name="trial" id="t4"  >4<br>
+                <input type="radio" name="trial" id="t5"  >5<br>
+                <input type="radio" name="trial" id="t6"  >6<br>
+                <input type="radio" name="trial" id="t7"  >7<br>
+                <input type="radio" name="trial" id="t8"  >8<br>
+                <input type="radio" name="trial" id="t9"  >9<br>
+                <input type="radio" name="trial" id="t10"  >10<br>
+                <input type="radio" name="trial" id="t11"  >11<br>
+
+            </fieldset>
+      </fieldset>
+
+  <br><br>
+  
+Back to supplementary materials <a href="http://www.ucl.ac.uk/lagnado-lab/el/apl.html" target="_blank">here</a><br><br>
+
+<script>
+
+    var trial_specs = [["A2MWAXV1YRK5GH", "A1P0NNR8HOQ95R", "A3VMKLJTSGYKHN",
+                    "A33QUS4NRVVMTN", "A25MM8IKSW3G19", "A2N0FUQBDQRBN5",
+                    "A2Z96TK65BB7LC", "A3W6T1WDYXMR3",  "AVC1PLLFS210S", 
+                    "A28HYRF3QXFAXL", "A4J4GGMKJ68L0",  "A27W025UEXS1G0",
+                     "A2EI075XZT9Y2S", "ANV4TUKMWLA8E",  "ASTDBTVY3WP1K",
+                    "AHB3QFZSFN9DL",  "ANZKTE853UXSD",  "A38HFMRXB5Q13M",
+                     "AV22FQTJNBUZT",  "A7RAVFS10BUZ1"],[0,1,2,3,4,5,6,7,8,9,10]];
+
+var rel_resp = [['none', 'none', 'repel', 'none', 'repel', 'repel', 'attract', 'repel', 'none', 'repel', 'repel'] ,
+['none', 'none', 'repel', 'none', 'repel', 'repel', 'repel', 'repel', 'attract', 'attract', 'repel'] ,
+['attract', 'attract', 'none', 'none', 'attract', 'repel', 'repel', 'attract', 'none', 'none', 'repel'] ,
+['attract', 'repel', 'repel', 'attract', 'repel', 'repel', 'repel', 'none', 'repel', 'repel', 'attract'] ,
+['attract', 'attract', 'attract', 'none', 'none', 'none', 'none', 'none', 'attract', 'none', 'attract'] ,
+['none', 'none', 'repel', 'repel', 'none', 'attract', 'none', 'attract', 'repel', 'none', 'none'] ,
+['none', 'none', 'attract', 'none', 'repel', 'repel', 'repel', 'attract', 'none', 'attract', 'none'] ,
+['attract', 'none', 'repel', 'none', 'repel', 'repel', 'attract', 'repel', 'none', 'none', 'attract'] ,
+['attract', 'none', 'repel', 'none', 'attract', 'attract', 'attract', 'none', 'repel', 'none', 'repel'] ,
+['attract', 'repel', 'repel', 'repel', 'attract', 'repel', 'repel', 'repel', 'repel', 'attract', 'attract'] ,
+['attract', 'none', 'repel', 'repel', 'repel', 'repel', 'repel', 'repel', 'attract', 'attract', 'none'] ,
+['attract', 'repel', 'attract', 'attract', 'repel', 'attract', 'repel', 'repel', 'none', 'none', 'none'] ,
+['attract', 'repel', 'repel', 'repel', 'none', 'attract', 'repel', 'attract', 'repel', 'repel', 'none'] ,
+['attract', 'none', 'attract', 'repel', 'none', 'attract', 'repel', 'repel', 'none', 'repel', 'attract'] ,
+['none', 'none', 'none', 'attract', 'repel', 'repel', 'none', 'attract', 'none', 'repel', 'none'] ,
+['attract', 'none', 'repel', 'repel', 'repel', 'repel', 'none', 'repel', 'attract', 'attract', 'attract'] ,
+['none', 'none', 'attract', 'repel', 'repel', 'repel', 'none', 'none', 'none', 'none', 'attract'] ,
+['attract', 'repel', 'none', 'repel', 'repel', 'none', 'none', 'repel', 'repel', 'attract', 'attract'] ,
+['repel', 'none', 'repel', 'repel', 'attract', 'attract', 'repel', 'repel', 'none', 'attract', 'none'] ,
+['repel', 'repel', 'repel', 'attract', 'repel', 'none', 'repel', 'repel', 'none', 'repel', 'none'] ];
+
+var rel_conf = [[99, 92, 99, 83, 90, 93, 89, 89, 93, 95, 95] ,
+[2, 4, 74, 6, 47, 63, 99, 99, 98, 66, 99] ,
+[100, 74, 100, 100, 100, 100, 100, 100, 100, 100, 100] ,
+[98, 100, 100, 100, 100, 100, 92, 88, 100, 100, 87] ,
+[100, 100, 100, 100, 100, 100, 31, 100, 100, 100, 100] ,
+[100, 100, 100, 98, 99, 79, 98, 100, 100, 100, 48] ,
+[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100] ,
+[72, 76, 92, 91, 92, 95, 94, 95, 27, 75, 89] ,
+[98, 62, 83, 79, 47, 75, 79, 78, 72, 81, 87] ,
+[88, 84, 85, 78, 83, 48, 81, 82, 81, 81, 68] ,
+[45, 100, 21, 100, 51, 100, 100, 100, 100, 99, 100] ,
+[85, 84, 89, 92, 95, 61, 82, 87, 16, 18, 11] ,
+[98, 100, 100, 100, 100, 100, 100, 99, 100, 100, 100] ,
+[66, 89, 92, 92, 88, 94, 90, 76, 52, 92, 34] ,
+[79, 82, 59, 91, 93, 92, 90, 69, 51, 96, 92] ,
+[71, 82, 88, 39, 83, 95, 70, 97, 99, 50, 96] ,
+[82, 87, 100, 97, 100, 100, 68, 72, 67, 66, 90] ,
+[95, 50, 77, 84, 100, 15, 51, 100, 100, 79, 100] ,
+[64, 54, 66, 69, 66, 71, 83, 73, 49, 50, 61] ,
+[97, 74, 78, 23, 33, 23, 75, 83, 52, 95, 52] ];
+
+var mass_resp = [['A', 'A', 'B', 'A', 'B', 'B', 'A', 'A', 'B', 'A', 'B'] ,
+['B', 'A', 'A', 'same', 'B', 'B', 'A', 'B', 'A', 'A', 'B'] ,
+['same', 'B', 'A', 'B', 'same', 'A', 'B', 'A', 'same', 'B', 'A'] ,
+['A', 'A', 'A', 'A', 'B', 'A', 'B', 'B', 'A', 'B', 'A'] ,
+['A', 'B', 'A', 'B', 'B', 'A', 'B', 'same', 'A', 'A', 'A'] ,
+['same', 'A', 'A', 'B', 'A', 'same', 'B', 'A', 'B', 'A', 'A'] ,
+['same', 'A', 'B', 'A', 'B', 'B', 'A', 'A', 'same', 'A', 'B'] ,
+['A', 'A', 'A', 'same', 'A', 'B', 'A', 'same', 'A', 'B', 'same'] ,
+['B', 'same', 'B', 'B', 'B', 'A', 'A', 'B', 'A', 'B', 'same'] ,
+['same', 'B', 'A', 'same', 'B', 'same', 'B', 'same', 'B', 'A', 'A'] ,
+['same', 'A', 'B', 'B', 'A', 'A', 'B', 'same', 'A', 'same', 'B'] ,
+['same', 'A', 'same', 'A', 'B', 'A', 'A', 'A', 'same', 'B', 'B'] ,
+['same', 'same', 'B', 'B', 'same', 'same', 'same', 'same', 'same', 'same', 'same'] ,
+['B', 'same', 'same', 'B', 'B', 'same', 'same', 'same', 'A', 'A', 'same'] ,
+['same', 'A', 'A', 'A', 'B', 'B', 'A', 'B', 'B', 'A', 'B'] ,
+['B', 'A', 'A', 'same', 'A', 'B', 'same', 'A', 'A', 'A', 'B'] ,
+['B', 'same', 'B', 'A', 'A', 'B', 'A', 'A', 'same', 'same', 'A'] ,
+['B', 'A', 'B', 'A', 'same', 'A', 'A', 'B', 'same', 'A', 'A'] ,
+['B', 'same', 'B', 'B', 'same', 'A', 'A', 'same', 'A', 'same', 'B'] ,
+['A', 'A', 'A', 'same', 'B', 'same', 'B', 'B', 'B', 'same', 'A'] ]
+
+var mass_conf = [[56, 86, 63, 86, 91, 95, 90, 93, 24, 32, 95] ,
+[98, 99, 49, 88, 98, 100, 98, 99, 99, 99, 99] ,
+[100, 75, 100, 71, 82, 100, 100, 100, 100, 100, 100] ,
+[100, 100, 100, 100, 100, 100, 98, 100, 100, 100, 100] ,
+[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 33] ,
+[100, 100, 100, 50, 98, 100, 98, 100, 99, 100, 48] ,
+[100, 100, 99, 98, 95, 100, 100, 100, 100, 100, 100] ,
+[32, 18, 70, 40, 51, 87, 85, 45, 77, 78, 49] ,
+[99, 60, 57, 76, 25, 69, 78, 75, 75, 57, 60] ,
+[66, 55, 50, 21, 54, 47, 62, 44, 55, 53, 56] ,
+[62, 26, 18, 98, 100, 100, 100, 100, 100, 100, 100] ,
+[19, 67, 76, 61, 57, 36, 14, 61, 9, 81, 72] ,
+[98, 83, 72, 63, 100, 68, 76, 47, 29, 100, 55] ,
+[73, 75, 80, 48, 97, 96, 93, 59, 40, 42, 50] ,
+[81, 88, 93, 96, 74, 82, 89, 70, 93, 89, 91] ,
+[55, 38, 39, 64, 4, 95, 1, 99, 31, 98, 96] ,
+[84, 87, 55, 53, 81, 99, 85, 100, 78, 24, 84] ,
+[67, 30, 46, 43, 19, 73, 100, 100, 50, 23, 34] ,
+[58, 64, 69, 65, 66, 67, 83, 70, 47, 54, 67] ,
+[97, 97, 59, 22, 34, 10, 73, 85, 54, 50, 98] ];
+
+
+    //"A3527QDVIOHI8E" (the active participant who was never yoked)
+    
+    var choosers = [[p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20],[t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11]];
+
+    var selected = [];
+    var which_selected = [];
+    var tl_data = [];
+    var cond = [];
+
+    document.getElementById("startButton").disabled = true;
+    document.getElementById("stopButton").disabled = true;
+    document.getElementById("pauseButton").disabled = true;
+    document.getElementById("resumeButton").disabled = true;
+
+    //Initially, randomly select a condition
+    for (var i = 0; i<(choosers.length); i++){
+
+      tmp = Math.floor((Math.random() * choosers[i].length));
+      //cond[i] = trial_specs[i][tmp];
+      console.log('random starting selection:', tmp);
+      $( choosers[i][tmp] ).prop( "checked", true );
+    }
+    
+
+
+    function LoadJS() {
+
+      //Update cond to user's selection
+      for (var i = 0; i<(choosers.length); i++){
+        for (var j = 0; j<(choosers[i].length); j++){
+          if ($( choosers[i][j] ).prop( "checked" ) == true) {
+            cond[i] = trial_specs[i][j];  
+          }
+        }
+      }
+
+
+      jQuery.ajax({
+        url:  "stim3.json",
+        type:'GET',
+        data:{
+          //details: "details"
+        },
+        success:function(data){
+          console.log('AJAX success');
+          console.log(data);
+          stim_data = data;
+          postloadfunction()
+        },
+        error: function(err){
+          
+          //jQuery('.errorText').fadeIn();
+          alert('Oops there was a problem linking with our database.\n\nPlease email the experimenter at neil.bramley@ucl.ac.uk');
+          
+        }
+      });
+      
+      // $.getJSON('stim3.json', function(json) {
+      //     stim_data = json
+      // });
+
+
+      
+      function postloadfunction()
+      {
+
+        
+        //Update cond to user's selection
+        for (var i = 0; i<(trial_specs.length); i++){
+          for (var j = 0; j<(trial_specs[i].length); j++){
+            if ($( choosers[i][j] ).prop( "checked" ) == true) {
+              selected[i] = trial_specs[i][j];
+              which_selected[i] = j;
+              //$( choosers[i][j] ).prop( "checked", true );        
+            }
+          }
+        }
+
+        console.log(selected);
+
+        var urlname = "replay_files/ppt_" + selected[0] + ".json";
+        console.log(urlname);
+        jQuery.ajax({
+          url:  urlname,
+          type:'GET',
+          data:{ 
+            //
+          },
+          success:function(data){
+            console.log('AJAX success 2');
+            console.log(data);
+            all_timeline_data = data;
+            postloadfunction2();
+          },
+          error: function(err){
+            //jQuery('.errorText').fadeIn();
+            alert('Oops there was a problem linking with our database.\n\nPlease email the experimenter at neil.bramley@ucl.ac.uk');
+          }
+        });
+
+        //Now read in the appropriate participants' data
+        // $.getJSON("replay_files/ppt_" + selected[0] + ".json", function(json) {
+        //     all_timeline_data = json
+        // });
+
+        // window.setTimeout(postloadfunction2, 500);
+        
+      }
+      
+      function postloadfunction2()
+      {
+        tl_data = all_timeline_data[selected[1]];
+        cond = [stim_data.details[selected[0]][selected[1]].hues, selected[1]];
+
+
+        document.getElementById("startButton").disabled = false;
+        document.getElementById("stopButton").disabled = false;
+        document.getElementById("pauseButton").disabled = false;
+        document.getElementById("resumeButton").disabled = true;
+        
+        //Clunky workaround to update the letters depending on the trial
+        var letters = [String.fromCharCode(65+2*selected[1]), String.fromCharCode(65+2*selected[1]+1)];
+        var rightLetter = '';
+        
+        if (stim_data.details[selected[0]][selected[1]].tM == 'A')
+        {
+          rightLetter = letters[0];
+        } else if (stim_data.details[selected[0]][selected[1]].tM == 'B')
+        {
+          rightLetter = letters[1];
+        } else if (stim_data.details[selected[0]][selected[1]].tM == 'same')
+        {
+          rightLetter = 'same';
+        }
+
+        var guessLetter = '';
+        if (mass_resp[which_selected[0]][which_selected[1]] == 'A')
+        {
+          guessLetter =letters[0];
+        } else if (mass_resp[which_selected[0]][which_selected[1]] == 'B')
+        {
+          guessLetter = letters[1];
+        } else if (mass_resp[which_selected[0]][which_selected[1]] == 'same')
+        {
+          guessLetter = 'same';
+        }
+
+
+        document.getElementById("conditionDetails").value = 'Condition: Yoked\n\n' +
+         'World: ' + stim_data.details[selected[0]][selected[1]].worldId + '\n\n' +
+         'GROUND TRUTH\n\n' +
+         'Target force: ' + stim_data.details[selected[0]][selected[1]].tR + '\n\n' +
+         'Target heavier: ' +   rightLetter + '\n\n' +
+         "ACTIVE PARTICIPANT RESPONSES\n\n" + 
+         "Relationship response: " + rel_resp[which_selected[0]][which_selected[1]] + "    confidence: " + rel_conf[which_selected[0]][which_selected[1]] + '\n\n' +
+         "Mass response: " + guessLetter + "    confidence: " + mass_conf[which_selected[0]][which_selected[1]];
+
+
+
+        console.log(trial_specs, 'stim_data', stim_data.details[selected[0]][selected[1]].worldId,
+                                              stim_data.details[selected[0]][selected[1]].tR,
+                                              stim_data.details[selected[0]][selected[1]].tM,
+                                  'tl_data', tl_data, 'cond', cond, 'selected', selected, 'which_selected', which_selected,
+                                  'letters', letters, 'rightLetter', rightLetter, 'guessLetter', guessLetter, 'tM', stim_data.details[selected[0]][selected[1]].tM);
+      }
+
+      //window.setTimeout(postloadfunction, 500);
+      
+    }
+
+
+
+    function Start() {
+
+      document.getElementById("startButton").disabled = true;
+      document.getElementById("loadButton").disabled = true;
+      document.getElementById("pauseButton").disabled = false;
+      document.getElementById("resumeButton").disabled = true;
+      document.getElementById("stopButton").disabled = false;
+      document.getElementById("loadButton").disabled = true;
+
+      //And display it in the textbox below
+      //document.getElementById("dataBox").value = 'Timeline data: ' + tl_data;//iframeContent.data.timeline;
+
+      //Fire the start function within the iframe
+      var iframe = document.getElementById("game-frame");
+      
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Start();
+        iframeContent.RemoveCurtain();
+      }
+    }
+
+
+    function Stop() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.EndClip();
+      }
+      document.getElementById("loadButton").disabled = false;
+      document.getElementById("startButton").disabled = false;
+      document.getElementById("pauseButton").disabled = true;
+      document.getElementById("resumeButton").disabled = true;
+    }
+
+    function Pause() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Pause();
+        
+      }
+      document.getElementById("startButton").disabled = true;
+      document.getElementById("loadButton").disabled = true;
+      document.getElementById("pauseButton").disabled = true;
+      document.getElementById("resumeButton").disabled = false;
+    }
+
+    function Resume() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Resume();
+      }
+      document.getElementById("startButton").disabled = false;
+      document.getElementById("loadButton").disabled = true;
+      document.getElementById("pauseButton").disabled = false;
+      document.getElementById("resumeButton").disabled = true;
+    }
+
+
+
+
+
+
+
+  </script>
+
+
+
+</body>
+</html>

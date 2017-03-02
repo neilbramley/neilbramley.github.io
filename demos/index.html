@@ -1,0 +1,107 @@
+---
+layout: default
+title: Dr Neil R Bramley
+---
+<div class="demoblurb">
+    <h3> Active physics learning </h3>
+    
+    <p>
+    Left click on the objects to drag them around:
+    </p>
+
+
+        <div id="game">
+            <iframe src="../experiments/apl/exp_2/physics_world_exp2.html" width=600 height=400 id="game-frame" onload = "startIframe()"></iframe>
+        </div>
+
+        <ul>
+            <li>Is A or B heavier?</li>
+            <li>And do they attract or repel one another?</li>
+        </ul>
+
+        <!-- <h3> Causal learning through interventions and dynamics </h3>
+    
+        <p>
+        Left click on the objects to activate them, left click in between to propose connections:
+        </p>
+
+        <div id="game">
+            <iframe src="../experiments/it/experiment_1/game.html" width=600 height=400 id="game-frame2"></iframe>
+        </div>
+
+        <ul>
+            <li>How are the components connected?</li>
+        </ul> -->
+
+
+
+        <script type="text/javascript">
+
+        function startIframe()
+        {
+
+          setTimeout(actuallyStart, 1000);
+        }
+
+        function actuallyStart()
+        {
+            //For the active physics
+            cond=[1, 3, [0,-3,0,3,-3], 0, 0,  [1,2,1,1], [.98,.98,.98,.98], 0,0,0,      0];
+            
+            var iframe = document.getElementById("game-frame");
+
+            console.log(iframe, cond)
+
+            if (iframe) {
+            var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+            iframeContent.Start();
+            iframeContent.RemoveCurtain();
+            }
+
+
+            //     //For the time intervention stuff
+            //     params = {
+            //     N: 4,
+            //     max_N: 4,
+            //     prob_N: 1,
+            //     network: [[0,1,0,0],[0,0,0,0],[0,0,0,1],[0,0,1,0]],
+            //     node_position: [0,1,2,3],
+            //     mode: 'test',
+            //     learn_cond: 'active',
+            //     delay_cond: 'var_both',
+            //     locMode: 'even',
+            //     timeout: 45,
+            //     background: 0,
+            //     contingency: .9,
+            //     which_subject_background: 'fixed',
+            //     delay_mu: 1500,
+            //     delay_alpha: 5,
+            //     n_ints: 6
+            //     };
+
+            //     node_position = [0,1,2,3];
+
+            //     console.log('params',params);
+
+            //     var iframe2 = document.getElementById("game-frame2");
+
+            //     if (iframe2) {
+            //         var iframeContent2 = (iframe2.contentWindow || iframe2.contentDocument);
+
+            //         iframeContent2.Start();
+
+            //         document.getElementById("start_button").disabled = true;
+            //         console.log('Starting the next problem!')       
+            //     }
+            }
+
+    </script>
+
+
+
+</div><!-- /.demoblurb -->
+
+
+
+
+

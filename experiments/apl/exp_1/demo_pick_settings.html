@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="static/css/stylesheet.css"/>
+  <script src="static/lib/jquery.min.js"></script>
+
+</head>
+
+<body>
+  <div>
+      <textarea id="conditionDetails" type="text" readonly="readonly" rows="25" cols="40"></textarea>
+  </div>
+
+  <div id="game">
+    <iframe src="physics_world.html" width=600 height=400 id="game-frame"></iframe>
+    <!-- physics_world_settable.html -->
+  </div>
+  
+  <div id="button">
+   <button type="button" name="button" id="startButton"; onclick="Start();"; >Start</button>
+    <!-- <p id="start" onclick="Start();">Start</p> -->
+  </div>
+
+  <div id="button">
+     <button type="button" name="button" id="stopButton"; onclick="Stop();"; >Stop</button>
+    <!-- <p id="resume" onclick="Resume();">Resume</p> -->
+  </div>
+
+  <div id="button">
+     <button type="button" name="button" id="pauseButton"; onclick="Pause();"; >Pause</button>
+    <!-- <p id="pause" onclick="Pause();">Pause</p> -->
+  </div>
+
+  <div id="button">
+     <button type="button" name="button" id="resumeButton"; onclick="Resume();"; >Resume</button>
+    <!-- <p id="resume" onclick="Resume();">Resume</p> -->
+  </div>
+
+ <div id="select_condition">
+ <p> Select settings or have them assigned randomly</p><br>
+      <fieldset>
+            <legend>Select condition</legend>
+            
+            <fieldset style="float:left;width:200px;margin:5px">
+                Overall condition<br>
+                <input type="radio" name="overall_condition" id="co_pa"  >Passive<br>
+                <input type="radio" name="overall_condition" id="co_mm"  >(Baby) fist<br>
+                <input type="radio" name="overall_condition" id="co_bg"  >(Adult) ball grabber<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Global force<br>
+                <input type="radio" name="global_force" id="gf_none"  >None<br>
+                <input type="radio" name="global_force" id="gf_med"  >Medium<br>
+                <input type="radio" name="global_force" id="gf_high"  >High<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Global force direction<br>
+                <input type="radio" name="gf_dir" id="gf_n"  >North<br>
+                <input type="radio" name="gf_dir" id="gf_ne"  >North-East<br>
+                <input type="radio" name="gf_dir" id="gf_e"  >East<br>
+                <input type="radio" name="gf_dir" id="gf_se"  >South-East<br>
+                <input type="radio" name="gf_dir" id="gf_s"  >South<br>
+                <input type="radio" name="gf_dir" id="gf_sw"  >South-West<br>
+                <input type="radio" name="gf_dir" id="gf_w"  >West<br>
+                <input type="radio" name="gf_dir" id="gf_nw"  >North-West<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Yellow mass<br>
+                <input type="radio" name="o1_mass" id="o1m_low"  >Low<br>
+                <input type="radio" name="o1_mass" id="o1m_med"  >Medium<br>
+                <input type="radio" name="o1_mass" id="o1m_high"  >High<br>
+            </fieldset>
+            
+            <fieldset style="float:left;width:200px;margin:5px">
+                Yellow elasticity<br>
+                <input type="radio" name="o1_elasticity" id="e1_low"  >Low<br>
+                <input type="radio" name="o1_elasticity" id="e1_med"  >Medium<br>
+                <input type="radio" name="o1_elasticity" id="e1_high"  >High<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Red mass<br>
+                <input type="radio" name="o2_mass" id="o2m_low"  >Low<br>
+                <input type="radio" name="o2_mass" id="o2m_med"  >Medium<br>
+                <input type="radio" name="o2_mass" id="o2m_high"  >High<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Red elasticity<br>
+                <input type="radio" name="o2_elasticity" id="e2_low"  >Low<br>
+                <input type="radio" name="o2_elasticity" id="e2_med"  >Medium<br>
+                <input type="radio" name="o2_elasticity" id="e2_high"  >High<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Yellow-yellow<br>
+                <input type="radio" name="relyy" id="yyrepel"  >Repel strong<br>
+                <input type="radio" name="relyy" id="yyrepelw"  >Repel<br>
+                <input type="radio" name="relyy" id="yynone"  >None<br>
+                <input type="radio" name="relyy" id="yyattractw"  >Attract<br>
+                <input type="radio" name="relyy" id="yyattract"  >Attract strong<br>                 
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Red-red<br>
+                <input type="radio" name="relrr" id="rrrepel"  >Repel strong<br>
+                <input type="radio" name="relrr" id="rrrepelw"  >Repel<br>
+                <input type="radio" name="relrr" id="rrnone"  >None<br>
+                <input type="radio" name="relrr" id="rrattractw"  >Attract<br>
+                <input type="radio" name="relrr" id="rrattract"  >Attract strong<br>               
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Yellow-red<br>
+                <input type="radio" name="relyr" id="yrrepel"  >Repel strong<br>
+                <input type="radio" name="relyr" id="yrrepelw"  >Repel<br>
+                <input type="radio" name="relyr" id="yrnone"  >None<br>
+                <input type="radio" name="relyr" id="yrattractw"  >Attract<br>
+                <input type="radio" name="relyr" id="yrattract"  >Attract strong<br>              
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Friction patch present<br>
+                <input type="radio" name="patch" id="fp_yes"  >True<br>
+                <input type="radio" name="patch" id="fp_no"  >False<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Patch friction<br>
+                <input type="radio" name="patch_friction" id="fp_none"  >None<br>
+                <input type="radio" name="patch_friction" id="fp_med"  >Medium<br>
+                <input type="radio" name="patch_friction" id="fp_high"  >High<br>
+            </fieldset>
+
+            <fieldset style="float:left;width:200px;margin:5px">
+                Wall setup<br>
+                <input type="radio" name="wall_setup" id="ws_none"  >None<br>
+                <input type="radio" name="wall_setup" id="ws_half"  >Halved<br>
+                <input type="radio" name="wall_setup" id="ws_quart"  >Quartered<br>
+            </fieldset>
+
+
+        </fieldset>
+          
+            <br><br>
+          
+</div>
+
+  <div>
+      <textarea id="dataBox" type="text" readonly="readonly" rows="200" cols="200"></textarea>
+  </div>
+
+
+<script>
+
+    //Set up variables
+    var cond=[0,1,0,1,1,1,1,4,0,4,1,0,0];
+    // 1,0,1,1,1,1,1,1,1,0,0,0
+    var trial_specs = [[0,1,2],[0,1,2],[0,1,2,3,4,5,6,7],[.2,1,5],[.1,.75,1],[.2,1,5],[.1,.75,1],[-3,-1.5,0,1.5,3],[-3,-1.5,0,1.5,3],[-3,-1.5,0,1.5,3],[1,0],[0,1,10],[0,1,2]];
+    var choosers = [[co_pa, co_mm, co_bg],[gf_none,gf_med,gf_high],[gf_n,gf_ne,gf_e,gf_se,gf_s,gf_sw,gf_w,gf_nw],
+    [o1m_low,o1m_med,o1m_high],[e1_low,e1_med,e1_high],
+    [o2m_low,o2m_med,o2m_high],[e2_low,e2_med,e2_high],
+    [yyrepel, yyrepelw, yynone, yyattractw, yyattract],[rrrepel, rrrepelw, rrnone, rrattractw, rrattract],[yrrepel, yrrepelw, yrnone, yrattractw, yrattract],
+    [fp_yes, fp_no],[fp_none, fp_med, fp_high],
+    [ws_none, ws_half, ws_quart]];
+
+    var tmp = 0;    
+
+    //Initially, randomly select a condition
+    for (var i = 0; i<(trial_specs.length); i++){
+
+      //tmp = Math.floor((Math.random() * conditions[i].length));
+      //cond[i] = trial_specs[i][tmp];
+      $( choosers[i][cond[i]] ).prop( "checked", true );
+    }
+    
+    //Read in a list of all possible trial_specs
+    //trial_specs_json = JSON.parse(trial_specs_text);
+    //var keyArray = Object.keys(trial_specs_json);
+
+    //Pick a random trial_spec out of these
+    //var which_cond = Math.floor(Math.random()*keyArray.length);
+
+    //Store the names of all the inner keys, e.g. the names for the various dimensions over which the trial_spec can vary (global force direction etc)
+    //var innerKeyArray = Object.keys(trial_specs_json[keyArray[which_cond]]);
+
+    //Print the chosen trial_spec and the names of the inner keys
+    //console.log('Condition', which_cond, 'keyArray[which_cond]', keyArray[which_cond], 'innerKeyArray', innerKeyArray)
+
+    //Use this to define the trial_spec
+    // for (var i = 0; i<(trial_spec.length); i++){
+    
+    //     trial_spec[i] = trial_specs_json[keyArray[which_cond]][innerKeyArray[i]];
+    // }
+
+    //trial_spec = trial_specs_json[keyArray[which_cond]
+    // trial_spec[0] = trial_specs_json.trial_spec_11111.global_force;
+    // trial_spec[1] = trial_specs_json.trial_spec_11111.gf_dir;
+    // trial_spec[2] = trial_specs_json.trial_spec_11111.o1_mass;
+    // trial_spec[3] = trial_specs_json.trial_spec_11111.o1_elasticity;
+    // trial_spec[4] = trial_specs_json.trial_spec_11111.o2_mass;
+    // trial_spec[5] = trial_specs_json.trial_spec_11111.o2_elasticity;
+    // trial_spec[6] = trial_specs_json.trial_spec_11111.relyy;
+    // trial_spec[7] = trial_specs_json.trial_spec_11111.relrr;
+    // trial_spec[8] = trial_specs_json.trial_spec_11111.relyr;
+    // trial_spec[9] = trial_specs_json.trial_spec_11111.patch;
+    // trial_spec[10] = trial_specs_json.trial_spec_11111.patch_friction;
+    // trial_spec[11] = trial_specs_json.trial_spec_11111.wall_setup;
+
+    // for (var i = 0; i<(trial_specs.length); i++){
+
+    //   $( choosers[i][cond[i]] ).prop( "checked", true );
+    // }
+
+   // console.log('keyArray[which_cond]', keyArray[which_cond], 'cond', cond);
+
+
+    function Start() {
+    
+      document.getElementById("startButton").disabled = true;
+
+      //Update cond to user's selection
+      for (var i = 0; i<(trial_specs.length); i++){
+        for (var j = 0; j<(trial_specs[i].length); j++){
+          if ($( choosers[i][j] ).prop( "checked" ) == true) {
+            cond[i] = trial_specs[i][j];
+            //$( choosers[i][j] ).prop( "checked", true );
+            
+          }
+        }
+      }
+      
+      console.log('selected trial_spec', cond);
+
+    // ["passive","baby fist","ball grabber"]
+    
+
+    //document.getElementById("conditionDetails").value = 
+
+
+      document.getElementById("conditionDetails").value = 'Condition: ' + ["Passive", "Baby fist", "Ball grabber"][cond[0]] + '\n\n' +
+                                                          'Global force strength: ' + cond[1] + ' m/s^2\n\n' +
+                                                          'Global force direction: ' + ['North','North-East','East', 'South-East', 'South','South-West','West','North-West'][cond[2]] + '\n\n' +
+                                                          'Yellow: Mass ' + cond[3] + 'Kg  ' +
+                                                          'Elasticity ' + cond[4] + '\n\n' +
+                                                          'Red: Mass ' + cond[5] + 'Kg  ' +
+                                                          'Elasticity ' + cond[6] + '\n\n' +
+                                                          'Local force: Yellow-yellow '  + cond[7] + ' m/s^2\n' +
+                                                          'Local force: Red-red '  + cond[8] + ' m/s^2\n' +
+                                                          'Local force: Yellow-red '  + cond[9] + ' m/s^2\n\n' +
+                                                          'Friction patch present:' + cond[10] + '\n\n' +
+                                                          'Patch friction: ' + cond[11] + ' m/s^2\n\n' +
+                                                          'Wall setup: ' + cond[12];
+
+
+      var iframe = document.getElementById("game-frame");
+
+
+   
+
+
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Start();
+        iframeContent.RemoveCurtain();
+      }
+    }
+
+    function Stop() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.EndClip();
+        document.getElementById("dataBox").value = 'Events: ' + iframeContent.data.events + '\n\n' +
+        'Timeline data: ' + iframeContent.data.timeline;
+      }
+
+      document.getElementById("startButton").disabled = false;
+    }
+
+    function Pause() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Pause();
+        document.getElementById("dataBox").value = 'Events: ' + iframeContent.data.events + '\n\n' +
+        'Timeline data: ' + iframeContent.data.timeline;
+      }
+
+      document.getElementById("startButton").disabled = false;
+    }
+
+    function Resume() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Resume();
+      }
+    }
+  </script>
+
+
+
+</body>
+</html>

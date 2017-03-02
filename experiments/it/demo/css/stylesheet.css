@@ -1,0 +1,22 @@
+
+div {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+
+#game {
+	margin: 0px;
+	height: 400px;
+	width: 600px;
+	background-color: #FFFFFF;
+}
+
+
+#button {
+	margin: 20px;
+}
+
+#select_settings {
+	width: 1000px;
+}
