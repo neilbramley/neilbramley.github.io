@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Zendo</title>
+
+    <!-- Libraries -->
+    <script src="lib/ivank.js"></script>
+    <script src="lib/jquery.min.js"></script>
+    <!-- <script src="lib/color.js"></script> -->
+
+    <!-- <script src="js/gast.js" charset="utf-8"></script> -->
+</head>
+
+<body onload="StartIframe();">
+
+    <div id="game">
+        <iframe src="zendo.html" width=800 height=600 id="game_frame" name="game_frame" tabindex="0"></iframe>
+    </div>
+
+    <div id="select_settings">
+     <p> Select settings or have them assigned randomly</p><br>
+     <fieldset>
+        <legend>Select settings</legend>
+
+        <fieldset style="float:left;width:200px;margin:5px">
+            Input 1:<br>
+            <input type="text" value="3" id="input_field">
+        </fieldset>
+
+        <!--<fieldset style="float:left;width:200px;margin:5px">
+            Density of network (0, 1):<br>
+            <input type="text" value="0.3" id="input_density">
+        </fieldset> -->
+  </fieldset>
+</div>
+
+<script>
+    // Start the game
+    function StartIframe() {
+
+        input_params = Number($(input_field).val());
+
+        var iframe = document.getElementById("game_frame");
+
+        if (iframe) {
+            var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+            console.log('starting');
+            iframeContent.Start(input_params);
+        }
+    }
+
+
+</script>
+
+</body>
