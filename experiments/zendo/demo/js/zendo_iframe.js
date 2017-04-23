@@ -9,8 +9,9 @@ var damping = 0.1;
 var mouse_initially_entered_frame = false;
 var pixel_ratio =  window.devicePixelRatio;
 var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
+var half_ratio = ratio/3; //A smaller size for buttons (rescales life size pieces for the buttons);
 var rotate = 0; //-1 for rotating anticlockwise, 1 for rotating clockwise, 0 for neither.
-
+var f1 = new TextFormat("Helvetica", 25 * pixel_ratio, 0x000000, false, false, "right");
 
 
 //Declaring the Box2d functions I use
@@ -69,7 +70,7 @@ function Start()
     s.graphics.endFill();
     stage.addChild(s);
     //s.x=(stage.stageWidth)/2
-    s.y=(stage.stageHeight)-200;
+    s.y=(stage.stageHeight)-100*pixel_ratio;
 
     ground.SetUserData({type:"ground"});
 
@@ -78,7 +79,7 @@ function Start()
     bodyDef.position.Set(-1, 3);
     world.CreateBody(bodyDef).CreateFixture(bxFixDef);
     // right wall
-    bodyDef.position.Set(stage.stageWidth/ratio + 1, 3);
+    bodyDef.position.Set(stage.stageWidth/ratio+1, 3);
     world.CreateBody(bodyDef).CreateFixture(bxFixDef);
 
     // Both images are supposed to be 200 x 200 px
@@ -105,19 +106,52 @@ function Start()
                 //The colours of the blocks
     cols = [0xff0000, 0x00ff00, 0x0000ff];
 
-    ///////////////////
+
+    var btn = new Sprite();
+
+    //////////////
+    //Add test a button
+    
+    btn.graphics.beginFill(0x000000, 1);
+    btn.graphics.drawRoundRect(-1*half_ratio, -.5*half_ratio, 2*half_ratio, half_ratio, 6, 6);
+    btn.graphics.endFill();
+
+    btn.graphics.beginFill(0xeeeeee, 1);
+    btn.graphics.drawRoundRect(-1*half_ratio+2, -.5*half_ratio + 1, 2*half_ratio-4, half_ratio-2, 3, 3);
+    btn.graphics.endFill();
+
+    var t1 = new TextField();
+    t1.selectable = false; // default is true
+    t1.setTextFormat(f1);
+    t1.text = 'Test';
+    t1.width = t1.textWidth;
+    t1.height = t1.textHeight;
+    //t1.obj_ix = actors.length;
+    btn.addChild(t1);
+    t1.x = -t1.textWidth / 2;
+    t1.y = -t1.textHeight / 2;//-25;
+
+    btn.buttonMode = true;
+
+    stage.addChild(btn);
+
+    btn.x = stage.stageWidth*pixel_ratio * (11/12);
+    btn.y = stage.stageHeight*pixel_ratio * (14/15);
+
+    btn.addEventListener(MouseEvent.CLICK, TestDevice);
+    btn.addEventListener(MouseEvent.MOUSE_OVER, onMOv);
+    btn.addEventListener(MouseEvent.MOUSE_OUT , onMOu);    ///////////////////
     //Create the pieces
     ///////////////////
 
 
 
     /////////////////
-    //Add the buttons
+    //Add the piece buttons
     /////////////////
     piece_buttons = [];
     for (var i=0; i<9; i++)
     {
-        half_ratio = ratio/3;
 
         //Set the colour and local coordinates
         col = cols[Math.floor(i/3)];
@@ -162,7 +196,7 @@ function Start()
         s.button_ix = i;
         
         //Place the button
-        s.x = 1*ratio + 0.75*ratio * i;
+        s.x = 0.4*ratio + 0.75*ratio * i;
         s.y = 5.8*ratio;
 
         s.rotation = 180; //Flips it the right way up
@@ -442,6 +476,34 @@ listener.BeginContact = function(contact) {
 
 }
 
+function onMOv(e){
+    e.target.alpha = 1.0;
+    //TODO FIX THE HIGHLIGHTING\
+}
+
+function onMOu(e){ e.target.alpha = 0.7; }
+
+function TestDevice(e){
+
+    stage.removeEventListener(Event.ENTER_FRAME, onEF);
+
+    console.log('performing a test!');
+
+    var dataURL = c.toDataURL("image/png");
+    //console.log('dataURL',dataURL); NOW WHAT
+
+    //TODO
+    //Wait til things die down
+    //Snapshot the position (i.e. pull all the data)
+    //Stop the physics
+    //Grey out and disable the piece buttons
+    //Judge and indicate whether it follows the rule
+    //Display the snapshop at the top
+    //Clear the stage
+    //Clear the bodies and actors out
+    //Increment the test counter
+    
+};
 
   // tmp.push(data.timeline.length + 1); //Store latest frame
   // tmp.push(data.events.length + 1); //Store event number
