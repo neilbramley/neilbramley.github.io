@@ -45,8 +45,9 @@ function Start()
     bxFixDef.shape.SetAsBox(10, 1);
     bodyDef.position.Set(9, stage.stageHeight/ratio + 1);
     world.CreateBody(bodyDef).CreateFixture(bxFixDef);
-
     bxFixDef.shape.SetAsBox(1, 100);
+    bxFixDef.friction = .9;
+
     // left wall
     bodyDef.position.Set(-1, 3);
     world.CreateBody(bodyDef).CreateFixture(bxFixDef);
@@ -226,10 +227,30 @@ function onEF(e)
         var xVec = .2*Math.pow((xPos / ratio - xCO), 1); //fistSpeed; 
         var yVec = .2*Math.pow((yPos / ratio - yCO), 1); //fistSpeed;
         //console.log('trying to control', idco, xVec, yVec, xPos, yPos, ratio, xCO, yCO);
-        var armForce = new b2Vec2(xVec, yVec);
+        var arm_force = new b2Vec2(xVec, yVec);
 
+        var centre = body.GetWorldCenter();
+        var position = body.GetPosition();
 
-        body.ApplyImpulse(armForce, body.GetWorldCenter())
+        // //Account for the rotation
+        var current_angle = body.GetAngle();
+
+        var mov2centre = {x:(centre.x - position.x) * Math.cos(offset_angle) - (centre.y - position.y) * Math.sin(offset_angle),
+        y:(centre.x - position.x) * Math.sin(offset_angle) + (centre.y - position.y) * Math.cos(offset_angle)}
+
+        var angle_change = current_angle - offset_angle;
+
+        current_offset = {x:offset.x * Math.cos(angle_change) - offset.y * Math.sin(angle_change),
+            y:offset.x * Math.sin(angle_change) + offset.y * Math.cos(angle_change)};
+        
+
+    
+
+        var pinch_point = new b2Vec2(mov2centre.x + current_offset.x, mov2centre.y + current_offset.y);
+                var pinch_point = new b2Vec2(current_offset.x, current_offset.y);
+
+        body.ApplyImpulse(arm_force, pinch_point);
+            // 
     }
 }
   
@@ -251,7 +272,30 @@ function AssumeControl(e) {
     console.log('took control of', idco); //, e.target
 
     //GetWorldPoint( b2Vec2(1,1) );//GET THIS TO BE THE LOCAL MOUSE POSITION
+    centre = bodies[idco].GetWorldCenter();
+    position = bodies[idco].GetPosition();
+    offset_angle = bodies[idco].GetAngle();
+    
+    appar_offset = {x:xPos/ratio - centre.x, y:yPos/ratio - centre.y};
+    offset = {x:appar_offset.x * Math.cos(offset_angle) - appar_offset.y * Math.sin(offset_angle),
+              y:appar_offset.x * Math.sin(offset_angle) + appar_offset.y * Math.cos(offset_angle)};
 
+    mov2centre = {x:(centre.x - position.x) * Math.cos(offset_angle) - (centre.y - position.y) * Math.sin(offset_angle),
+                    y:(centre.x - position.x) * Math.sin(offset_angle) + (centre.y - position.y) * Math.cos(offset_angle)}
+
+    actors[idco].graphics.beginFill(0x000000, 1);
+    actors[idco].graphics.drawCircle(0, 0, 3);
+    actors[idco].graphics.drawCircle(0, 20, 1);
+    actors[idco].graphics.drawCircle(mov2centre.x*ratio, mov2centre.y*ratio, 5);
+    actors[idco].graphics.endFill();
+    actors[idco].graphics.beginFill(0x336644, 1);
+    actors[idco].graphics.drawCircle((mov2centre.x + offset.x)*ratio, (mov2centre.y + offset.y)*ratio, 7);
+    actors[idco].graphics.endFill();
+
+
+            console.log('offset vals', offset.x, offset.y, 'angles', 
+            offset_angle, 
+            'centre', centre, 'position', position, 'locs:', (mov2centre.y + offset.y)*ratio);
 
   } else {
     console.log('missed!', e.target);
