@@ -12,7 +12,8 @@ var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio 
 var half_ratio = ratio/3; //A smaller size for buttons (rescales life size pieces for the buttons);
 var rotate = 0; //-1 for rotating anticlockwise, 1 for rotating clockwise, 0 for neither.
 var f1 = new TextFormat("Helvetica", 25 * pixel_ratio, 0x000000, false, false, "right");
-
+var removed = [];
+var trialdata = [];
 
 //Declaring the Box2d functions I use
 var   b2Vec2      = Box2D.Common.Math.b2Vec2,
@@ -38,8 +39,9 @@ function Start()
     stage.addEventListener(Event.ENTER_FRAME, onEF);
     stage.addEventListener(MouseEvent.MOUSE_DOWN, AssumeControl);
     stage.addEventListener(MouseEvent.MOUSE_UP, RenegeControl);
-    stage.addEventListener(KeyboardEvent.KEY_DOWN , RotateOn);
-    stage.addEventListener(KeyboardEvent.KEY_UP , RotateOff);
+    stage.addEventListener(KeyboardEvent.KEY_DOWN, RotateOn);
+    stage.addEventListener(KeyboardEvent.KEY_UP, RotateOff);
+    stage.addEventListener(MouseEvent.RIGHT_CLICK, RemovePiece, false); 
     parent.document.getElementById('game_frame').addEventListener("mouseout", RenegeControl);
 
     // background
@@ -54,14 +56,14 @@ function Start()
     var bxFixDef   = new b2FixtureDef();   // box  fixture definition
     bxFixDef.shape = new b2PolygonShape();
     bxFixDef.density = 1;
-    bxFixDef.friction = .9;
+    bxFixDef.friction = 1.5;
 
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_staticBody;
 
     // create ground
-    bxFixDef.shape.SetAsBox(10, 1);//10m by 1m static box
-    bodyDef.position.Set(9, stage.stageHeight/ratio);//Places it in the bottom 1m of the window
+    bxFixDef.shape.SetAsBox(10, 1.5);//10m by 1m static box
+    bodyDef.position.Set(0, stage.stageHeight/ratio);//Places it in the bottom 1m of the window
     var ground = world.CreateBody(bodyDef).CreateFixture(bxFixDef);
     
     var s = new Sprite();
@@ -70,7 +72,7 @@ function Start()
     s.graphics.endFill();
     stage.addChild(s);
     //s.x=(stage.stageWidth)/2
-    s.y=(stage.stageHeight)-100*pixel_ratio;
+    s.y=(stage.stageHeight) - 1.5 * ratio;
 
     ground.SetUserData({type:"ground"});
 
@@ -135,8 +137,8 @@ function Start()
 
     stage.addChild(btn);
 
-    btn.x = stage.stageWidth*pixel_ratio * (11/12);
-    btn.y = stage.stageHeight*pixel_ratio * (14/15);
+    btn.x = stage.stageWidth * (11/12);
+    btn.y = stage.stageHeight * (13/15);
 
     btn.addEventListener(MouseEvent.CLICK, TestDevice);
     btn.addEventListener(MouseEvent.MOUSE_OVER, onMOv);
@@ -274,11 +276,13 @@ function AddPiece(e)
 
         bodies.push(body);
 
-        body.SetAngle(Math.PI);
+        body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
+
         //body.SetLinearDamping(1);
         body.SetAngularDamping(.1);
         body.SetUserData({type:"piece", size:['small','medium','large'][piece_type%3],
-        color:['red','green','blue'][Math.floor(piece_type/3)]});
+        color:['red','green','blue'][Math.floor(piece_type/3)],
+        id:(bodies.length-1)});
 
         /////////////////////////
         //The visualization of them
@@ -322,6 +326,8 @@ function AddPiece(e)
         //actor.addEventListener(MouseEvent.MOUSE_MOVE, Jump);  
         stage.addChild(actor);
         actors.push(actor);
+		
+		removed.push(false);
 
         console.log('added:', piece_type);
     }
@@ -382,6 +388,8 @@ function onEF(e)
         if (rotate!=0)
         {
           body.ApplyTorque(rotate * body.GetMass());//Apply a spin when key is pressed (proportional to mass of object)
+        } else {
+        	//body.ApplyTorque(-0.1 * body.GetAngularVelocity());
         }
 
         if (body.GetAngularVelocity()>8)
@@ -394,18 +402,24 @@ function onEF(e)
           body.SetAngularVelocity(-8);
         }
 
-        console.log('angular velocity', body.GetAngularVelocity());
+        //console.log('angular velocity', body.GetAngularVelocity());
     }
 }
   
-// function Jump(e)
-// {
-//        var a = e.currentTarget;  // current actor
-//        var i = actors.indexOf(a);
-//        //  cursor might be over ball bitmap, but not over a real ball
-//        if(i>=25 && Math.sqrt(a.mouseX*a.mouseX + a.mouseY*a.mouseY) > 100) return;
-//        bodies[i].ApplyImpulse(up, bodies[i].GetWorldCenter());
-// }
+function RemovePiece(e)
+{
+	console.log('remove piece triggered');
+	var ix = e.target.obj_ix;
+    if (ix != undefined) {
+		stage.removeChild(actors[ix]);
+		world.DestroyBody(bodies[ix]);
+		removed[ix] = true;
+		// actors[ix] = null;
+		// bodies[ix] = null;
+    } else {
+        console.log('missed removal!', e.target);
+    }
+}
 
 function AssumeControl(e) {
 
@@ -416,8 +430,8 @@ function AssumeControl(e) {
         console.log('took control of', idco, bodies[idco].m_userData); //, e.target
         bodies[idco].m_linearDamping = CO_damping;
 
-        //We want high angular damping for the contolled object so it doesn't spin too much
-        bodies[idco].SetAngularDamping(.8);
+        //We want high angular damping for the conrtolled object so it doesn't spin too much
+        bodies[idco].SetAngularDamping(2);
 
     } else {
         console.log('missed!', e.target);
@@ -435,21 +449,19 @@ function RenegeControl(e) {
 }
 
 function RotateOn(e){
-    if(e.keyCode == 39)
+    if(e.keyCode == 88 | e.keyCode == 39)
     {
-        if (rotate!=1)
-        {
+    	//39
+    	if (rotate!=1)  {console.log('pressing right');}
         rotate=1;
-        console.log('pressing right');
-        }
 
-    } else if (e.keyCode ==37)
+
+    } else if (e.keyCode == 90 | e.keyCode == 37)
     {
-        if (rotate!=-1)
-        {
+    	//37
+		if (rotate!=-1)  {console.log('pressing left');}
         rotate=-1;
-          console.log('pressing right');
-        }
+        
     } else {
         rotate=0;
         console.log('pressing something else');
@@ -485,25 +497,209 @@ function onMOu(e){ e.target.alpha = 0.7; }
 
 function TestDevice(e){
 
-    stage.removeEventListener(Event.ENTER_FRAME, onEF);
+	var atRestCheck = true;
+	for (i=0; i<bodies.length; i++)
+   	{
+   		if (bodies[i].IsAwake()===true & removed[i]===false)
+   		{
+   			atRestCheck=false;
+   		}
+   	}
 
-    console.log('performing a test!');
+    if (atRestCheck==true)
+    {
+    	stage.removeEventListener(Event.ENTER_FRAME, onEF);
 
-    var dataURL = c.toDataURL("image/png");
-    //console.log('dataURL',dataURL); NOW WHAT
+	    console.log('performing a test!');
 
-    //TODO
-    //Wait til things die down
-    //Snapshot the position (i.e. pull all the data)
-    //Stop the physics
-    //Grey out and disable the piece buttons
-    //Judge and indicate whether it follows the rule
-    //Display the snapshop at the top
-    //Clear the stage
-    //Clear the bodies and actors out
-    //Increment the test counter
+	    //dataURL = c.toDataURL("image/png");
+	    //console.log('dataURL',dataURL); NOW WHAT
+
+	    var positions = [];
+	   	var rotations = [];
+	    var ids = [];
+	    var contact = [];
+	    var colors = [];
+	    var sizes = [];
+	   	
+	   	for (i=0; i<bodies.length; i++)
+	   	{
+	   		if (removed[i]===false)
+	   		{
+	   			body = bodies[i];
+	   			positions.push(body.GetPosition());
+	   			rotations.push(body.GetAngle());
+	   			ids.push(body.GetUserData().id);
+	   			colors.push(body.GetUserData().color);
+	   			sizes.push(body.GetUserData().size);
+	   			contact.push([]);
+	   			tmp = body.GetContactList();
+				for (var c = body.GetContactList(); c!=null; c = c.next)
+				{
+					console.log('c inside',c, c.other.GetUserData(), c.contact.IsTouching());
+					if (c.other.GetUserData()!=null & c.contact.IsTouching()==true)
+					{
+						contact[i].push(c.other.GetUserData());
+					}
+				}
+				stage.removeChild(actors[i]);
+				world.DestroyBody(bodies[i]);
+	   		}
+
+	   	}
+
+	   	console.log('positions', positions, 'rotations', rotations, 'ids', ids, 'contact', contact);
+
+
+	   	trialdata.push({positions:positions, rotations:rotations, ids:ids, colors:colors,
+	   		sizes:sizes, contact:contact});
+	   	
+
+	   	var buddah_nature = CurrentRule(trialdata[trialdata.length-1]);
+	   	actors = [];
+	   	bodies = [];
+
+	   	DrawHistory(trialdata);
+
+	   	//Do some stuff here
+	    stage.addEventListener(Event.ENTER_FRAME, onEF);
+    } else {
+    	console.log("cant test, objects not at rest");
+    }
     
+
 };
+
+function DrawHistory(td, bn)
+{
+	trial_pics = [];
+	
+	//Loop over trials
+	for (t=0; t<td.length; t++)
+	{
+		bn = CurrentRule(td[t]);
+
+		var trial_pic = new Sprite();
+        trial_pics.push(trial_pic);
+
+		//Frame
+		trial_pics[t].graphics.lineStyle(3, 0x777777);
+        trial_pics[t].graphics.moveTo(0, 0);
+        trial_pics[t].graphics.lineTo(stage.stageWidth, 0);
+        trial_pics[t].graphics.lineTo(stage.stageWidth, stage.stageHeight);
+        trial_pics[t].graphics.lineTo(0, stage.stageHeight);
+        trial_pics[t].graphics.endFill();
+		
+		//Floor
+		trial_pics[t].graphics.lineStyle(3, 0x222222);
+		trial_pics[t].graphics.moveTo(0, (stage.stageHeight) - 1.5 * ratio);
+		trial_pics[t].graphics.lineTo(stage.stageWidth, (stage.stageHeight) - 1.5 * ratio);
+		trial_pics[t].graphics.endFill();
+
+
+		var objects = [];
+		//Loop over objects
+		for (i = 0; i<td[t].positions.length; i++)
+		{
+
+			if (td[t].colors[i]=='red') {col=cols[0];}
+			else if (td[t].colors[i]=='green') {col=cols[1];}
+			else if (td[t].colors[i]=='blue') {col=cols[2];}
+
+			if (td[t].sizes[i]=='small') {raw_points=all_points.small;}
+			else if (td[t].sizes[i]=='medium') {raw_points=all_points.med;}
+			else if (td[t].sizes[i]=='large') {raw_points=all_points.large;}
+
+			console.log('raw_points', raw_points, 'col',col);
+			
+
+			objects.push(new Sprite());
+
+			//Right hand side
+	        objects[i].graphics.beginFill(col, .5);
+	        // obj.graphics.drawRect(-hw*ratio,-hh*ratio,2*hw*ratio,2*hh*ratio);
+	        objects[i].graphics.moveTo(raw_points.rhs[0].x*ratio, raw_points.rhs[0].y*ratio);
+	        for (var j=1; j<raw_points.rhs.length; j++)
+	        {
+	            objects[i].graphics.lineTo(raw_points.rhs[j].x*ratio, raw_points.rhs[j].y*ratio);
+	        }
+	        objects[i].graphics.endFill();
+
+	        //Left hand side
+	        objects[i].graphics.beginFill(col, .5);
+
+	        objects[i].graphics.moveTo(raw_points.lhs[0].x*ratio, raw_points.lhs[0].y*ratio);
+	        for (var j=1; j<raw_points.rhs.length; j++)
+	        {
+	            objects[i].graphics.lineTo(raw_points.lhs[j].x*ratio, raw_points.lhs[j].y*ratio);
+	        }
+	        objects[i].graphics.endFill();
+
+	        //Surface
+	        objects[i].graphics.beginFill(col, .1);
+
+	        objects[i].graphics.moveTo(raw_points.rhs[1].x*ratio, raw_points.rhs[1].y*ratio);
+
+	        objects[i].graphics.lineTo(raw_points.rhs[2].x*ratio, raw_points.rhs[2].y*ratio);
+	        objects[i].graphics.lineTo(raw_points.lhs[2].x*ratio, raw_points.lhs[2].y*ratio);
+	        objects[i].graphics.lineTo(raw_points.lhs[1].x*ratio, raw_points.lhs[1].y*ratio);
+
+	        objects[i].graphics.endFill();
+	        trial_pics[t].addChild(objects[i]);
+
+	        objects[i].x = ratio*td[t].positions[i].x;
+	        objects[i].y = ratio*td[t].positions[i].y;
+	        objects[i].rotation = td[t].rotations[i]*180/Math.PI;
+
+		}
+
+		objects.push(new Sprite());
+		if (bn===true)
+		{
+
+			objects[objects.length-1].graphics.beginFill(0x55ffff);
+		} else if (bn===false)
+		{
+			objects[objects.length-1].graphics.beginFill(0xff55ff);
+		}
+		objects[objects.length-1].graphics.drawCircle(0,0,100);
+		objects[objects.length-1].graphics.endFill();
+		trial_pics[t].addChild(objects[objects.length-1]);
+		objects[objects.length-1].x=50;
+		objects[objects.length-1].y=50;
+
+		        //actor.addEventListener(MouseEvent.MOUSE_MOVE, Jump);  
+
+        stage.addChild(trial_pics[t]);
+        trial_pics[t].width = stage.stageWidth/5;
+        trial_pics[t].height = stage.stageHeight/5;
+        trial_pics[t].x=t*(stage.stageWidth/5);
+
+	}      
+        
+}
+
+function CurrentRule(td)
+{
+	console.log('td',td);
+
+	//Temporary rule There must be exactly 2 blues
+	count = 0;
+	for (i=0; i<td.colors.length; i++)
+	{
+		if (td.colors[i]==='blue')
+		{
+			count++;
+		}
+	}
+
+	if (count===2)
+	{
+		return true;
+	} else {
+		return false;
+	}
+}
 
   // tmp.push(data.timeline.length + 1); //Store latest frame
   // tmp.push(data.events.length + 1); //Store event number
