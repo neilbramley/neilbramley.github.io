@@ -32,7 +32,7 @@ b2ContactListener = Box2D.Dynamics.b2ContactListener;
 //Something to do with defining colors
 var Color = net.brehaut.Color;
 //Trial length
-var timeout = 120;//Frames (60 per second)
+var timeout = 180;//Frames (60 per second)
 
 function Start(params) 
 {
