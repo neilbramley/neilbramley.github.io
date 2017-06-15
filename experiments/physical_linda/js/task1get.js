@@ -34,6 +34,27 @@ var Color = net.brehaut.Color;
 //Trial length
 var timeout = 240;//Frames (60 per second)
 
+function PreStart()
+{
+	var params = [
+	{x:0,
+		y:1,
+		v:0.1,
+		a:1.2},
+	{x:6,
+		y:2,
+		v:1.2,
+		a:1.5},
+	{x:5,
+		y:2,
+		v:1.2,
+		a:3.5},
+	{a:0.5}
+	];
+
+ 	Start(params)
+}
+
 function Start(params) 
 {
 	global_params = params;
@@ -41,8 +62,8 @@ function Start(params)
     pixel_ratio =  window.devicePixelRatio;//Update the pixel ratio in case they zoomed
     ratio = 100 * pixel_ratio;
 
-	wp = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)*pixel_ratio;//pixel width of iframe
-    hp = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)*pixel_ratio;//pixel height of iframe
+	wp = 600*pixel_ratio;//Math.max(document.documentElement.clientWidth, window.innerWidth || 0)*pixel_ratio;//pixel width of iframe
+    hp = 400*pixel_ratio;//Math.max(document.documentElement.clientHeight, window.innerHeight || 0)*pixel_ratio;//pixel height of iframe
     w = wp/ratio;
     h = hp/ratio;
     hit_wall = [false, false];
