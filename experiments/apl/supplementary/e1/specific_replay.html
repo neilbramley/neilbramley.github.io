@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../static/css/main.css"/>
+  <script src="../static/lib/jquery.min.js"></script>
+</head>
+
+<body>
+
+    <h2>Instructions</h2>
+
+    <ol>
+        <li>Select the participant and trial you would like to see below the window.</li>
+        <li>Click "Load" then "Start" to play a trial.
+        <li>Pause, Resume and Stop and (Re)start using the buttons.
+        <li>Select a different settings and click "Load" again to view different participants and trials.</li>
+        <li>Refresh the page if it breaks, If it is still broken email nrbramley@gmail.com :).</li>
+        <li>The window at the top right gives details of the chosen trial (world index and true relationship and mass).</li>
+    </ol>
+
+  <div id="game" style="position:relative;float:left;">
+    <iframe src="replay_world.html" width=600 height=400 id="game-frame"></iframe>
+  </div>
+
+  <div style="position:relative;float:left;">
+    <textarea id="conditionDetails" type="text" readonly="readonly" rows="25" cols="40"></textarea>
+  </div>
+
+<div class="spacer" style = "clear:both"></div>
+
+  <div style="position:relative;float:left;">
+    <button class="button big-btn" id="startButton"; onclick="Start();"; >Start</button>
+    <button class="button big-btn" id="pauseButton"; onclick="Pause();"; >Pause</button>
+    <button class="button big-btn" id="resumeButton"; onclick="Resume();"; >Resume</button>
+    <button class="button big-btn" id="stopButton"; onclick="Stop();"; >Stop</button>
+</div>
+
+<div class="spacer" style = "clear:both"></div>
+
+<p>Back to supplementary materials here <a href="http://www.ucl.ac.uk/lagnado-lab/el/apl.html" target="_blank">here</a></p>
+
+
+ <script>
+
+  var trial_specs = [["A2MWAXV1YRK5GH", "A1P0NNR8HOQ95R", "A3VMKLJTSGYKHN",
+  "A33QUS4NRVVMTN", "A25MM8IKSW3G19", "A2N0FUQBDQRBN5",
+  "A2Z96TK65BB7LC", "A3W6T1WDYXMR3",  "AVC1PLLFS210S", 
+  "A28HYRF3QXFAXL", "A4J4GGMKJ68L0",  "A27W025UEXS1G0",
+  "A2EI075XZT9Y2S", "ANV4TUKMWLA8E",  "ASTDBTVY3WP1K",
+  "AHB3QFZSFN9DL",  "ANZKTE853UXSD",  "A38HFMRXB5Q13M",
+  "AV22FQTJNBUZT",  "A7RAVFS10BUZ1"],[0,1,2,3,4,5,6,7,8,9,10]];
+
+    //"A3527QDVIOHI8E" (the active participant who was never yokjed);
+
+
+var rel_resp = [['none', 'none', 'repel', 'none', 'repel', 'repel', 'attract', 'repel', 'none', 'repel', 'repel'] ,
+['none', 'none', 'repel', 'none', 'repel', 'repel', 'repel', 'repel', 'attract', 'attract', 'repel'] ,
+['attract', 'attract', 'none', 'none', 'attract', 'repel', 'repel', 'attract', 'none', 'none', 'repel'] ,
+['attract', 'repel', 'repel', 'attract', 'repel', 'repel', 'repel', 'none', 'repel', 'repel', 'attract'] ,
+['attract', 'attract', 'attract', 'none', 'none', 'none', 'none', 'none', 'attract', 'none', 'attract'] ,
+['none', 'none', 'repel', 'repel', 'none', 'attract', 'none', 'attract', 'repel', 'none', 'none'] ,
+['none', 'none', 'attract', 'none', 'repel', 'repel', 'repel', 'attract', 'none', 'attract', 'none'] ,
+['attract', 'none', 'repel', 'none', 'repel', 'repel', 'attract', 'repel', 'none', 'none', 'attract'] ,
+['attract', 'none', 'repel', 'none', 'attract', 'attract', 'attract', 'none', 'repel', 'none', 'repel'] ,
+['attract', 'repel', 'repel', 'repel', 'attract', 'repel', 'repel', 'repel', 'repel', 'attract', 'attract'] ,
+['attract', 'none', 'repel', 'repel', 'repel', 'repel', 'repel', 'repel', 'attract', 'attract', 'none'] ,
+['attract', 'repel', 'attract', 'attract', 'repel', 'attract', 'repel', 'repel', 'none', 'none', 'none'] ,
+['attract', 'repel', 'repel', 'repel', 'none', 'attract', 'repel', 'attract', 'repel', 'repel', 'none'] ,
+['attract', 'none', 'attract', 'repel', 'none', 'attract', 'repel', 'repel', 'none', 'repel', 'attract'] ,
+['none', 'none', 'none', 'attract', 'repel', 'repel', 'none', 'attract', 'none', 'repel', 'none'] ,
+['attract', 'none', 'repel', 'repel', 'repel', 'repel', 'none', 'repel', 'attract', 'attract', 'attract'] ,
+['none', 'none', 'attract', 'repel', 'repel', 'repel', 'none', 'none', 'none', 'none', 'attract'] ,
+['attract', 'repel', 'none', 'repel', 'repel', 'none', 'none', 'repel', 'repel', 'attract', 'attract'] ,
+['repel', 'none', 'repel', 'repel', 'attract', 'attract', 'repel', 'repel', 'none', 'attract', 'none'] ,
+['repel', 'repel', 'repel', 'attract', 'repel', 'none', 'repel', 'repel', 'none', 'repel', 'none'] ];
+
+var rel_conf = [[99, 92, 99, 83, 90, 93, 89, 89, 93, 95, 95] ,
+[2, 4, 74, 6, 47, 63, 99, 99, 98, 66, 99] ,
+[100, 74, 100, 100, 100, 100, 100, 100, 100, 100, 100] ,
+[98, 100, 100, 100, 100, 100, 92, 88, 100, 100, 87] ,
+[100, 100, 100, 100, 100, 100, 31, 100, 100, 100, 100] ,
+[100, 100, 100, 98, 99, 79, 98, 100, 100, 100, 48] ,
+[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100] ,
+[72, 76, 92, 91, 92, 95, 94, 95, 27, 75, 89] ,
+[98, 62, 83, 79, 47, 75, 79, 78, 72, 81, 87] ,
+[88, 84, 85, 78, 83, 48, 81, 82, 81, 81, 68] ,
+[45, 100, 21, 100, 51, 100, 100, 100, 100, 99, 100] ,
+[85, 84, 89, 92, 95, 61, 82, 87, 16, 18, 11] ,
+[98, 100, 100, 100, 100, 100, 100, 99, 100, 100, 100] ,
+[66, 89, 92, 92, 88, 94, 90, 76, 52, 92, 34] ,
+[79, 82, 59, 91, 93, 92, 90, 69, 51, 96, 92] ,
+[71, 82, 88, 39, 83, 95, 70, 97, 99, 50, 96] ,
+[82, 87, 100, 97, 100, 100, 68, 72, 67, 66, 90] ,
+[95, 50, 77, 84, 100, 15, 51, 100, 100, 79, 100] ,
+[64, 54, 66, 69, 66, 71, 83, 73, 49, 50, 61] ,
+[97, 74, 78, 23, 33, 23, 75, 83, 52, 95, 52] ];
+
+var mass_resp = [['A', 'A', 'B', 'A', 'B', 'B', 'A', 'A', 'B', 'A', 'B'] ,
+['B', 'A', 'A', 'same', 'B', 'B', 'A', 'B', 'A', 'A', 'B'] ,
+['same', 'B', 'A', 'B', 'same', 'A', 'B', 'A', 'same', 'B', 'A'] ,
+['A', 'A', 'A', 'A', 'B', 'A', 'B', 'B', 'A', 'B', 'A'] ,
+['A', 'B', 'A', 'B', 'B', 'A', 'B', 'same', 'A', 'A', 'A'] ,
+['same', 'A', 'A', 'B', 'A', 'same', 'B', 'A', 'B', 'A', 'A'] ,
+['same', 'A', 'B', 'A', 'B', 'B', 'A', 'A', 'same', 'A', 'B'] ,
+['A', 'A', 'A', 'same', 'A', 'B', 'A', 'same', 'A', 'B', 'same'] ,
+['B', 'same', 'B', 'B', 'B', 'A', 'A', 'B', 'A', 'B', 'same'] ,
+['same', 'B', 'A', 'same', 'B', 'same', 'B', 'same', 'B', 'A', 'A'] ,
+['same', 'A', 'B', 'B', 'A', 'A', 'B', 'same', 'A', 'same', 'B'] ,
+['same', 'A', 'same', 'A', 'B', 'A', 'A', 'A', 'same', 'B', 'B'] ,
+['same', 'same', 'B', 'B', 'same', 'same', 'same', 'same', 'same', 'same', 'same'] ,
+['B', 'same', 'same', 'B', 'B', 'same', 'same', 'same', 'A', 'A', 'same'] ,
+['same', 'A', 'A', 'A', 'B', 'B', 'A', 'B', 'B', 'A', 'B'] ,
+['B', 'A', 'A', 'same', 'A', 'B', 'same', 'A', 'A', 'A', 'B'] ,
+['B', 'same', 'B', 'A', 'A', 'B', 'A', 'A', 'same', 'same', 'A'] ,
+['B', 'A', 'B', 'A', 'same', 'A', 'A', 'B', 'same', 'A', 'A'] ,
+['B', 'same', 'B', 'B', 'same', 'A', 'A', 'same', 'A', 'same', 'B'] ,
+['A', 'A', 'A', 'same', 'B', 'same', 'B', 'B', 'B', 'same', 'A'] ]
+
+var mass_conf = [[56, 86, 63, 86, 91, 95, 90, 93, 24, 32, 95] ,
+[98, 99, 49, 88, 98, 100, 98, 99, 99, 99, 99] ,
+[100, 75, 100, 71, 82, 100, 100, 100, 100, 100, 100] ,
+[100, 100, 100, 100, 100, 100, 98, 100, 100, 100, 100] ,
+[100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 33] ,
+[100, 100, 100, 50, 98, 100, 98, 100, 99, 100, 48] ,
+[100, 100, 99, 98, 95, 100, 100, 100, 100, 100, 100] ,
+[32, 18, 70, 40, 51, 87, 85, 45, 77, 78, 49] ,
+[99, 60, 57, 76, 25, 69, 78, 75, 75, 57, 60] ,
+[66, 55, 50, 21, 54, 47, 62, 44, 55, 53, 56] ,
+[62, 26, 18, 98, 100, 100, 100, 100, 100, 100, 100] ,
+[19, 67, 76, 61, 57, 36, 14, 61, 9, 81, 72] ,
+[98, 83, 72, 63, 100, 68, 76, 47, 29, 100, 55] ,
+[73, 75, 80, 48, 97, 96, 93, 59, 40, 42, 50] ,
+[81, 88, 93, 96, 74, 82, 89, 70, 93, 89, 91] ,
+[55, 38, 39, 64, 4, 95, 1, 99, 31, 98, 96] ,
+[84, 87, 55, 53, 81, 99, 85, 100, 78, 24, 84] ,
+[67, 30, 46, 43, 19, 73, 100, 100, 50, 23, 34] ,
+[58, 64, 69, 65, 66, 67, 83, 70, 47, 54, 67] ,
+[97, 97, 59, 22, 34, 10, 73, 85, 54, 50, 98] ];
+
+
+
+    var tl_data = [];
+    var cond = [];
+
+  var selected = [0,0];
+  var participant = getUrlVars()["participant"];
+  var current_workerid = trial_specs[0][participant-1];
+  var current_trialid = getUrlVars()["trial"]; //Note this is 1 indexed while the selected[1] version will be zero indexed
+  selected[0] = current_workerid;
+  selected[1] = (current_trialid-1);
+
+  console.log(selected);
+
+    document.getElementById("startButton").disabled = true;
+    document.getElementById("stopButton").disabled = true;
+    document.getElementById("pauseButton").disabled = true;
+    document.getElementById("resumeButton").disabled = true;
+    
+    // $.getJSON('stim3.json', function(json) {
+    //   stim_data = json
+    // });
+
+    // window.setTimeout(postloadfunction, 500);
+    
+    jQuery.ajax({
+        url:  "stim3.json",
+        type:'GET',
+        data:{
+          //details: "details"
+        },
+        success:function(data){
+          console.log('AJAX success');
+          console.log(data);
+          stim_data = data;
+          postloadfunction()
+        },
+        error: function(err){
+          
+          //jQuery('.errorText').fadeIn();
+          alert('Oops there was a problem linking with our database.\n\nPlease email the experimenter at neil.bramley@ucl.ac.uk');
+        
+        }
+      });
+    
+    function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+      });
+      return vars;
+    }
+
+    function postloadfunction()
+    {
+
+
+      console.log('in postloadfunction1', selected);
+
+      var urlname = "replay_files/ppt_" + selected[0] + ".json";
+      console.log(urlname);
+      jQuery.ajax({
+        url:  urlname,
+        type:'GET',
+        data:{ 
+          //
+        },
+        success:function(data){
+          console.log('AJAX success 2');
+          console.log(data);
+          all_timeline_data = data;
+          postloadfunction2();
+        },
+        error: function(err){
+          //jQuery('.errorText').fadeIn();
+          alert('Oops there was a problem linking with our database.\n\nPlease email the experimenter at neil.bramley@ucl.ac.uk');
+        }
+      });
+
+      //Now read in the appropriate participants' data
+      // $.getJSON("replay_files/ppt_" + selected[0] + ".json", function(json) {
+      //   all_timeline_data = json
+      // });
+
+      // window.setTimeout(postloadfunction2, 500);    
+    }
+    
+    function postloadfunction2()
+    {
+      tl_data = all_timeline_data[selected[1]];
+      cond = [stim_data.details[selected[0]][selected[1]].hues, selected[1]];
+
+
+      document.getElementById("startButton").disabled = false;
+      document.getElementById("stopButton").disabled = true;
+      document.getElementById("pauseButton").disabled = true  ;
+      document.getElementById("resumeButton").disabled = true;
+      
+
+
+
+      //Clunky workaround to update the letters depending on the trial
+      var letters = [String.fromCharCode(65+2*selected[1]), String.fromCharCode(65+2*selected[1]+1)];
+      var rightLetter = '';
+      
+      if (stim_data.details[selected[0]][selected[1]].tM == 'A')
+      {
+        rightLetter = letters[0];
+      } else if (stim_data.details[selected[0]][selected[1]].tM == 'B')
+      {
+        rightLetter == letters[1];
+      } else if (stim_data.details[selected[0]][selected[1]].tM == 'same')
+      {
+        rightLetter = 'same';
+      }
+
+      var guessLetter = '';
+      if (mass_resp[participant-1][current_trialid-1] == 'A')
+      {
+        guessLetter =letters[0];
+      } else if (mass_resp[participant-1][current_trialid-1] == 'B')
+      {
+        guessLetter = letters[1];
+      } else if (mass_resp[participant-1][current_trialid-1] == 'same')
+      {
+        guessLetter = 'same';
+      }
+
+
+      document.getElementById("conditionDetails").value = 'Condition: Yoked\n\n' +
+                                                           'World: ' + stim_data.details[selected[0]][selected[1]].worldId + '\n\n' +
+                                                           'GROUND TRUTH\n\n' +
+                                                           'Target force: ' + stim_data.details[selected[0]][selected[1]].tR + '\n\n' +
+                                                           'Target heavier: ' +   rightLetter + '\n\n' +
+                                                           "ACTIVE PARTICIPANT RESPONSES\n\n" + 
+                                                           "Relationship response: " + rel_resp[participant-1][current_trialid-1] +
+                                                            "    confidence: " + rel_conf[participant-1][current_trialid-1] + '\n\n' +
+                                                           "Mass response: " + guessLetter + "    confidence: " + mass_conf[participant-1][current_trialid-1];
+
+      console.log(trial_specs, 'stim_data', stim_data.details[selected[0]][selected[1]].worldId,
+        stim_data.details[selected[0]][selected[1]].tR,
+        stim_data.details[selected[0]][selected[1]].tM,
+        'tl_data', tl_data, 'cond', cond);
+    }
+
+    
+
+
+
+
+    function Start() {
+
+      document.getElementById("startButton").disabled = true;
+      document.getElementById("pauseButton").disabled = false;
+      document.getElementById("resumeButton").disabled = true;
+      document.getElementById("stopButton").disabled = false;
+
+      //Fire the start function within the iframe
+      var iframe = document.getElementById("game-frame");
+      
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Start();
+        iframeContent.RemoveCurtain();
+      }
+    }
+
+
+    function Stop() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.EndClip();
+      }
+      document.getElementById("startButton").disabled = false;
+      document.getElementById("stopButton").disabled = true;
+      document.getElementById("pauseButton").disabled = true;
+      document.getElementById("resumeButton").disabled = true;
+    }
+
+    function Pause() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Pause();
+        
+      }
+      document.getElementById("startButton").disabled = true;
+      document.getElementById("stopButton").disabled = true;
+      document.getElementById("pauseButton").disabled = true;
+      document.getElementById("resumeButton").disabled = false;
+    }
+
+    function Resume() {
+      var iframe = document.getElementById("game-frame");
+      if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Resume();
+      }
+      document.getElementById("startButton").disabled = false;
+      document.getElementById("stopButton").disabled = false;
+      document.getElementById("pauseButton").disabled = false;
+      document.getElementById("resumeButton").disabled = true;
+    }
+
+
+
+  </script>
+
+
+
+</body>
+</html>
