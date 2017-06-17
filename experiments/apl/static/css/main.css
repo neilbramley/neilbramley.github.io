@@ -19,6 +19,7 @@ a {
 
 div {
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
+    font-size: 110%;
 }
 
 .option {
@@ -62,8 +63,6 @@ fieldset {
 
 textarea{
     font-family:'Helvetica', 'Arial', 'Sans-Serif';
-    font-size: 130%;
-    line-height: 1.2;
     color: #333;
 }
 
