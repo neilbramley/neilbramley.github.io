@@ -95,28 +95,28 @@
 		    bodyType: "static",
 		    W: fullX,
 		    H: borderWidth
-		  }, true, stage, "static/images/border.png");
+		  }, true, stage, "../static/images/border.png");
 
 		  bw=createBox(fullX / 2, borderWidth, fullX / 2, fullY, b2Body.b2_staticBody, wall_mass, wall_damping, wall_elasticity, wall_friction, {
 		    name: "bottom_wall",
 		    bodyType: "static",
 		    W: fullX / 2,
 		    H: borderWidth
-		  }, true, stage, "static/images/border.png");
+		  }, true, stage, "../static/images/border.png");
 
 		  lw=createBox(borderWidth, fullY / 2, 0, fullY / 2, b2Body.b2_staticBody, wall_mass, wall_damping, wall_elasticity, wall_friction, {
 		    name: "left_wall",
 		    bodyType: "static",
 		    W: borderWidth,
 		    H: fullY / 2
-		  }, true, stage, "static/images/border.png");
+		  }, true, stage, "../static/images/border.png");
 
 		  rw=createBox(borderWidth, fullY / 2, fullX, fullY / 2, b2Body.b2_staticBody, wall_mass, wall_damping, wall_elasticity, wall_friction, {
 		    name: "right_wall",
 		    bodyType: "static",
 		    W: borderWidth,
 		    H: fullY / 2
-		  }, true, stage, "static/images/border.png");
+		  }, true, stage, "../static/images/border.png");
 
 		  // console.log('topwall', topwall, 'bottomwall', bottomwall);
 
@@ -406,7 +406,7 @@ function onEF(e) {
 
 	if (tl_data.idControlledObject[counter]!='none' && tl_data.idControlledObject[counter-1]=='none')
 	{
-		var bd = new BitmapData('static/images/black_circle_border.png');
+		var bd = new BitmapData('../static/images/black_circle_border.png');
 		bm = new Bitmap(bd);
 		//Resize the image and location depending on the pixel ratio/zoom level
 		bm.scaleX = window.devicePixelRatio/2;
