@@ -19,7 +19,7 @@
         <iframe src="replay_world.html" width=600 height=400 id="game-frame"></iframe>
     </div>
 
-<!--     <div style="position:relative;float:left;">
+    <!--     <div style="position:relative;float:left;">
       <textarea id="conditionDetails" type="text" readonly="readonly" rows="25" cols="40"></textarea> -->
     </div>
     <div style='position:relative;float:left;width=150;height=400' contenteditable="true" id='conditionDetails'>
@@ -352,13 +352,13 @@ jQuery.ajax({
       }
 
 
-      document.getElementById("conditionDetails").innerHTML = 'Condition: Yoked\n\n' +
-      'World: ' + stim_data.details[selected[0]][selected[1]].worldId + '\n\n' +
-      'GROUND TRUTH\n\n' +
-      'Target force: ' + stim_data.details[selected[0]][selected[1]].tR + '\n\n' +
-      'Target heavier: ' +   rightLetter + '\n\n' +
-      "ACTIVE PARTICIPANT RESPONSES\n\n" + 
-      "Relationship response: " + rel_resp[which_selected[0]][which_selected[1]] + "    confidence: " + rel_conf[which_selected[0]][which_selected[1]] + '\n\n' +
+      document.getElementById("conditionDetails").innerHTML = 'Condition: Yoked<br><br>' +
+      'World: ' + stim_data.details[selected[0]][selected[1]].worldId + '<br><br>' +
+      'GROUND TRUTH<br><br>' +
+      'Target force: ' + stim_data.details[selected[0]][selected[1]].tR + '<br><br>' +
+      'Target heavier: ' +   rightLetter + '<br><br>' +
+      "ACTIVE PARTICIPANT RESPONSES<br><br>" + 
+      "Relationship response: " + rel_resp[which_selected[0]][which_selected[1]] + "    confidence: " + rel_conf[which_selected[0]][which_selected[1]] + '<br><br>' +
       "Mass response: " + guessLetter + "    confidence: " + mass_conf[which_selected[0]][which_selected[1]];
 
 
