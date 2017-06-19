@@ -352,7 +352,7 @@ jQuery.ajax({
       }
 
 
-      document.getElementById("conditionDetails").value = 'Condition: Yoked\n\n' +
+      document.getElementById("conditionDetails").innerHTML = 'Condition: Yoked\n\n' +
       'World: ' + stim_data.details[selected[0]][selected[1]].worldId + '\n\n' +
       'GROUND TRUTH\n\n' +
       'Target force: ' + stim_data.details[selected[0]][selected[1]].tR + '\n\n' +
