@@ -197,8 +197,14 @@ function InitialSelect()
     //If a get participant variable is sent, initially set this as current participant
     if (ppt_get!==undefined)
     {
-        //CHECK
-        document.getElementById('participant_select').getElementsByTagName('option')[ppt_get].selected = 'selected';
+        //Set by workerid   
+        var options = document.getElementById('participant_select').options;
+        for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
+            if (options[i].value == ppt_get) {
+                options.selectedIndex = i;
+            }
+        }
+        //document.getElementById('participant_select').getElementsByTagName('option')[ppt_get].selected = 'selected';
         console.log('set participant from GET to', ppt_get);
     } else {
         //Otherwise choose a random one
