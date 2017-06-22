@@ -6,7 +6,7 @@
 
 </head>
 
-<body onload = 'RandomSelect()'>
+<body onload = 'InitialSelect()'>
 
     <h2>Instructions</h2>
 
@@ -176,6 +176,10 @@ var p = 1;
 var q = 'm';
 var resp_data = [];
 
+var ppt_get = undefined;
+var world_get = undefined;
+var question_get = undefined;
+
 var workerids =
     ['AR1IWBDA7MC86'   ,    'ABL3H3O3BI8ZD'      , 'A32QJF67JMJFKX'    , 
     'A3OW5EFQ5QFD19'  ,    'A15V8K8M4TXT9Y'     , 'A2OWVYIPSQB0QP'    , 
@@ -192,16 +196,62 @@ var workerids =
     'A1CSDIX05PK9V'   ,    'A1X1GFV9H8AGSL'     , 'A19C6T7B0H4PAQ'    , 
     'A1U8QI4H4ND1FP'];
 
-   function RandomSelect()
+   function InitialSelect()
     {
         document.getElementById("loadButton").disabled = true;
 
-        if (Math.random()>0.5)
+
+
+
+        //Optional GET setting functionality
+        ppt_get = GetTrialVariable('p');
+        world_get = GetTrialVariable('w');
+        question_get = GetTrialVariable('q');
+
+        //If a get participant variable is sent, initially set this as current participant
+        if (ppt_get!==undefined)
         {
-            document.getElementById('m').checked = true;
-        } else {
-            document.getElementById('f').checked = true;
+            if (Number(ppt_get)<=document.getElementById('participant_select').getElementsByTagName('option').length)
+            {
+                document.getElementById('participant_select').getElementsByTagName('option')[Number(ppt_get)-1].selected = 'selected'
+            } else {
+                console.log('bad participant parameter')
+            }
         }
+
+        //If a get participant variable is sent, initially set this as current participant
+        if (world_get!==undefined)
+        {
+            if (Number(world_get)<=document.getElementById('world_select').getElementsByTagName('option').length)
+            {
+                document.getElementById('world_select').getElementsByTagName('option')[Number(world_get)-1].selected = 'selected';
+            } else {
+                console.log('bad world parameter');
+            }
+            
+        }
+
+        if (question_get!==undefined)
+        {
+            if (question_get==='m' || question_get==='0')
+            {
+                document.getElementById('m').checked = true;
+            } else if (question_get==='f' || question_get==='1'){
+                document.getElementById('f').checked = true;
+            } else{
+                console.log('bad question parameter!')
+            }
+        } else {
+            //Otherwise choose a question at random
+            if (Math.random()>0.5)
+            {
+                document.getElementById('m').checked = true;
+            } else {
+                document.getElementById('f').checked = true;
+            }
+        }
+
+
 
         jQuery.ajax({
         url:  'e45_resps.json',
@@ -277,23 +327,23 @@ var workerids =
         
         //Print details to text window:
         document.getElementById("conditionDetails").innerHTML =  'World: <b>' + resp_data[workerids[Number(p)-1]]["active"]["worldId"][Number(t)-1]  + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            '(Trial: <b>' + resp_data[workerids[Number(p)-1]]["active"]["order"][Number(t)-1] + '</b>)<br><br>' +
-                                                            'Condition: <b>' + resp_data[workerids[Number(p)-1]]["active"]["condition"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            'Question: <b>' + resp_data[workerids[Number(p)-1]]["active"]["question"][Number(t)-1] + '</b><br>' +
-                                                            'Answer: <b>' + resp_data[workerids[Number(p)-1]]["active"]["answer"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                             'Correct?: <b>' + ['false','true'][resp_data[workerids[Number(p)-1]]["active"]["cor"][Number(t)-1]] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                             'Response time: <b>' + resp_data[workerids[Number(p)-1]]["active"]["resptime"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            '<br><br>' +
-                                                            'Condition: <b>' + resp_data[workerids[Number(p)-1]]["yokedSame"]["condition"][Number(t)-1] + '</b><br>' +
-                                                            'Answer: <b>' + resp_data[workerids[Number(p)-1]]["yokedSame"]["answer"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            'Correct?: <b>' + ['false','true'][resp_data[workerids[Number(p)-1]]["yokedSame"]["cor"][Number(t)-1]] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            'Response time: <b>' + resp_data[workerids[Number(p)-1]]["yokedSame"]["resptime"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            '<br><br>' +
-                                                            'Condition: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["condition"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            'Question: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["question"][Number(t)-1] + '</b><br>' +
-                                                            'Answer: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["answer"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            'Correct?: <b>' + ['false','true'][resp_data[workerids[Number(p)-1]]["yokedFlip"]["cor"][Number(t)-1]] + '</b>&nbsp;&nbsp;&nbsp' +
-                                                            'Response time: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["resptime"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp';
+        '(Trial: <b>' + resp_data[workerids[Number(p)-1]]["active"]["order"][Number(t)-1] + '</b>)<br><br>' +
+        'Condition: <b>' + resp_data[workerids[Number(p)-1]]["active"]["condition"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
+        'Question: <b>' + resp_data[workerids[Number(p)-1]]["active"]["question"][Number(t)-1] + '</b><br>' +
+        'Answer: <b>' + resp_data[workerids[Number(p)-1]]["active"]["answer"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
+         'Correct?: <b>' + ['false','true'][resp_data[workerids[Number(p)-1]]["active"]["cor"][Number(t)-1]] + '</b>&nbsp;&nbsp;&nbsp' +
+         'Response time: <b>' + resp_data[workerids[Number(p)-1]]["active"]["resptime"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
+        '<br><br>' +
+        'Condition: <b>' + resp_data[workerids[Number(p)-1]]["yokedSame"]["condition"][Number(t)-1] + '</b><br>' +
+        'Answer: <b>' + resp_data[workerids[Number(p)-1]]["yokedSame"]["answer"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
+        'Correct?: <b>' + ['false','true'][resp_data[workerids[Number(p)-1]]["yokedSame"]["cor"][Number(t)-1]] + '</b>&nbsp;&nbsp;&nbsp' +
+        'Response time: <b>' + resp_data[workerids[Number(p)-1]]["yokedSame"]["resptime"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
+        '<br><br>' +
+        'Condition: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["condition"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
+        'Question: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["question"][Number(t)-1] + '</b><br>' +
+        'Answer: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["answer"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp' +
+        'Correct?: <b>' + ['false','true'][resp_data[workerids[Number(p)-1]]["yokedFlip"]["cor"][Number(t)-1]] + '</b>&nbsp;&nbsp;&nbsp' +
+        'Response time: <b>' + resp_data[workerids[Number(p)-1]]["yokedFlip"]["resptime"][Number(t)-1] + '</b>&nbsp;&nbsp;&nbsp';
 
 
         resp_data[workerids[Number(p)-1]]["yokedSame"][t] + '\n\n\n' +
@@ -304,7 +354,17 @@ var workerids =
         //video.play();
     }
 
-
+    function GetTrialVariable(variable) {
+      var query = window.location.search.substring(1);
+      var vars = query.split("&");
+      for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+          return pair[1];
+        }
+      } 
+      console.log('Query Variable ' + variable + ' not found');
+    }
 
 
 </script>
