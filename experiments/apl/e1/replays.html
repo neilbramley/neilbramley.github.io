@@ -215,7 +215,7 @@ function InitialSelect()
     //If a get trial variable is sent, initially set this as current participant
     if (trial_get!==undefined)
     {
-        document.getElementById('trial_select').getElementsByTagName('option')[trial_get].selected = 'selected';
+        document.getElementById('trial_select').getElementsByTagName('option')[Number(trial_get)-1].selected = 'selected';
         console.log('set trial from GET to', trial_get);
     } else {
         //Otherwise choose a random one
