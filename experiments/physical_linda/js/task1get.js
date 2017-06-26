@@ -490,7 +490,7 @@ function SaveData(upi, data_string)
 
     
 	jQuery.ajax({
-		url:  "./php/task1.php",
+		url:  "http://cims.nyu.edu/~bramley/experiments/physical_linda/php/task1.php",
 		type:'POST',
 		data:{
 			upi:upi,
