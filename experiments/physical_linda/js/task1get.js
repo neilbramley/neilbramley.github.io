@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////
 //Two objects travel at different angles etc toward a wall
+//Optional third distractor object
 //Which arrives first?
-//TODO add distractor objects for contrast effects?
 //////////////////////////////////////////////////////////
 
 //Declaring some global variables
@@ -13,10 +13,10 @@ var data_string = [];
 var world;
 var bodies = []; // instances of b2Body (from Box2D)
 var actors = []; // instances of Bitmap (from IvanK)
-var up;
 var pixel_ratio =  window.devicePixelRatio;
 var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
-//var f1 = new TextFormat("Helvetica", 25 * pixel_ratio, 0x000000, false, false, "right");
+
+
 var f1 = new TextFormat("Helvetica", 15 * pixel_ratio, 0x000000, true, false, false);
 var global_params = [];
 var hit_wall = [false, false];
@@ -490,7 +490,7 @@ function SaveData(upi, data_string)
 
     
 	jQuery.ajax({
-		url:  "http://cims.nyu.edu/~bramley/experiments/physical_linda/php/task1.php",
+		url:  "https://cims.nyu.edu/~bramley/experiments/physical_linda/php/task1.php",
 		type:'POST',
 		data:{
 			upi:upi,

@@ -1,4 +1,5 @@
-<?php
+<?php header('Access-Control-Allow-Origin: *'); 
+
 
 $db_type           = "mysql";
 $db_server         = "warehouse.cims.nyu.edu";
