@@ -529,5 +529,5 @@ function receiveMessage(e) {
             stage.addEventListener(Event.ENTER_FRAME, onEF);
         }
         task_stage  2;
-        
+    
     }
