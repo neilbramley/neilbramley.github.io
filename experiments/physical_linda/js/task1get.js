@@ -105,19 +105,16 @@ function PreStart()
 		a:Number(o2a)},
 		{a:Number(wa)}
 		];
-		}
-
-	upi = getQueryVariable('upi');
-	tix = getQueryVariable('tix');
+		};
 
 	console.log('PresStart params', params);
 
-	Start(params)
+	Start(params);
 }
 
-		function Start(params) 
-		{
-			global_params = params;
+function Start(params) 
+{
+	global_params = params;
 
     pixel_ratio =  window.devicePixelRatio;//Update the pixel ratio in case they zoomed
     ratio = 100 * pixel_ratio;
@@ -503,7 +500,7 @@ function SaveData(upi, data_string)
 			console.log('AJAX success', data);
 		},
 		error: function(err){	
-			console.log('AJAX fail', data);
+			console.log('AJAX fail');
 
 		}
 	});
