@@ -522,12 +522,12 @@ function receiveMessage(e) {
         // Update the div element to display the message.
         //messageEle.innerHTML = "Message Received: " + e.data;
         
-        console.log('message received' + e.data);
+        console.log('message received',  e.data);
         
         if (task_stage===1)
         {
             stage.addEventListener(Event.ENTER_FRAME, onEF);
         }
-        task_stage  2;
-    
-    }
+        task_stage = 2;
+
+}
