@@ -6,8 +6,8 @@
 
 //Declaring some global variables
 var stage = undefined;
-var upi = 'unspecified'; //Unique personal identifier
-var tix = 'unspecified'; //Trial index
+var upi = 'none'; //Unique personal identifier
+var tix = 'none'; //Trial index
 var data_string = [];
 
 var world;
@@ -147,24 +147,24 @@ function PreStart()
 	    ///////////////// 
 	    //Track the mouse
 		/////////////////
-		info_box = new TextField();
+		// info_box = new TextField();
 
-	    info_box.selectable = false; // default is true
-	    info_box.setTextFormat(f1);
-	    info_box.text = "                             ";
-	    info_box.width = info_box.textWidth;
-	    info_box.height = info_box.textHeight;
-	    stage.addChild(info_box);
-	    info_box.x = (4/5)*wp - info_box.width/2;//0;
-	    info_box.y = (4/5)*hp;
+    	 //    info_box.selectable = false; // default is true
+    	 //    info_box.setTextFormat(f1);
+    	 //    info_box.text = "                             ";
+    	 //    info_box.width = info_box.textWidth;
+    	 //    info_box.height = info_box.textHeight;
+    	 //    stage.addChild(info_box);
+    	 //    info_box.x = (4/5)*wp - info_box.width/2;//0;
+    	 //    info_box.y = (4/5)*hp;
 
-	    document.onmousemove = function(e){
-	    	mouseX = e.pageX;
-	    	mouseY = e.pageY;
-	        //elementMouseIsOver = document.elementFromPoint(mouseX, mouseY);
-	        //console.log(elementMouseIsOver);
-	        info_box.text = 'x:' + mouseX/100 + ' y:' + mouseY/100;
-	    };
+	    // document.onmousemove = function(e){
+	    // 	mouseX = e.pageX;
+	    // 	mouseY = e.pageY;
+	    //     //elementMouseIsOver = document.elementFromPoint(mouseX, mouseY);
+	    //     //console.log(elementMouseIsOver);
+	    //     info_box.text = 'x:' + mouseX/100 + ' y:' + mouseY/100;
+	    // };
 
 	    /////////////
 	    //BOX2D WORLD
@@ -341,7 +341,7 @@ function chooseWinner(e)
 	//Now start it up again to see the true outcome
 	stage.addEventListener(Event.ENTER_FRAME, onEF);
 
-	data_string = data_string.push(['A','B'][choice]);
+	data_string.push(['A','B'][choice]);
 
 	SaveData(upi, data_string);
 
@@ -488,20 +488,22 @@ function getQueryVariable(variable) {
 
 function SaveData(upi, data_string)
 {
-	console.log('upon save', upi, data_string);
+	var data = data_string.toString();
+    console.log('upon save', upi, data);
+
     
 	jQuery.ajax({
 		url:  "./php/task1.php",
 		type:'POST',
 		data:{
 			upi:upi,
-			trial:data_string
+			trial:data
 		},
 		success:function(data){
-			console.log('AJAX success', data_string);
+			console.log('AJAX success', data);
 		},
 		error: function(err){	
-			console.log('AJAX fail', data_string);
+			console.log('AJAX fail', data);
 
 		}
 	});
