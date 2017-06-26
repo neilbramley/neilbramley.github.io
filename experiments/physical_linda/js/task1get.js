@@ -16,6 +16,7 @@ var actors = []; // instances of Bitmap (from IvanK)
 var pixel_ratio =  window.devicePixelRatio;
 var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
 
+var task_stage = 0;
 
 var f1 = new TextFormat("Helvetica", 15 * pixel_ratio, 0x000000, true, false, false);
 var global_params = [];
@@ -72,50 +73,50 @@ function PreStart()
         tix = tmp;
     }
 
-	data_string = [upi, tix, wa, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a];
-	
+    data_string = [upi, tix, wa, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a];
+
     console.log('datastring in prestart', data_string);
 
-	if (o3x!=undefined)
-	{
-		var params = [
-		{x:Number(o1x),
-		y:Number(o1y),
-		v:Number(o1v),
-		a:Number(o1a)},
-		{x:Number(o2x),
-		y:Number(o2y),
-		v:Number(o2v),
-		a:Number(o2a)},
-		{x:Number(o3x),
-		y:Number(o3y),
-		v:Number(o3v),
-		a:Number(o3a)},
-		{a:Number(wa)}
-		];
-	} else {
+    if (o3x!=undefined)
+    {
+      var params = [
+      {x:Number(o1x),
+          y:Number(o1y),
+          v:Number(o1v),
+          a:Number(o1a)},
+          {x:Number(o2x),
+              y:Number(o2y),
+              v:Number(o2v),
+              a:Number(o2a)},
+              {x:Number(o3x),
+                  y:Number(o3y),
+                  v:Number(o3v),
+                  a:Number(o3a)},
+                  {a:Number(wa)}
+                  ];
+              } else {
 
-    	var params = [
-    	{x:Number(o1x),
-    		y:Number(o1y),
-    		v:Number(o1v),
-    		a:Number(o1a)},
-    		{x:Number(o2x),
-    		y:Number(o2y),
-    		v:Number(o2v),
-    		a:Number(o2a)},
-    		{a:Number(wa)}
-    		];
-	};
+               var params = [
+               {x:Number(o1x),
+                  y:Number(o1y),
+                  v:Number(o1v),
+                  a:Number(o1a)},
+                  {x:Number(o2x),
+                      y:Number(o2y),
+                      v:Number(o2v),
+                      a:Number(o2a)},
+                      {a:Number(wa)}
+                      ];
+                  };
 
-	console.log('PresStart params', params);
+                  console.log('PresStart params', params);
 
-	Start(params);
-}
+                  Start(params);
+              }
 
-function Start(params) 
-{
-	global_params = params;
+              function Start(params) 
+              {
+               global_params = params;
 
     pixel_ratio =  window.devicePixelRatio;//Update the pixel ratio in case they zoomed
     ratio = 100 * pixel_ratio;
@@ -259,11 +260,11 @@ function Start(params)
 
 		var loc = new b2Vec2(params[i].x, params[i].y);
 		var lin_vel = new b2Vec2(params[i].v * Math.cos(params[i].a),
-		                         params[i].v * Math.sin(params[i].a));
+         params[i].v * Math.sin(params[i].a));
 
 		console.log('i',i, 'params', params[i], 'velocities',
-		            params[i].v *  Math.cos(params[i].a),
-		            params[i].v * Math.sin(params[i].a));
+          params[i].v *  Math.cos(params[i].a),
+          params[i].v * Math.sin(params[i].a));
 
 		b.SetPosition(loc);
 		b.SetLinearVelocity(lin_vel);
@@ -370,24 +371,28 @@ function onEF(e)
     	console.log(counter);
     }
 
-    //TODO fix criteria for when to pause
-    if (counter===60)
+    //Criteria for when to pause
+    if (counter===60 & task_stage===0)
     {
-    	stage.removeEventListener(Event.ENTER_FRAME, onEF);0
+
+        var task_stage = 1;
+
+        stage.removeEventListener(Event.ENTER_FRAME, onEF);
+
         //Loop over the two target object (but not the distractor object)
         for (var i = 0; i<2; ++i)
         {
-        	actors[i].addEventListener(MouseEvent.CLICK, chooseWinner);	
-        }
+            actors[i].addEventListener(MouseEvent.CLICK, chooseWinner); 
+        }     
     }
 
-
+    //Criteria for when to stop entirely
     if (counter>=timeout)
     {
     	console.log('Stopping clip', counter);
 
     	stage.removeEventListener(Event.ENTER_FRAME, onEF);
-    	setTimeout(resetTask, 500);
+    	//setTimeout(resetTask, 500);
 
     }
 }
@@ -490,21 +495,21 @@ function SaveData(upi, data_string)
     console.log('upon save', upi, trial);
 
     
-	jQuery.ajax({
-		url:  "https://cims.nyu.edu/~bramley/experiments/physical_linda/php/task1.php",
-		type:'POST',
-		data:{
-			upi:upi,
-			trial:trial
-		},
-		success:function(data){
-			console.log('AJAX success', data);
-		},
-		error: function(err){	
-			console.log('AJAX fail');
+    jQuery.ajax({
+      url:  "https://cims.nyu.edu/~bramley/experiments/physical_linda/php/task1.php",
+      type:'POST',
+      data:{
+         upi:upi,
+         trial:trial
+     },
+     success:function(data){
+         console.log('AJAX success', data);
+     },
+     error: function(err){	
+         console.log('AJAX fail');
 
-		}
-	});
+     }
+ });
 };
 
 window.addEventListener('message', receiveMessage);
@@ -515,7 +520,14 @@ function receiveMessage(e) {
         //     return;
 
         // Update the div element to display the message.
-        messageEle.innerHTML = "Message Received: " + e.data;
+        //messageEle.innerHTML = "Message Received: " + e.data;
+        
         console.log('message received' + e.data);
+        
+        if (task_stage===1)
+        {
+            stage.addEventListener(Event.ENTER_FRAME, onEF);
+        }
+        task_stage  2;
         
     }
