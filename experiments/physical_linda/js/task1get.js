@@ -6,6 +6,10 @@
 
 //Declaring some global variables
 var stage = undefined;
+var upi = undefined; //Unique personal identifier
+var tix = undefined; //Trial index
+var data_string = [];
+
 var world;
 var bodies = []; // instances of b2Body (from Box2D)
 var actors = []; // instances of Bitmap (from IvanK)
@@ -16,6 +20,8 @@ var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio 
 var f1 = new TextFormat("Helvetica", 15 * pixel_ratio, 0x000000, true, false, false);
 var global_params = [];
 var hit_wall = [false, false];
+
+var choice = [];//Stores the participants' response in 0,1: A,B
 
 var wp=0, hp=0, w=0 ,h=0, counter=0;
 
@@ -55,46 +61,50 @@ function PreStart()
 	var o3a = getQueryVariable('o3a');
 	var wa = getQueryVariable('wa');
 
+	data_string = [upi, tix, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a, wa];
+	
 	if (o3x!=undefined)
 	{
 		var params = [
 		{x:Number(o1x),
-			y:Number(o1y),
-			v:Number(o1v),
-			a:Number(o1a)},
+		y:Number(o1y),
+		v:Number(o1v),
+		a:Number(o1a)},
 		{x:Number(o2x),
-			y:Number(o2y),
-			v:Number(o2v),
-			a:Number(o2a)},
+		y:Number(o2y),
+		v:Number(o2v),
+		a:Number(o2a)},
 		{x:Number(o3x),
-			y:Number(o3y),
-			v:Number(o3v),
-			a:Number(o3a)},
+		y:Number(o3y),
+		v:Number(o3v),
+		a:Number(o3a)},
 		{a:Number(wa)}
 		];
 	} else {
-		var params = [
-		{x:Number(o1x),
-			y:Number(o1y),
-			v:Number(o1v),
-			a:Number(o1a)},
+	var params = [
+	{x:Number(o1x),
+		y:Number(o1y),
+		v:Number(o1v),
+		a:Number(o1a)},
 		{x:Number(o2x),
-			y:Number(o2y),
-			v:Number(o2v),
-			a:Number(o2a)},
+		y:Number(o2y),
+		v:Number(o2v),
+		a:Number(o2a)},
 		{a:Number(wa)}
 		];
-	}
-	
+		}
+
+	upi = getQueryVariable('upi');
+	tix = getQueryVariable('tix');
 
 	console.log('PresStart params', params);
- 	
- 	Start(params)
+
+	Start(params)
 }
 
-function Start(params) 
-{
-	global_params = params;
+		function Start(params) 
+		{
+			global_params = params;
 
     pixel_ratio =  window.devicePixelRatio;//Update the pixel ratio in case they zoomed
     ratio = 100 * pixel_ratio;
@@ -136,8 +146,8 @@ function Start(params)
 	    info_box.y = (4/5)*hp;
 
 	    document.onmousemove = function(e){
-	        mouseX = e.pageX;
-	        mouseY = e.pageY;
+	    	mouseX = e.pageX;
+	    	mouseY = e.pageY;
 	        //elementMouseIsOver = document.elementFromPoint(mouseX, mouseY);
 	        //console.log(elementMouseIsOver);
 	        info_box.text = 'x:' + mouseX/100 + ' y:' + mouseY/100;
@@ -166,14 +176,14 @@ function Start(params)
 
 	    bxFixDef.shape.SetAsBox(0.1, h/2);//1 by "h" meter static box
 	    wallDef.position.Set(w/2, h/2);
-        
-        console.log('wall rotation', params[params.length-1].a, params[params.length-1].a * (360 / (2 * Math.PI)));
+
+	    console.log('wall rotation', params[params.length-1].a, params[params.length-1].a * (360 / (2 * Math.PI)));
 
 
 	    var wall = world.CreateBody(wallDef)
 	    wall.CreateFixture(bxFixDef);
-    	wall.SetUserData("wall");
-        
+	    wall.SetUserData("wall");
+
         //ROTATION STUFFactor.rotation = 0;//Should they spin? body.GetAngle()*180/Math.PI;
 
 	    //ACTOR
@@ -184,7 +194,7 @@ function Start(params)
 	    stage.addChild(s);
 	    s.x=wp/2;// - s.width/2;
 	    s.y=hp/2;
-        
+
         wall.SetAngle(params[params.length-1].a); //
         s.rotation = wall.GetAngle() * 180/Math.PI;//
         //params[params.length-1].a * (Math.PI / 180);
@@ -193,8 +203,8 @@ function Start(params)
     	//Remove any existing objects
     	while(bodies.length>0)
     	{
-			var b = bodies.pop();
-			world.DestroyBody(b);
+    		var b = bodies.pop();
+    		world.DestroyBody(b);
     	}
 
     	while(actors.length>0)
@@ -238,7 +248,7 @@ function Start(params)
 
 		var loc = new b2Vec2(params[i].x, params[i].y);
 		var lin_vel = new b2Vec2(params[i].v * Math.cos(params[i].a),
-		                     params[i].v * Math.sin(params[i].a));
+		                         params[i].v * Math.sin(params[i].a));
 
 		console.log('i',i, 'params', params[i], 'velocities',
 		            params[i].v *  Math.cos(params[i].a),
@@ -309,10 +319,19 @@ function resetTask()
 
 function chooseWinner(e)
 {
-	var choice = e.target.obj_ix;
+	choice = e.target.obj_ix;
+
 	alert('You chose ball ' + ['A','B'][choice] + '.  Were you right? Let\'s find out.' );
+
+	//console.log('CROSSTALK TEST', parent.test_var);
+
 	//Now start it up again to see the true outcome
 	stage.addEventListener(Event.ENTER_FRAME, onEF);
+
+	data_string = data_string.push(['A','B'][choice]);
+
+	SaveData(upi, data_string);
+
 }
 
 function onEF(e) 
@@ -337,38 +356,20 @@ function onEF(e)
     //Occasionally let us know if you're still moving
     if (counter/60===Math.round(counter/60))
     {
-		console.log(counter);
+    	console.log(counter);
     }
 
     //TODO fix criteria for when to pause
     if (counter===60)
     {
-    	stage.removeEventListener(Event.ENTER_FRAME, onEF);
-    	for (var i = 0; i<actors.length; ++i)
-    	{
-    		actors[i].addEventListener(MouseEvent.CLICK, chooseWinner);
-    	}
+    	stage.removeEventListener(Event.ENTER_FRAME, onEF);0
+        //Loop over the two target object (but not the distractor object)
+        for (var i = 0; i<2; ++i)
+        {
+        	actors[i].addEventListener(MouseEvent.CLICK, chooseWinner);	
+        }
     }
 
-  //   if (hit_wall[0]===true & hit_wall[1]===true)
-  //   {
-		// console.log('Restarting clip');
-
-		// stage.removeEventListener(Event.ENTER_FRAME, onEF);
-
-		// for (var i = 0; i<bodies.length; ++i)
-		// {
-		// 	var loc = new b2Vec2(global_params[i].x, global_params[i].y);
-		// 	var lin_vel = new b2Vec2(global_params[i].v * Math.cos(global_params[i].a),
-		//                      global_params[i].v * Math.sin(global_params[i].a));
-
-		// 	bodies[i].SetPosition(loc);
-		// 	bodies[i].SetLinearVelocity(lin_vel);	
-		// }
-		// hit_wall = [false, false];
-
-		// setTimeout(startEnterFrame, 500);
-  //   }
 
     if (counter>=timeout)
     {
@@ -380,7 +381,7 @@ function onEF(e)
     }
 }
 
-   	
+
 
 
 
@@ -398,21 +399,21 @@ function getSensorContact(contact) {
 	var sensorB = fixtureB.IsSensor();
 
 	if (!(sensorA || sensorB))
-	return false;
+		return false;
 
 	var bodyA = fixtureA.GetBody();
 	var bodyB = fixtureB.GetBody();
 
 	if (sensorA) { // bodyB should be added/removed to the buoyancy controller
-	return {
-		sensor: bodyA,
-		body: bodyB
-	};
+		return {
+			sensor: bodyA,
+			body: bodyB
+		};
 	} else { // bodyA should be added/removed to the buoyancy controller
-	return {
-		sensor: bodyB,
-		body: bodyA
-	};
+		return {
+			sensor: bodyB,
+			body: bodyA
+		};
 	}
 }
 
@@ -436,7 +437,7 @@ listener.BeginContact = function(contact) {
 
 listener.EndContact = function(contact) {
 	var contactEntities = getSensorContact(contact);
-    console.log('collision! (listener)', contact);
+	console.log('collision! (listener)', contact);
 	if (contactEntities) {
 		var sensor = contactEntities.sensor;
 		if (sensor.GetUserData()) {
@@ -452,22 +453,42 @@ listener.EndContact = function(contact) {
 
 //Something for constructing hex colours from RGB colours
 function hexToRgb(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? {
+		r: parseInt(result[1], 16),
+		g: parseInt(result[2], 16),
+		b: parseInt(result[3], 16)
+	} : null;
 }
 
 function getQueryVariable(variable) {
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  for (var i=0;i<vars.length;i++) {
-    var pair = vars[i].split("=");
-    if (pair[0] == variable) {
-      return pair[1];
-    }
-  } 
-  console.log('Query Variable ' + variable + ' not found');
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		if (pair[0] == variable) {
+			return pair[1];
+		}
+	} 
+	console.log('Query Variable ' + variable + ' not found');
+}
+
+function SaveData(upi, data_string)
+{
+	//WORKING POSTING TO SQL DATABASE (ONLY WORKS WHEN THE EXP IS ONLINE)
+	jQuery.ajax({
+		url:  "./php/task1.php",
+		type:'POST',
+		data:{
+			upi:upi,
+			trial:data_string
+		},
+		success:function(data){
+			console.log('AJAX success', data_string);
+		},
+		error: function(err){	
+			console.log('AJAX fail', data_string);
+
+		}
+	});
 }
