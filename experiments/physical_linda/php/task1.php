@@ -1,34 +1,30 @@
 <?php
 
-	// Create a database connection
-	$connection = mysql_connect("warehouse.cims.nyu.edu","bramley","qmg7rdj5");//
-	
-	if (!$connection)
-	{
-		die("Database connection failed: " . mysql_error());
-	}
+$db_type           = "mysql";
+$db_server         = "warehouse.cims.nyu.edu";
+$db_name           = "bramley_neil";
+$db_user           = "bramley";
+$db_password       = "qmg7rdj5";
 
-	// Select a database to use
-	$db_select = mysql_select_db("bramley_neil", $connection);
+$db_link = mysql_connect($db_server, $db_user, $db_password);
+if (!$db_link)
+    die("Could not connect: " . mysql_error());
+echo nl2br("Connected successfully\n");
 
-	
-	if (!$db_select)
-	{
-		die("Database connection failed: " . mysql_error());
-	}
+$db_selected = mysql_select_db($db_name, $db_link);
+if (!$db_selected) 
+    die("Can't use \"$db_name\" : " . mysql_error());
+echo nl2br("Selected successfully\n");
 
-	
-	// Get values passed from elsewhere
-	$ip = $_SERVER['REMOTE_ADDR'];
-	$date = date('Y-m-d');
-	$upi = $_POST['upi'];
-	$trial = $_POST['trial'];
+// Get values passed from elsewhere
+$ip = $_SERVER['REMOTE_ADDR'];
+$date = date('Y-m-d');
+$upi = $_POST['upi'];
+$trial = $_POST['trial'];
 
-	$query = "INSERT INTO p_linda1 (ip, date, upi, trial) VALUES ('{$ip}', '{$date}', '{$upi}', '{$trial}')";
-	mysql_query($query, $connection);
+$query = "INSERT INTO p_linda1 (ip, date, upi, trial) VALUES ('{$ip}', '{$date}', '{$upi}', '{$trial}')";
+mysql_query($query, $db_link);
 
-
-	// Close connection
-	mysql_close($connection);
+mysql_close($db_link);
 
 ?>

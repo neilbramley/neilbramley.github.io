@@ -338,7 +338,7 @@ function chooseWinner(e)
 	//Now start it up again to see the true outcome
 	stage.addEventListener(Event.ENTER_FRAME, onEF);
 
-	data_string.push(['A','B'][choice]);
+	data_string.unshift(['A','B'][choice]);
 
 	SaveData(upi, data_string);
 
@@ -490,7 +490,7 @@ function SaveData(upi, data_string)
 
     
 	jQuery.ajax({
-		url:  "./php/task1_v2.php",
+		url:  "./php/task1.php",
 		type:'POST',
 		data:{
 			upi:upi,
