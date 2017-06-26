@@ -94,18 +94,19 @@ function PreStart()
 		{a:Number(wa)}
 		];
 	} else {
-	var params = [
-	{x:Number(o1x),
-		y:Number(o1y),
-		v:Number(o1v),
-		a:Number(o1a)},
-		{x:Number(o2x),
-		y:Number(o2y),
-		v:Number(o2v),
-		a:Number(o2a)},
-		{a:Number(wa)}
-		];
-		};
+
+    	var params = [
+    	{x:Number(o1x),
+    		y:Number(o1y),
+    		v:Number(o1v),
+    		a:Number(o1a)},
+    		{x:Number(o2x),
+    		y:Number(o2y),
+    		v:Number(o2v),
+    		a:Number(o2a)},
+    		{a:Number(wa)}
+    		];
+	};
 
 	console.log('PresStart params', params);
 
@@ -504,4 +505,17 @@ function SaveData(upi, data_string)
 
 		}
 	});
-}
+};
+
+window.addEventListener('message', receiveMessage);
+
+function receiveMessage(e) {
+        // Check to make sure that this message came from the correct domain.
+        // if (e.origin !== "http://s.codepen.io")
+        //     return;
+
+        // Update the div element to display the message.
+        messageEle.innerHTML = "Message Received: " + e.data;
+        console.log('message received' + e.data);
+        
+    }
