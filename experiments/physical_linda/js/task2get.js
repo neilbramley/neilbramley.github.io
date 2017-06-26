@@ -70,20 +70,18 @@ function PreStart()
     
     console.log('datastring in prestart', data_string);
 
-    var params = [
-        {x:Number(o1x),
-        y:Number(o1y),
-        v:Number(o1v),
-        a:Number(o1a)},
-        {x:Number(o2x),
-        y:Number(o2y),
-        v:Number(o2v),
-        a:Number(o2a)},
-        {play_for:Number(play_for)}
-        ];
-        };
+    var params = [{x:Number(o1x),
+                    y:Number(o1y),
+                    v:Number(o1v),
+                    a:Number(o1a)},
+                    {x:Number(o2x),
+                    y:Number(o2y),
+                    v:Number(o2v),
+                    a:Number(o2a)},
+                    {play_for:Number(play_for)}];
 
-    console.log('PresStart params', params);
+
+    console.log('PreStart params', params);
 
     Start(params);
 }
@@ -288,7 +286,7 @@ function onEF(e)
 		console.log(counter, out);
     }
 
-    if (counter>play_for)
+    if (counter>params[2].play_for)
     {
         stage.removeEventListener(Event.ENTER_FRAME, onEF);
     }
