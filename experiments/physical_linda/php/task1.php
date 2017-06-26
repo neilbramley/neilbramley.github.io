@@ -4,7 +4,6 @@
 	$connection = mysql_connect("warehouse.cims.nyu.edu","bramley","qmg7rdj5");//
 	
 	if (!$connection)
-
 	{
 		die("Database connection failed: " . mysql_error());
 	}
@@ -14,7 +13,6 @@
 
 	
 	if (!$db_select)
-
 	{
 		die("Database connection failed: " . mysql_error());
 	}

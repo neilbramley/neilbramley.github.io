@@ -488,8 +488,8 @@ function getQueryVariable(variable) {
 
 function SaveData(upi, data_string)
 {
-	var data = data_string.toString();
-    console.log('upon save', upi, data);
+	var trial = data_string.toString();
+    console.log('upon save', upi, trial);
 
     
 	jQuery.ajax({
@@ -497,7 +497,7 @@ function SaveData(upi, data_string)
 		type:'POST',
 		data:{
 			upi:upi,
-			trial:data
+			trial:trial
 		},
 		success:function(data){
 			console.log('AJAX success', data);
