@@ -490,7 +490,7 @@ function SaveData(upi, data_string)
 
     
 	jQuery.ajax({
-		url:  "./php/task1.php",
+		url:  "./php/task1_v2.php",
 		type:'POST',
 		data:{
 			upi:upi,

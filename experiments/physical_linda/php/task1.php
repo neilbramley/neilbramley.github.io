@@ -18,7 +18,7 @@
 	}
 
 	
-	// Get values passed from Flash
+	// Get values passed from elsewhere
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$date = date('Y-m-d');
 	$upi = $_POST['upi'];
