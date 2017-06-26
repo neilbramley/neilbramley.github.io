@@ -6,8 +6,8 @@
 
 //Declaring some global variables
 var stage = undefined;
-var upi = undefined; //Unique personal identifier
-var tix = undefined; //Trial index
+var upi = 'unspecified'; //Unique personal identifier
+var tix = 'unspecified'; //Trial index
 var data_string = [];
 
 var world;
@@ -61,8 +61,21 @@ function PreStart()
 	var o3a = getQueryVariable('o3a');
 	var wa = getQueryVariable('wa');
 
-	data_string = [upi, tix, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a, wa];
+    var tmp = getQueryVariable('upi');
+    if (!tmp===undefined)
+    {
+        upi = tmp;
+    }
+    var tmp = getQueryVariable('tix');
+    if (!tmp===undefined)
+    {
+        tix = tmp;
+    }
+
+	data_string = [upi, tix, wa, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a];
 	
+    console.log('datastring in prestart', data_string);
+
 	if (o3x!=undefined)
 	{
 		var params = [
@@ -475,7 +488,8 @@ function getQueryVariable(variable) {
 
 function SaveData(upi, data_string)
 {
-	//WORKING POSTING TO SQL DATABASE (ONLY WORKS WHEN THE EXP IS ONLINE)
+	console.log('upon save', upi, data_string);
+    
 	jQuery.ajax({
 		url:  "./php/task1.php",
 		type:'POST',
