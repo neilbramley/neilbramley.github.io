@@ -65,12 +65,12 @@ function PreStart()
 	var wa = getQueryVariable('wa');
 
     var tmp = getQueryVariable('upi');
-    if (!tmp===undefined)
+    if (tmp!==undefined)
     {
         upi = tmp;
     }
     var tmp = getQueryVariable('tix');
-    if (!tmp===undefined)
+    if (tmp!==undefined)
     {
         tix = tmp;
     }

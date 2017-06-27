@@ -8,7 +8,7 @@
 var stage = undefined;
 var upi = 'none'; //Unique personal identifier
 var tix = 'none'; //Trial index
-var play_for = 1000;//Default play for
+var play_for = 1;//Default play for
 var data_string = [];
 
 var world;
@@ -51,20 +51,20 @@ function PreStart()
     var o2a = getQueryVariable('o2a');
 
     var tmp = getQueryVariable('upi');
-    if (!tmp===undefined)
+    if (tmp!==undefined)
     {
         upi = tmp;
     }
     var tmp = getQueryVariable('tix');
-    if (!tmp===undefined)
+    if (tmp!==undefined)
     {
         tix = tmp;
     }
     var tmp = getQueryVariable('pf');
-    if (!tmp===undefined)
+    if (tmp!==undefined)
     {
         console.log('Change default play for to', tmp);
-        
+
         play_for = tmp;
     }
 
