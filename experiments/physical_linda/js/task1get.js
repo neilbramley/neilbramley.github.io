@@ -372,9 +372,11 @@ function onEF(e)
     }
 
     //Criteria for when to pause
-    if (counter===60 & task_stage===0)
+    if (counter===60)
     {
-
+        // & task_stage===0
+        console.log('what the hell!', task_stage===0, task_stage);
+        
         var task_stage = 1;
 
         stage.removeEventListener(Event.ENTER_FRAME, onEF);
