@@ -18,6 +18,8 @@ var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio 
 
 var task_stage = 0;
 
+console.log('task_stage', task_stage);
+
 var f1 = new TextFormat("Helvetica", 15 * pixel_ratio, 0x000000, true, false, false);
 var global_params = [];
 var hit_wall = [false, false];
@@ -329,22 +331,22 @@ function resetTask()
     //parent.ResetTask1();
 }
 
-function chooseWinner(e)
-{
-	choice = e.target.obj_ix;
+// function chooseWinner(e)
+// {
+// 	choice = e.target.obj_ix;
 
-	alert('You chose ball ' + ['A','B'][choice] + '.  Were you right? Let\'s find out.' );
+// 	alert('You chose ball ' + ['A','B'][choice] + '.  Were you right? Let\'s find out.' );
 
-	//console.log('CROSSTALK TEST', parent.test_var);
+// 	//console.log('CROSSTALK TEST', parent.test_var);
 
-	//Now start it up again to see the true outcome
-	stage.addEventListener(Event.ENTER_FRAME, onEF);
+// 	//Now start it up again to see the true outcome
+// 	stage.addEventListener(Event.ENTER_FRAME, onEF);
 
-	data_string.unshift(['A','B'][choice]);
+// 	data_string.unshift(['A','B'][choice]);
 
-	SaveData(upi, data_string);
+// 	SaveData(upi, data_string);
 
-}
+// }
 
 function onEF(e) 
 {
@@ -375,17 +377,17 @@ function onEF(e)
     if (counter===60)
     {
         // & task_stage===0
-        console.log('what the hell!', task_stage===0, task_stage);
+        console.log('task stage at pause', task_stage===0, task_stage);
         
-        var task_stage = 1;
+        task_stage = 1;
 
         stage.removeEventListener(Event.ENTER_FRAME, onEF);
 
         //Loop over the two target object (but not the distractor object)
-        for (var i = 0; i<2; ++i)
-        {
-            actors[i].addEventListener(MouseEvent.CLICK, chooseWinner); 
-        }     
+        // for (var i = 0; i<2; ++i)
+        // {
+        //     actors[i].addEventListener(MouseEvent.CLICK, chooseWinner); 
+        // }     
     }
 
     //Criteria for when to stop entirely
@@ -517,19 +519,23 @@ function SaveData(upi, data_string)
 window.addEventListener('message', receiveMessage);
 
 function receiveMessage(e) {
-        // Check to make sure that this message came from the correct domain.
-        // if (e.origin !== "http://s.codepen.io")
-        //     return;
+    // Check to make sure that this message came from the correct domain.
+    // if (e.origin !== "http://s.codepen.io")
+    //     return;
 
-        // Update the div element to display the message.
-        //messageEle.innerHTML = "Message Received: " + e.data;
-        
-        console.log('message received',  e.data);
-        
-        if (task_stage===1)
-        {
-            stage.addEventListener(Event.ENTER_FRAME, onEF);
-        }
-        task_stage = 2;
+    // Update the div element to display the message.
+    //messageEle.innerHTML = "Message Received: " + e.data;
+    
+    console.log('message received',  e.data);
+    
+    if (task_stage===1)
+    {
+        stage.addEventListener(Event.ENTER_FRAME, onEF);
+
+        data_string.unshift(['A','B'][choice]);
+
+        SaveData(upi, data_string);
+    }
+    task_stage = 2;
 
 }
