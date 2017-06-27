@@ -532,7 +532,7 @@ function receiveMessage(e) {
     {
         stage.addEventListener(Event.ENTER_FRAME, onEF);
 
-        data_string.unshift(['A','B'][choice]);
+        data_string.unshift(['A','B'][Number(e.data)-1]);
 
         SaveData(upi, data_string);
     }

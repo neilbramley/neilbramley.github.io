@@ -63,12 +63,14 @@ function PreStart()
     var tmp = getQueryVariable('pf');
     if (!tmp===undefined)
     {
+        console.log('Change default play for to', tmp);
+        
         play_for = tmp;
     }
 
-    data_string = [upi, tix, play_for, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y];
+    //data_string = [upi, tix, play_for, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a];
     
-    console.log('datastring in prestart', data_string);
+    //console.log('datastring in prestart', data_string);
 
     var params = [{x:Number(o1x),
                     y:Number(o1y),
@@ -77,8 +79,7 @@ function PreStart()
                     {x:Number(o2x),
                     y:Number(o2y),
                     v:Number(o2v),
-                    a:Number(o2a)},
-                    {play_for:Number(play_for)}];
+                    a:Number(o2a)}];
 
 
     console.log('PreStart params', params);
@@ -286,7 +287,7 @@ function onEF(e)
 		console.log(counter, out);
     }
 
-    if (counter>params[2].play_for)
+    if ((counter/60)>play_for)
     {
         stage.removeEventListener(Event.ENTER_FRAME, onEF);
     }
@@ -303,6 +304,18 @@ function hexToRgb(hex) {
   } : null;
 }
 
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    } 
+    console.log('Query Variable ' + variable + ' not found');
+}
 
 
 // function SaveData(upi, data_string)
