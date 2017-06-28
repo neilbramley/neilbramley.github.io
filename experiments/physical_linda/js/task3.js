@@ -20,6 +20,7 @@ var n_green = 0;
 var n_blue = 0;
 var starting_locs = [];
 var ending_locs = [];
+var current_locs = [];
 var cols = [];
 var userdata = [];
 var removed = [];
@@ -55,7 +56,7 @@ function LoadWorld(params)
 	    stage.addEventListener(MouseEvent.MOUSE_UP, RenegeControl);
 	    stage.addEventListener(KeyboardEvent.KEY_DOWN, RotateOn);
 	    stage.addEventListener(KeyboardEvent.KEY_UP, RotateOff);
-	    stage.addEventListener(MouseEvent.RIGHT_CLICK, RemovePiece, false); 
+	    //stage.addEventListener(MouseEvent.RIGHT_CLICK, RemovePiece, false); 
 	    parent.document.getElementById('task3_frame').addEventListener("mouseout", RenegeControl);
 
 	    world = new b2World(new b2Vec2(0, 10),  true);//New world with normal gravity
@@ -191,6 +192,7 @@ function LoadWorld(params)
 
 function StartPhysics()
 {
+	current_locs = [];
 	starting_locs = [];
 	ending_locs = [];
 	for (var i=0; i<bodies.length; i++)
@@ -198,8 +200,9 @@ function StartPhysics()
 		starting_locs.push({ix:bodies[i].GetUserData().ix, color:bodies[i].GetUserData().col,x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
 	}
 
-	parent.document.getElementById("conditiondetails").value = 'Starting locations:\n' +
-	 JSON.stringify(starting_locs) + '\n\n\nEnding locations:\n' + 
+	parent.document.getElementById("conditiondetails").value = 'Current locations:\n' +
+	JSON.stringify(current_locs) + '\n\nStarting locations:\n' +
+	 JSON.stringify(starting_locs) + '\n\nEnding locations:\n' + 
 	JSON.stringify(ending_locs);
 
 	stage.addEventListener(Event.ENTER_FRAME, onEF);
@@ -207,6 +210,7 @@ function StartPhysics()
 
 function StopPhysics()
 {
+	current_locs = [];
 	ending_locs = [];
 	for (var i=0; i<bodies.length; i++)
 	{
@@ -214,7 +218,8 @@ function StopPhysics()
 	}
 	stage.removeEventListener(Event.ENTER_FRAME, onEF);
 
-	parent.document.getElementById("conditiondetails").value = 'Starting locations:\n' +
+	parent.document.getElementById("conditiondetails").value = 'Current locations:\n' +
+	JSON.stringify(current_locs) + '\n\nStarting locations:\n' +
 	 JSON.stringify(starting_locs) + '\n\n\nEnding locations:\n' + 
 	JSON.stringify(ending_locs);
 }
@@ -259,20 +264,20 @@ function onEF(e)
     }
 }
   
-function RemovePiece(e)
-{
-	console.log('remove piece triggered');
-	var ix = e.target.obj_ix;
-    if (ix != undefined) {
-		stage.removeChild(actors[ix]);
-		world.DestroyBody(bodies[ix]);
-		removed[ix] = true;
-		// actors[ix] = null;
-		// bodies[ix] = null;
-    } else {
-        console.log('missed removal!', e.target);
-    }
-}
+// function RemovePiece(e)
+// {
+// 	console.log('remove piece triggered');
+// 	var ix = e.target.obj_ix;
+//     if (ix != undefined) {
+// 		stage.removeChild(actors[ix]);
+// 		world.DestroyBody(bodies[ix]);
+// 		removed[ix] = true;
+// 		// actors[ix] = null;
+// 		// bodies[ix] = null;
+//     } else {
+//         console.log('missed removal!', e.target);
+//     }
+// }
 
 function AssumeControl(e) {
 
@@ -293,16 +298,28 @@ function AssumeControl(e) {
 function RenegeControl(e) {
     if (idco != undefined) {
         console.log('reneging!', idco);
-        idco = undefined;
-    }
 
-    for (var i=0; i<bodies.length; ++i)
-    {
-    	if (bodies[i].IsAwake()==false)
-    	{
-    		console.log('waking ', i, 'up');
-    		bodies[i].SetAwake(true);
-    	}
+        for (var i=0; i<bodies.length; ++i)
+	    {
+	    	if (bodies[i].IsAwake()==false)
+	    	{
+	    		console.log('waking ', i, 'up');
+	    		bodies[i].SetAwake(true);
+	    	}
+	    }
+
+		current_locs = [];
+		for (var i=0; i<bodies.length; i++)
+		{
+			current_locs.push({ix:bodies[i].GetUserData().ix, color:bodies[i].GetUserData().col,x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
+		}
+		parent.document.getElementById("conditiondetails").value = 'Current locations:\n' +
+		JSON.stringify(current_locs) + 
+		'\n\nStarting locations:\n' +
+		 JSON.stringify(starting_locs) + '\n\n\nEnding locations:\n' + 
+		JSON.stringify(ending_locs);
+
+        idco = undefined;
     }
 
     stage.removeEventListener(Event.ENTER_FRAME, Move);
@@ -325,14 +342,18 @@ function RotateOn(e){
         rotate=1;
         angle = bodies[idco].GetAngle();
         console.log('angle',angle);
-        //bodies[idco].SetAngle = 
-
+        bodies[idco].SetAngle(angle + 0.05);
+        console.log('angle after', bodies[idco].GetAngle())
+		actors[idco].rotation = bodies[idco].GetAngle()*180/Math.PI;
     } else if (e.keyCode == 90 | e.keyCode == 37)
     {
     	//37
 		if (rotate!=-1)  {console.log('pressing left');}
         rotate=-1;
-        
+        angle = bodies[idco].GetAngle();
+        console.log('angle',angle);
+        bodies[idco].SetAngle(angle - 0.05)
+		actors[idco].rotation = bodies[idco].GetAngle()*180/Math.PI;
     } else {
         rotate=0;
         console.log('pressing something else');
