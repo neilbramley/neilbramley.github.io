@@ -121,19 +121,43 @@
 </div>
 
 
-    <div>
-    <h2>Task 3: Block aftermath</h2>
-    <p>To be done<
-    <br><br><br>
-        <iframe src="iframe3.html" width=600 height=400 id="task3_frame" name="task3_frame" tabindex="0"></iframe>
-    </div>
+<!-- TASK 3 -->
+<div sid="task3" style = "width: 900px; margin: 0 auto;">
+    <h2>Task 3: Physical Linda</h2>
+    
+    <fieldset style = "display:inline-block;">
+        <legend>Number of blocks</legend>
+        <fieldset style="float:left;margin:5px">
+            Red <input type="text" class = "input" value="3" id="in_t3_Nr" style="width:50px;">
+            Green <input type="text" class = "input" value="3" id="in_t3_Ng" style="width:50px;">
+            Blue <input type="text" class = "input" value="3" id="in_t3_Nb" style="width:50px;">
+        </fieldset>
+    </fieldset>
+
+    <ol>
+        <li>Load the number of blocks you want.</li>
+        <li>Arrange them by left hold clicking and dragging them.</li>
+        <li>Rotate objects with 'x' and 'y' while hold clicking.
+        <li>Hit start to start the physics.</li>
+        <li>Hit reset to return to starting state.</li>
+        <li>Read off object positions from text box below.</li>
+    </ol>
 
     <div>
-        <ol>
-            <li>Choose the settings.</li>
-            <li>Hit start to watch clip.</li>
-        </ol>
+    <button class="button" id = "loadBtnTask3" onclick="StartTask3();">Load</button>
+&nbsp;&nbsp;
+    <button class="button" id = "startBtnTask3"  disabled onclick="StartPhysicsTask3();">Start physics</button>
+&nbsp;&nbsp;
+    <button class="button" id = "stopBtnTask3"  disabled onclick="StopPhysicsTask3();">Stop physics</button>
+&nbsp;&nbsp;
+    <button class="button" id = "resetBtnTask3"  disabled onclick="ResetPhysicsTask3();">Reset objects</button>
     </div>
+    <br>
+    <iframe src="iframe3.html" width=600 height=400 id="task3_frame" name="task3_frame" tabindex="0"></iframe>
+    <textarea id = "conditiondetails" rows="40" cols="100">
+    </textarea>
+    <br><br><br>
+</div>
 
     <script>
 
@@ -196,6 +220,77 @@
                 iframeContent.Start(input_params);
             }
         }
+        function StartTask3() {
+            
+
+            var input_params = {r:Number($(in_t3_Nr).val()), g:Number($(in_t3_Ng).val()), b:Number($(in_t3_Nb).val())};
+
+             var iframe = document.getElementById("task3_frame");
+
+             if (iframe) {
+                var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+                console.log('Starting Task 3');
+                
+                document.getElementById("loadBtnTask3").disabled = false;
+                document.getElementById("stopBtnTask3").disabled = true;
+                document.getElementById("startBtnTask3").disabled = false;
+                document.getElementById("resetBtnTask3").disabled = true;
+
+                iframeContent.LoadWorld(input_params);
+            }
+        }
+
+        function StartPhysicsTask3() {
+            
+             var iframe = document.getElementById("task3_frame");
+
+             if (iframe) {
+                var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+                console.log('Starting Physics Task 3');
+            
+                document.getElementById("loadBtnTask3").disabled = false;
+                document.getElementById("stopBtnTask3").disabled = false;
+                document.getElementById("startBtnTask3").disabled = true;
+                document.getElementById("resetBtnTask3").disabled = false;
+
+                iframeContent.StartPhysics();
+            }
+        }
+
+        function StopPhysicsTask3() {
+            
+             var iframe = document.getElementById("task3_frame");
+
+             if (iframe) {
+                var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+                console.log('Stopping Physics Task 3');
+            
+                document.getElementById("loadBtnTask3").disabled = false;
+                document.getElementById("startBtnTask3").disabled = false;
+                document.getElementById("stopBtnTask3").disabled = true;
+                document.getElementById("resetBtnTask3").disabled = false;
+
+                iframeContent.StopPhysics();
+            }
+        }
+
+        function ResetPhysicsTask3() {
+            
+             var iframe = document.getElementById("task3_frame");
+
+             if (iframe) {
+                var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+                console.log('Resetting physics Task 3');
+                
+                document.getElementById("loadBtnTask3").disabled = true;
+                document.getElementById("startBtnTask3").disabled = false;
+                document.getElementById("stopBtnTask3").disabled = true;
+                document.getElementById("resetBtnTask3").disabled = true;
+
+                iframeContent.ResetPhysics();
+            }
+        }
+
         function ResetTask1() {
             document.getElementById("startBtnTask1").disabled = false;
         }
@@ -203,6 +298,7 @@
         function ResetTask2() {
             document.getElementById("startBtnTask2").disabled = false;
         }
+
         </script>
 
     </body>
