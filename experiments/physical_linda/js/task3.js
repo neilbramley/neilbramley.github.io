@@ -210,7 +210,7 @@ function StopPhysics()
 	ending_locs = [];
 	for (var i=0; i<bodies.length; i++)
 	{
-		ending_locs.push({x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
+		ending_locs.push({ix:bodies[i].GetUserData().ix, color:bodies[i].GetUserData().col,x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
 	}
 	stage.removeEventListener(Event.ENTER_FRAME, onEF);
 
