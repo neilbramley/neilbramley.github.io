@@ -6,10 +6,8 @@
 
 //Declaring some global variables
 var stage = undefined;
-var upi = 'none'; //Unique personal identifier
-var tix = 'none'; //Trial index
+var start_time = 0;
 var play_for = 1;//Default play for
-var data_string = [];
 
 var world;
 var bodies = []; // instances of b2Body (from Box2D)
@@ -50,16 +48,6 @@ function PreStart()
     var o2v = getQueryVariable('o2v');
     var o2a = getQueryVariable('o2a');
 
-    var tmp = getQueryVariable('upi');
-    if (tmp!==undefined)
-    {
-        upi = tmp;
-    }
-    var tmp = getQueryVariable('tix');
-    if (tmp!==undefined)
-    {
-        tix = tmp;
-    }
     var tmp = getQueryVariable('pf');
     if (tmp!==undefined)
     {
@@ -68,9 +56,6 @@ function PreStart()
         play_for = tmp;
     }
 
-    //data_string = [upi, tix, play_for, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a];
-    
-    //console.log('datastring in prestart', data_string);
 
     var params = [{x:Number(o1x),
                     y:Number(o1y),
@@ -120,8 +105,8 @@ function Start(params)
 		var bxFixDef   = new b2FixtureDef();
 		bxFixDef.shape = new b2PolygonShape();
 		bxFixDef.density = 0;
-		bxFixDef.friction = .1;
-		bxFixDef.restitution = .98;
+		bxFixDef.friction = 0.0001;
+		bxFixDef.restitution = 0.999;
 
 		var wallDef = new b2BodyDef();
 		wallDef.type = b2Body.b2_staticBody;
@@ -135,8 +120,12 @@ function Start(params)
 
 	   	for (var i=0; i<pos.length; ++i)
 	   	{
-		    bxFixDef.shape.SetAsBox(dim[i][0]/2, dim[i][1]/2);//.2 by 1 meter static box (these are half measures)
-	    	wallDef.position.Set(pos[i][0], pos[i][1]);
+		    bxFixDef.shape.SetAsBox(dim[i][0]/2, dim[i][1]/2);
+            //.2 by 1 meter static box (these are half measures)
+            bxFixDef.friction = 0.0001; // Set the friction
+            bxFixDef.restitution = 0.999; // Set the restitution - bounciness
+	    	
+            wallDef.position.Set(pos[i][0], pos[i][1]);
 	    	b = world.CreateBody(wallDef).CreateFixture(bxFixDef).SetUserData(wall_name[i]);
 	    	
 	   		wall_bodies.push(b);
@@ -173,7 +162,7 @@ function Start(params)
     }
 
 
-    stage.addEventListener(Event.ENTER_FRAME, onEF);
+    //stage.addEventListener(Event.ENTER_FRAME, onEF);
 
     ///////////
     //ADD BALLS
@@ -188,8 +177,8 @@ function Start(params)
 
     var fixDef = new b2FixtureDef;
 	fixDef.density = 1; // Set the density
-	fixDef.friction = 0.1; // Set the friction
-	fixDef.restitution = 0.98; // Set the restitution - bounciness
+	fixDef.friction = 0.001; // Set the friction
+	fixDef.restitution = 0.999; // Set the restitution - bounciness
 	fixDef.shape = new b2CircleShape;	// Define the shape of the fixture
 	fixDef.shape.SetRadius(r);
 
@@ -246,7 +235,8 @@ function Start(params)
 		actor.obj_ix = actors.length;
 		actors.push(actor);
 	}
-
+	
+	start_time = new Date();
     stage.addEventListener(Event.ENTER_FRAME, onEF);
 }
 
@@ -254,7 +244,7 @@ function Start(params)
 
 function onEF(e) 
 {
-	world.Step(1 / 60,  3,  3);
+	world.Step(1/60,  3,  3);
 	world.ClearForces();
 	
 	var out = 0;
@@ -282,12 +272,13 @@ function onEF(e)
     }
 
     //Occasionally let us know if you're still moving
-    if (counter/60===Math.round(counter/60))
-    {
-		console.log(counter, out);
-    }
+    // if (counter/6===Math.round(counter/6))
+    // {
+    	var d = new Date();
+		console.log(counter, d.getTime() - start_time, out);
+    // }
 
-    if ((counter/60)>play_for)
+    if (((d.getTime() - start_time)/1000)>play_for)
     {
         stage.removeEventListener(Event.ENTER_FRAME, onEF);
     }

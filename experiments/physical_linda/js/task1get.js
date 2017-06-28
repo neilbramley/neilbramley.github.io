@@ -15,7 +15,7 @@ var bodies = []; // instances of b2Body (from Box2D)
 var actors = []; // instances of Bitmap (from IvanK)
 var pixel_ratio =  window.devicePixelRatio;
 var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
-
+var pause_at = 60;
 var task_stage = 0;
 
 console.log('task_stage', task_stage);
@@ -181,9 +181,8 @@ function PreStart()
 		//BODY
 		var bxFixDef   = new b2FixtureDef();
 		bxFixDef.shape = new b2PolygonShape();
-		bxFixDef.density = 0;
-		bxFixDef.friction = .01;
-		bxFixDef.restitution = .98;
+        bxFixDef.friction = 0.001; // Set the friction
+        bxFixDef.restitution = 0.999; // Set the restitution - bounciness
 
 		var wallDef = new b2BodyDef();
 		wallDef.type = b2Body.b2_staticBody;
@@ -194,7 +193,7 @@ function PreStart()
 	    console.log('wall rotation', params[params.length-1].a, params[params.length-1].a * (360 / (2 * Math.PI)));
 
 
-	    var wall = world.CreateBody(wallDef)
+	    var wall = world.CreateBody(wallDef);
 	    wall.CreateFixture(bxFixDef);
 	    wall.SetUserData("wall");
 
@@ -243,8 +242,8 @@ function PreStart()
 
     var fixDef = new b2FixtureDef;
 	fixDef.density = 1; // Set the density
-	fixDef.friction = 0.01; // Set the friction
-	fixDef.restitution = 0.98; // Set the restitution - bounciness
+    fixDef.friction = 0.001; // Set the friction
+    fixDef.restitution = 0.999; // Set the restitution - bounciness
 	fixDef.shape = new b2CircleShape;	// Define the shape of the fixture
 	fixDef.shape.SetRadius(r);
 
@@ -304,7 +303,8 @@ function PreStart()
 		actor.y = bodies[i].y*ratio;
 	}
 
-	//Wait a second then get started
+	//Wait half a second then get started
+	start_time = new Date();
 	setTimeout(startEnterFrame, 500);
 }
 
@@ -368,13 +368,14 @@ function onEF(e)
     }
 
     //Occasionally let us know if you're still moving
-    if (counter/60===Math.round(counter/60))
-    {
-    	console.log(counter);
-    }
+    // if (counter/60===Math.round(counter/60))
+    // {
+      	var d = new Date();
+		console.log(counter, d.getTime() - start_time);
+    // }
 
     //Criteria for when to pause
-    if (counter===60)
+    if (counter===pause_at)
     {
         // & task_stage===0
         console.log('task stage at pause', task_stage===0, task_stage);
