@@ -39,7 +39,7 @@ b2CircleShape  = Box2D.Collision.Shapes.b2CircleShape,
 b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
 var Color = net.brehaut.Color;
-var timeout = 300;//Frames
+var timeout = 2;//Frames
 
 function Start(params) 
 {
@@ -201,7 +201,7 @@ function Start(params)
 	}
 	
 	counter = 0;
-
+	timeout = params[2].t;
     
 
 
@@ -224,7 +224,7 @@ function Start(params)
 	fixDef.shape = new b2CircleShape;	// Define the shape of the fixture
 	fixDef.shape.SetRadius(r);
 
-	for (var i=0; i<params.length; i++)
+	for (var i=0; i<2; i++)
 	{
 	    //BODY
 	    var bodyDef = new b2BodyDef;
@@ -302,7 +302,7 @@ function onEF(e)
     	console.log('still physicsing', counter);
     }
 
-    if (counter>timeout)
+    if ((counter/60)>timeout)
     {
     	stage.removeEventListener(Event.ENTER_FRAME, onEF);
     	parent.document.getElementById('startBtnTask4').disabled = false;

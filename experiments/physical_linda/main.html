@@ -192,7 +192,11 @@
 
         <fieldset style="float:left;margin:5px">
             v (m/s):<input type="text" class = "input" value="6" id="in_t4_v2" style="width:50px;">
-            angle (radians):<input type="text" class = "input" value="-1" id="in_t4_a2" style="width:50px;">
+            angle (radians):<input type="text" class = "input" value="-0.8" id="in_t4_a2" style="width:50px;">
+        </fieldset>
+
+        <fieldset style="float:left;margin:5px">
+            timeout:<input type="text" class = "input" value="0.7" id="in_t4_t" style="width:50px;">
         </fieldset>
     </fieldset>
 
@@ -354,7 +358,7 @@
                     {x:Number($(in_t4_x2).val()),
                     y:Number($(in_t4_y2).val()),
                     v:Number($(in_t4_v2).val()),
-                    a:Number($(in_t4_a2).val())}
+                    a:Number($(in_t4_a2).val())},{t:Number($(in_t4_t).val())}
                     ];
 
                  var iframe = document.getElementById("task4_frame");
