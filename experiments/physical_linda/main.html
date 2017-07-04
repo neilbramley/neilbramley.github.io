@@ -122,15 +122,21 @@
 
 
 <!-- TASK 3 -->
-<div sid="task3" style = "width: 900px; margin: 0 auto;">
+<div id="task3" style = "width: 900px; margin: 0 auto;">
     <h2>Task 3: Block towers</h2>
     
     <fieldset style = "display:inline-block;">
         <legend>Number of blocks</legend>
         <fieldset style="float:left;margin:5px">
-            Red <input type="text" class = "input" value="3" id="in_t3_Nr" style="width:50px;">
-            Green <input type="text" class = "input" value="3" id="in_t3_Ng" style="width:50px;">
-            Blue <input type="text" class = "input" value="3" id="in_t3_Nb" style="width:50px;">
+            Red brick  <input type="text" class = "input" value="1" id="in_t3_Nrb" style="width:50px;">
+            Green brick  <input type="text" class = "input" value="1" id="in_t3_Ngb" style="width:50px;">
+            Blue brick  <input type="text" class = "input" value="1" id="in_t3_Nbb" style="width:50px;"><br>
+            Red square<input type="text" class = "input" value="1" id="in_t3_Nrs" style="width:50px;">
+            Green square<input type="text" class = "input" value="1" id="in_t3_Ngs" style="width:50px;">
+            Blue square<input type="text" class = "input" value="1" id="in_t3_Nbs" style="width:50px;"><br>
+            Red plank<input type="text" class = "input" value="1" id="in_t3_Nrp" style="width:50px;">
+            Green plank<input type="text" class = "input" value="1" id="in_t3_Ngp" style="width:50px;">
+            Blue plank<input type="text" class = "input" value="1" id="in_t3_Nbp" style="width:50px;">
         </fieldset>
     </fieldset>
 
@@ -157,6 +163,49 @@
     <iframe src="iframe3.html" width=600 height=400 id="task3_frame" name="task3_frame" tabindex="0"></iframe>
     <textarea id = "conditiondetails" rows="40" cols="100">
     </textarea>
+    <br><br><br>
+</div>
+
+
+<div sid="task4" style = "width: 900px; margin: 0 auto;">
+    <h2>Task 2: Physical Bucket Linda</h2>
+
+    <fieldset style = "display:inline-block;">
+        <legend>Object 1</legend>
+        <fieldset style="float:left;margin:5px">
+            x (m):<input type="text" class = "input" value="3" id="in_t4_x1" style="width:50px;">
+            y (m):<input type="text" class = "input" value="0" id="in_t4_y1" style="width:50px;">
+        </fieldset>
+
+        <fieldset style="float:left;margin:5px">
+            v (m/s):<input type="text" class = "input" value="0" id="in_t4_v1" style="width:50px;">
+            angle (radians):<input type="text" class = "input" value="0" id="in_t4_a1" style="width:50px;">
+        </fieldset>
+    </fieldset>
+
+    <fieldset  style = "display:inline-block;">
+        <legend>Object 2</legend>
+        <fieldset style="float:left;margin:5px">
+            x (m):<input type="text" class = "input" value="0" id="in_t4_x2" style="width:50px;">
+            y (m):<input type="text" class = "input" value="3" id="in_t4_y2" style="width:50px;">
+        </fieldset>
+
+        <fieldset style="float:left;margin:5px">
+            v (m/s):<input type="text" class = "input" value="3" id="in_t4_v2" style="width:50px;">
+            angle (radians):<input type="text" class = "input" value="1" id="in_t4_a2" style="width:50px;">
+        </fieldset>
+    </fieldset>
+
+    <ol>
+        <li>Choose the settings.</li>
+        <li>Hit start to watch clip.</li>
+    </ol>
+
+    <div id="start_button_div">
+        <button class="button" id = "startBtnTask4" onclick="StartTask4();">Start</button>
+    </div>
+    <br>
+    <iframe src="iframe4.html" width=600 height=600 id="task4_frame" name="task4_frame" tabindex="0"></iframe>
     <br><br><br>
 </div>
 
@@ -224,7 +273,9 @@
         function StartTask3() {
             
 
-            var input_params = {r:Number($(in_t3_Nr).val()), g:Number($(in_t3_Ng).val()), b:Number($(in_t3_Nb).val())};
+            var input_params = [[Number($(in_t3_Nrb).val()), Number($(in_t3_Nrs).val()), Number($(in_t3_Nrp).val())],
+            [Number($(in_t3_Ngb).val()),Number($(in_t3_Ngs).val()), Number($(in_t3_Ngp).val())],
+            [Number($(in_t3_Nbb).val()), Number($(in_t3_Nbs).val()), Number($(in_t3_Nbp).val())]];
 
              var iframe = document.getElementById("task3_frame");
 
@@ -236,6 +287,8 @@
                 document.getElementById("stopBtnTask3").disabled = true;
                 document.getElementById("startBtnTask3").disabled = false;
                 document.getElementById("resetBtnTask3").disabled = true;
+
+                console.log('input_params', input_params);
 
                 iframeContent.LoadWorld(input_params);
             }
@@ -289,6 +342,31 @@
                 document.getElementById("resetBtnTask3").disabled = true;
 
                 iframeContent.ResetPhysics();
+            }
+        }
+
+
+            function StartTask4() {
+                var input_params = [{x:Number($(in_t4_x1).val()),
+                    y:Number($(in_t4_y1).val()),
+                    v:Number($(in_t4_v1).val()),
+                    a:Number($(in_t4_a1).val())},
+                    {x:Number($(in_t4_x2).val()),
+                    y:Number($(in_t4_y2).val()),
+                    v:Number($(in_t4_v2).val()),
+                    a:Number($(in_t4_a2).val())}
+                    ];
+
+                 var iframe = document.getElementById("task4_frame");
+
+                 if (iframe) {
+                    console.log('got here');
+                    var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+                    console.log('Starting Task 4');
+
+                    document.getElementById("startBtnTask4").disabled = true;
+
+                    iframeContent.Start(input_params);
             }
         }
 
