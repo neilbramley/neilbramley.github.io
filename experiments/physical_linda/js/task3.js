@@ -42,10 +42,6 @@ b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
 function LoadWorld(params) 
 {
-	n_red = params.r;
-	n_green = params.g;
-	n_blue = params.b;
-
     //Create the stage
     if (stage===undefined)
     {
@@ -109,84 +105,81 @@ function LoadWorld(params)
    
     //The colours of the blocks
     coloptions = [0xff0000, 0x00ff00, 0x0000ff];
+    dims = [{w:1/2, h:1/4}, {w:1/6,h:1/6}, {w:2/3, h:1/16}];
 	bodies = [];
 	actors = [];
-    cols = [];
     userdata = [];
     removed = [];//Track indices of deleted objects (maybe remove this)
+    cols = [];
 
-    for (var i=0; i<n_red; i++)
+    //Colour i
+    for (var i=0; i<params.length; i++)
     {
-    	cols.push(coloptions[0]);
-    	userdata.push({col:'red', col_ix:i, ix:(cols.length-1)});
-    	removed.push(false);
-    }
-    for (var i=0; i<n_red; i++)
-    {
-    	cols.push(coloptions[1]);
-    	userdata.push({col:'green', col_ix:i, ix:(cols.length-1)});
-    	removed.push(false);
-    }
-    for (var i=0; i<n_red; i++)
-    {
-    	cols.push(coloptions[2]);
-    	userdata.push({col:'blue', col_ix:i, ix:(cols.length-1)});
-    	removed.push(false);
+    	removed.push([]);
+    	userdata.push([]);
+    	//Shape j
+	    for (var j=0; j<params[i].length; j++)
+		{
+	    	//cols[i].push(coloptions[i]);
+	    	userdata[i].push({col:['red','green','blue'][i], col_ix:i, shape:j, ix:bodies.length});
+	    	removed[i].push(false);
+
+	    	/////////////////
+		    //Add the blocks
+		    /////////////////
+	    	console.log('colour', i, 'shape', j, bodies.length);
+
+	        var bodyDef = new b2BodyDef();
+	        bodyDef.type = b2Body.b2_dynamicBody;
+
+	        var blFixDef   = new b2FixtureDef();   // box  fixture definition
+	        blFixDef.shape = new b2PolygonShape();
+
+
+	        blFixDef.shape.SetAsBox(dims[j].w, dims[j].h);//One meter by one meter
+	        blFixDef.density = 1;
+	        blFixDef.restitution = 0.1;
+
+	        bodyDef.position.Set(Math.random()*4+1, Math.random()*3);
+
+	        //////////////////
+	        //The Box2d object
+	        //////////////////
+	           
+	        var body = world.CreateBody(bodyDef);
+
+	        body.CreateFixture(blFixDef);
+	        bodies.push(body);
+
+	        //body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
+	        body.SetAngularDamping(.1);
+	        body.SetUserData(userdata[i][j]);
+
+	        /////////////////////////
+	        //The visualization of them
+	        /////////////////////////
+	        var actor = new Sprite();
+			actor.graphics.beginFill(coloptions[i], .7);
+	    	actor.graphics.drawRect(-dims[j].w*ratio,-dims[j].h*ratio, dims[j].w*ratio*2, dims[j].h*ratio*2);
+	    	actor.graphics.endFill();
+	        
+	        actor.obj_ix = actors.length;
+	        
+	        // actor.graphics.drawRect(-hw*ratio,-hh*ratio,2*hw*ratio,2*hh*ratio);
+	        pos = body.GetPosition();
+	        console.log('i', i, 'pos', pos);
+
+	        stage.addChild(actor);
+	        actor.x = pos.x*ratio;
+	        actor.y = pos.y*ratio;
+	        actors.push(actor);
+		}
     }
 
 
-    /////////////////
-    //Add the blocks
-    /////////////////
+
     
-    for (var i=0; i<cols.length; i++)
-    {
-    	console.log('i', i, 'col', cols[i]);
 
-        var bodyDef = new b2BodyDef();
-        bodyDef.type = b2Body.b2_dynamicBody;
-
-        var blFixDef   = new b2FixtureDef();   // box  fixture definition
-        blFixDef.shape = new b2PolygonShape();
-        blFixDef.shape.SetAsBox(1/2, 0.5/2);//One meter by one meter
-        blFixDef.density = 1;
-        blFixDef.restitution = 0.1;
-
-        bodyDef.position.Set(Math.random()*4+1, Math.random()*3);
-
-        //////////////////
-        //The Box2d object
-        //////////////////
-           
-        var body = world.CreateBody(bodyDef);
-
-        body.CreateFixture(blFixDef);
-        bodies.push(body);
-
-        //body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
-        body.SetAngularDamping(.1);
-        body.SetUserData(userdata[i]);
-
-        /////////////////////////
-        //The visualization of them
-        /////////////////////////
-        var actor = new Sprite();
-		actor.graphics.beginFill(cols[i], .7);
-    	actor.graphics.drawRect(-0.5*ratio,-0.25*ratio, 1*ratio, 0.5*ratio);
-    	actor.graphics.endFill();
-        
-        actor.obj_ix = i;
-        
-        // actor.graphics.drawRect(-hw*ratio,-hh*ratio,2*hw*ratio,2*hh*ratio);
-        pos = body.GetPosition();
-        console.log('i', i, 'pos', pos);
-
-        stage.addChild(actor);
-        actor.x = pos.x*ratio;
-        actor.y = pos.y*ratio;
-        actors.push(actor);
-
-    }
 
 }
 
@@ -197,7 +190,10 @@ function StartPhysics()
 	ending_locs = [];
 	for (var i=0; i<bodies.length; i++)
 	{
-		starting_locs.push({ix:bodies[i].GetUserData().ix, color:bodies[i].GetUserData().col,x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
+		starting_locs.push({ix:bodies[i].GetUserData().ix,
+			color:bodies[i].GetUserData().col, shape:bodies[i].GetUserData().shape,
+			x:bodies[i].GetPosition().x,
+			y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
 	}
 
 	parent.document.getElementById("conditiondetails").value = 'Current locations:\n' +
@@ -214,7 +210,10 @@ function StopPhysics()
 	ending_locs = [];
 	for (var i=0; i<bodies.length; i++)
 	{
-		ending_locs.push({ix:bodies[i].GetUserData().ix, color:bodies[i].GetUserData().col,x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
+		ending_locs.push({ix:bodies[i].GetUserData().ix,
+			color:bodies[i].GetUserData().col, shape:bodies[i].GetUserData().shape,
+			x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y,
+			a:bodies[i].GetAngle()});
 	}
 	stage.removeEventListener(Event.ENTER_FRAME, onEF);
 
@@ -311,7 +310,10 @@ function RenegeControl(e) {
 		current_locs = [];
 		for (var i=0; i<bodies.length; i++)
 		{
-			current_locs.push({ix:bodies[i].GetUserData().ix, color:bodies[i].GetUserData().col,x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y, a:bodies[i].GetAngle()});
+			current_locs.push({ix:bodies[i].GetUserData().ix,
+				color:bodies[i].GetUserData().col, shape:bodies[i].GetUserData().shape,
+				x:bodies[i].GetPosition().x, y:bodies[i].GetPosition().y,
+				a:bodies[i].GetAngle()});
 		}
 		parent.document.getElementById("conditiondetails").value = 'Current locations:\n' +
 		JSON.stringify(current_locs) + 
