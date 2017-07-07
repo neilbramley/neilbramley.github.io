@@ -1,4 +1,4 @@
-//LINDA PARADOX will ball A miss the hole vs. will B hit A and A miss the hole?
+//LINDA PARADOX will ball A land in the bucket?
 
 //Declaring some global variables
 var world;
@@ -11,7 +11,7 @@ var CO_damping = 10;
 var damping = 0.1;
 var mouse_initially_entered_frame = false;
 var pixel_ratio =  window.devicePixelRatio;
-var ratio = 50 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
+var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
 var half_ratio = ratio/3; //A smaller size for buttons (rescales life size pieces for the buttons);
 var rotate = 0; //-1 for rotating anticlockwise, 1 for rotating clockwise, 0 for neither.
 var f1 = new TextFormat("Helvetica", 25 * pixel_ratio, 0x000000, false, false, "right");
@@ -61,34 +61,135 @@ function Start(params)
 	    var bodyDef = new b2BodyDef();
 	    bodyDef.type = b2Body.b2_staticBody;
 	    
-	    ///////////////
-	    //Create ground
-	    ///////////////
+	    /////////////////
+	    // create ground
+	    //////////////// 
+	    bxFixDef.shape.SetAsBox(10, 0.1);//10m by 1m static box
+	    bodyDef.position.Set(0, 6);//Places it in the bottom 1m of the window
+	    var ground = world.CreateBody(bodyDef).CreateFixture(bxFixDef);
+	    ground.SetUserData({type:"ground"});
+
+	    var s = new Sprite();
+	    s.graphics.beginFill(0x000000, .7);
+	    s.graphics.drawRect(0,0, 6*ratio, 0.1*ratio);
+	    s.graphics.endFill();
+	    stage.addChild(s);
+	    s.y=6*ratio - 0.1 * ratio;
+
+		/////////////////
+		//Create bucket
+		/////////////////
+		//NB Polygons must be anticlockwise
+		
+		var raw_points = { lhs:[{x:-0.5, y:0.5},{x:-0.3, y:0.5},
+		{x:-0.5, y:-0.5},{x:-0.7, y:-0.5}
+		],
+		rhs:[{x:0.5,y:0.5},{x:0.3,y:0.5},
+		{x:0.5,y:-0.5},{x:0.7,y:-0.5}
+		],
+		b:[{x:-0.5,y:0.7},{x:0.5,y:0.7},
+		{x:0.5,y:0.5},{x:-0.5,y:0.5}
+		]};
+
+		var points = {lhs:[], rhs:[], b:[]};
+		for (var j = 0; j < raw_points.rhs.length; j++) {
+
+			var vec = new b2Vec2();
+			vec.Set(raw_points.rhs[j].x, raw_points.rhs[j].y);
+			points.rhs[j] = vec;
+
+			var vec2 = new b2Vec2();
+			vec2.Set(raw_points.lhs[raw_points.lhs.length-j-1].x, raw_points.lhs[raw_points.lhs.length-j-1].y);
+			points.lhs[j] = vec2;
+
+			var vec3 = new b2Vec2();
+			vec3.Set(raw_points.b[raw_points.b.length-j-1].x, raw_points.b[raw_points.b.length-j-1].y);
+			points.b[j] = vec3;
+		}
+
+	    // left wall
+	    var lhsFixDef   = new b2FixtureDef();   // box  fixture definition
+	    lhsFixDef.shape = new b2PolygonShape();
+	    lhsFixDef.density = 1;
+	    //lhsFixDef.restitution = 0.1; 
+	    lhsFixDef.shape.SetAsArray(points.lhs, points.lhs.length);
+	    // right wall
+	    var rhsFixDef   = new b2FixtureDef();   // box  fixture definition
+	    rhsFixDef.shape = new b2PolygonShape();
+	    rhsFixDef.density = 1;
+	    //rhsFixDef.restitution = 0.1; 
+	    rhsFixDef.shape.SetAsArray(points.rhs, points.rhs.length);
+	    //Bottom
+	     var bFixDef   = new b2FixtureDef();   // box  fixture definition
+	    bFixDef.shape = new b2PolygonShape();
+	    bFixDef.density = 1;
+	    //bFixDef.restitution = 0.1; 
+	    //bFixDef.shape.SetAsBox(1, 0.1);
+	    console.log('points.b', points.b);
+	    bFixDef.shape.SetAsArray(points.b, points.b.length);
+
 	    
-	    ///LHS
-	    bxFixDef.shape.SetAsBox(2.5, 0.3);//2m by 0.4m static box
-	    bodyDef.position.Set(2.5, 10);//Places it in the bottom 1m of the window
-	    var gr_bod_lhs = world.CreateBody(bodyDef).CreateFixture(bxFixDef);
-	    bodyDef.position.Set(9.5, 10);//Places it in the bottom 1m of the window
-	    var gr_bod_rhs = world.CreateBody(bodyDef).CreateFixture(bxFixDef);
-	    //ground.SetUserData({type:"ground"});
+		
+		bodyDef.type = b2Body.b2_staticBody;
+		bodyDef.position.Set((stage.stageWidth/ratio)/2, 5.2);
+		// var bucketlhs = world.CreateBody(bodyDef).CreateFixture(lhsFixDef);
+		// var bucketrhs = world.CreateBody(bodyDef).CreateFixture(rhsFixDef);
+		// var bucketbottom = world.CreateBody(bodyDef);
+		// bucketbottom.CreateFixture(bFixDef);
+	    
+	    //All one object
+	    var bucket = world.CreateBody(bodyDef);
+	    bucket.CreateFixture(lhsFixDef);    //lhs
+	    bucket.CreateFixture(rhsFixDef);    //rhs
+	   	bucket.CreateFixture(bFixDef);    //lhs
+	   	//bodies.push(bucket);
 
-	    var gr_actor_rhs = new Sprite();
-	    gr_actor_rhs.graphics.beginFill(0x000000, .7);
-	    gr_actor_rhs.graphics.drawRect(0,0, 5*ratio, 0.6*ratio);
-	    gr_actor_rhs.graphics.endFill();
-	    stage.addChild(gr_actor_rhs);
-	    gr_actor_rhs.x=0;
-	    gr_actor_rhs.y=9.7*ratio ;//- 0.15 * ratio;
+		var buckActor = new Sprite();
 
-		var gr_actor_lhs = new Sprite();
-	    gr_actor_lhs.graphics.beginFill(0x000000, .7);
-	    gr_actor_lhs.graphics.drawRect(0,0, 5*ratio, 0.6*ratio);
-	    gr_actor_lhs.graphics.endFill();
-	    stage.addChild(gr_actor_lhs);
-	    gr_actor_lhs.x=7*ratio;
-	    gr_actor_lhs.y=9.7*ratio ;//- 0.15 * ratio;
-	
+	    //Right hand side
+	    buckActor.graphics.beginFill(0x000000, 0.5);
+	    buckActor.graphics.moveTo(raw_points.rhs[0].x*ratio, raw_points.rhs[0].y*ratio);
+	    for (var j=1; j<raw_points.rhs.length; j++)
+	    {
+	        buckActor.graphics.lineTo(raw_points.rhs[j].x*ratio, raw_points.rhs[j].y*ratio);
+	    }
+	    buckActor.graphics.endFill();
+
+	    //Left hand side
+	    buckActor.graphics.beginFill(0x000000, 0.5);
+
+	    buckActor.graphics.moveTo(raw_points.lhs[0].x*ratio, raw_points.lhs[0].y*ratio);
+	    for (var j=1; j<raw_points.lhs.length; j++)
+	    {
+	        buckActor.graphics.lineTo(raw_points.lhs[j].x*ratio, raw_points.lhs[j].y*ratio);
+	    }
+	    buckActor.graphics.endFill();
+
+	    //Bottom
+	    buckActor.graphics.beginFill(0x000000, 0.5);
+
+	    buckActor.graphics.moveTo(raw_points.b[0].x*ratio, raw_points.b[0].y*ratio);
+	    for (var j=1; j<raw_points.b.length; j++)
+	    {
+	        buckActor.graphics.lineTo(raw_points.b[j].x*ratio, raw_points.b[j].y*ratio);
+	    }
+	    buckActor.graphics.endFill();
+
+	    //Surface
+	    buckActor.graphics.beginFill(0x000000, 0.1);
+
+	    buckActor.graphics.moveTo(raw_points.rhs[1].x*ratio, raw_points.rhs[1].y*ratio);
+
+	    buckActor.graphics.lineTo(raw_points.rhs[2].x*ratio, raw_points.rhs[2].y*ratio);
+	    buckActor.graphics.lineTo(raw_points.lhs[2].x*ratio, raw_points.lhs[2].y*ratio);
+	    buckActor.graphics.lineTo(raw_points.lhs[1].x*ratio, raw_points.lhs[1].y*ratio);
+
+	    buckActor.graphics.endFill();
+
+	    stage.addChild(buckActor);
+	    //console.log('bucket part bodies', bucketbottom);
+	    buckActor.x = bucket.GetPosition().x*ratio;
+	    buckActor.y = bucket.GetPosition().y*ratio;
 	    //actors.push(buckActor);
 
 	} else {
@@ -114,7 +215,7 @@ function Start(params)
     hues.push(hues[0] + 180);
     var labels = ['A','B'];
     var img = '';
-    var r = 0.5;//radius of balls in meters
+    var r = 0.25;//radius of balls in meters
 
     var fixDef = new b2FixtureDef;
 	fixDef.density = 1; // Set the density
