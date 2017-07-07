@@ -14,6 +14,8 @@ var rotate = 0; //-1 for rotating anticlockwise, 1 for rotating clockwise, 0 for
 var f1 = new TextFormat("Helvetica", 25 * pixel_ratio, 0x000000, false, false, "right");
 var removed = [];
 var trialdata = [];
+var pieces = [0,0,0,0,0,0,0,0,0];
+var max_pieces = [2,2,2,2,2,2,2,2,2];
 
 //Declaring the Box2d functions I use
 var   b2Vec2      = Box2D.Common.Math.b2Vec2,
@@ -49,7 +51,7 @@ function Start()
     // bg.scaleX = bg.scaleY = stage.stageHeight/512;
     // stage.addChild(bg);
 
-    world = new b2World(new b2Vec2(0, 10),  true);
+    world = new b2World(new b2Vec2(0, 10));
 
     world.SetContactListener(listener);
 
@@ -57,7 +59,7 @@ function Start()
     bxFixDef.shape = new b2PolygonShape();
     bxFixDef.density = 1;
     bxFixDef.friction = 1.5;
-
+    bxFixDef.restitution = 0.1;
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_staticBody;
 
@@ -219,117 +221,121 @@ function Start()
 
 function AddPiece(e)
 {
-    console.log('clickedonpiece', e.target.button_ix);
+    console.log('clicked on piece', e.target.button_ix);
+    
     //Piece type is a number between 1 and 9 corresponding to the button below
     if (e.target.button_ix!=undefined)
     {
         piece_type = e.target.button_ix;
 
         console.log('piece_type', piece_type, 'col',Math.floor(piece_type/3), 'size', piece_type%3);
-
-        col = cols[Math.floor(piece_type/3)];
-        raw_points = [all_points.small, all_points.med, all_points.large][piece_type%3];
-
-        var points = {rhs:[], lhs:[]};
-
-        for (var j = 0; j < raw_points.rhs.length; j++) {
-
-            var vec = new b2Vec2();
-            vec.Set(raw_points.rhs[j].x, raw_points.rhs[j].y);
-            points.rhs[j] = vec;
-
-            var vec2 = new b2Vec2();
-            vec2.Set(raw_points.lhs[raw_points.lhs.length-j-1].x, raw_points.lhs[raw_points.lhs.length-j-1].y);
-            points.lhs[j] = vec2;
-        }
-        
-        var bodyDef = new b2BodyDef();
-        bodyDef.type = b2Body.b2_dynamicBody;
-
-        var rhsFixDef   = new b2FixtureDef();   // box  fixture definition
-        rhsFixDef.shape = new b2PolygonShape();
-        rhsFixDef.density = 1;
-        rhsFixDef.restitution = 0.1; 
-        rhsFixDef.shape.SetAsArray(points.rhs, points.rhs.length);
-
-
-        var lhsFixDef   = new b2FixtureDef();   // box  fixture definition
-        lhsFixDef.shape = new b2PolygonShape();
-        lhsFixDef.density = 1;
-        rhsFixDef.restitution = 0.1; 
-        lhsFixDef.shape.SetAsArray(points.lhs, points.lhs.length);
-
-
-
-        bodyDef.position.Set(Math.random()*7, -5 + Math.random()*5);
-
-        //////////////////
-        //The Box2d object
-        //////////////////
-           
-        var body = world.CreateBody(bodyDef);
-
-        body.CreateFixture(rhsFixDef);    //rhs
-        body.CreateFixture(lhsFixDef);    //lhs
-
-        //console.log('masses', ComputeMass(body));
-
-        bodies.push(body);
-
-        body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
-
-        //body.SetLinearDamping(1);
-        body.SetAngularDamping(.1);
-        body.SetUserData({type:"piece", size:['small','medium','large'][piece_type%3],
-        color:['red','green','blue'][Math.floor(piece_type/3)],
-        id:(bodies.length-1)});
-
-        /////////////////////////
-        //The visualization of them
-        /////////////////////////
-        var actor = new Sprite();
-
-           
-        //Right hand side
-        actor.graphics.beginFill(col, .5);
-        // actor.graphics.drawRect(-hw*ratio,-hh*ratio,2*hw*ratio,2*hh*ratio);
-        actor.graphics.moveTo(raw_points.rhs[0].x*ratio, raw_points.rhs[0].y*ratio);
-        for (var j=1; j<raw_points.rhs.length; j++)
+        if (pieces[piece_type]<max_pieces[piece_type])
         {
-            actor.graphics.lineTo(raw_points.rhs[j].x*ratio, raw_points.rhs[j].y*ratio);
+            col = cols[Math.floor(piece_type/3)];
+            raw_points = [all_points.small, all_points.med, all_points.large][piece_type%3];
+
+            var points = {rhs:[], lhs:[]};
+
+            for (var j = 0; j < raw_points.rhs.length; j++) {
+
+                var vec = new b2Vec2();
+                vec.Set(raw_points.rhs[j].x, raw_points.rhs[j].y);
+                points.rhs[j] = vec;
+
+                var vec2 = new b2Vec2();
+                vec2.Set(raw_points.lhs[raw_points.lhs.length-j-1].x, raw_points.lhs[raw_points.lhs.length-j-1].y);
+                points.lhs[j] = vec2;
+            }
+            
+            var bodyDef = new b2BodyDef();
+            bodyDef.type = b2Body.b2_dynamicBody;
+
+            var rhsFixDef   = new b2FixtureDef();   // box  fixture definition
+            rhsFixDef.shape = new b2PolygonShape();
+            rhsFixDef.density = 1;
+            rhsFixDef.restitution = 0.1; 
+            rhsFixDef.shape.SetAsArray(points.rhs, points.rhs.length);
+
+
+            var lhsFixDef   = new b2FixtureDef();   // box  fixture definition
+            lhsFixDef.shape = new b2PolygonShape();
+            lhsFixDef.density = 1;
+            rhsFixDef.restitution = 0.1; 
+            lhsFixDef.shape.SetAsArray(points.lhs, points.lhs.length);
+
+
+
+            bodyDef.position.Set(Math.random()*7, -5 + Math.random()*5);
+
+            //////////////////
+            //The Box2d object
+            //////////////////
+               
+            var body = world.CreateBody(bodyDef);
+
+            body.CreateFixture(rhsFixDef);    //rhs
+            body.CreateFixture(lhsFixDef);    //lhs
+
+            //console.log('masses', ComputeMass(body));
+
+            bodies.push(body);
+
+            body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
+
+            //body.SetLinearDamping(1);
+            body.SetAngularDamping(.1);
+            body.SetUserData({type:"piece", size:['small','medium','large'][piece_type%3],
+            color:['red','green','blue'][Math.floor(piece_type/3)],
+            id:(bodies.length-1)});
+
+            /////////////////////////
+            //The visualization of them
+            /////////////////////////
+            var actor = new Sprite();
+
+               
+            //Right hand side
+            actor.graphics.beginFill(col, .5);
+            // actor.graphics.drawRect(-hw*ratio,-hh*ratio,2*hw*ratio,2*hh*ratio);
+            actor.graphics.moveTo(raw_points.rhs[0].x*ratio, raw_points.rhs[0].y*ratio);
+            for (var j=1; j<raw_points.rhs.length; j++)
+            {
+                actor.graphics.lineTo(raw_points.rhs[j].x*ratio, raw_points.rhs[j].y*ratio);
+            }
+            actor.graphics.endFill();
+
+            //Left hand side
+            actor.graphics.beginFill(col, .5);
+
+            actor.graphics.moveTo(raw_points.lhs[0].x*ratio, raw_points.lhs[0].y*ratio);
+            for (var j=1; j<raw_points.rhs.length; j++)
+            {
+                actor.graphics.lineTo(raw_points.lhs[j].x*ratio, raw_points.lhs[j].y*ratio);
+            }
+            actor.graphics.endFill();
+
+            //Surface
+            actor.graphics.beginFill(col, .1);
+
+            actor.graphics.moveTo(raw_points.rhs[1].x*ratio, raw_points.rhs[1].y*ratio);
+
+            actor.graphics.lineTo(raw_points.rhs[2].x*ratio, raw_points.rhs[2].y*ratio);
+            actor.graphics.lineTo(raw_points.lhs[2].x*ratio, raw_points.lhs[2].y*ratio);
+            actor.graphics.lineTo(raw_points.lhs[1].x*ratio, raw_points.lhs[1].y*ratio);
+
+            actor.graphics.endFill();
+
+            actor.obj_ix = actors.length;//TODO THINK MORE CAREFULLY ABOUT INDEXING
+
+            //actor.addEventListener(MouseEvent.MOUSE_MOVE, Jump);  
+            stage.addChild(actor);
+            actors.push(actor);
+            
+            removed.push(false);
+
+            pieces[piece_type] = pieces[piece_type]+1;
+            console.log('added:', piece_type, 'pieces', pieces);
         }
-        actor.graphics.endFill();
-
-        //Left hand side
-        actor.graphics.beginFill(col, .5);
-
-        actor.graphics.moveTo(raw_points.lhs[0].x*ratio, raw_points.lhs[0].y*ratio);
-        for (var j=1; j<raw_points.rhs.length; j++)
-        {
-            actor.graphics.lineTo(raw_points.lhs[j].x*ratio, raw_points.lhs[j].y*ratio);
-        }
-        actor.graphics.endFill();
-
-        //Surface
-        actor.graphics.beginFill(col, .1);
-
-        actor.graphics.moveTo(raw_points.rhs[1].x*ratio, raw_points.rhs[1].y*ratio);
-
-        actor.graphics.lineTo(raw_points.rhs[2].x*ratio, raw_points.rhs[2].y*ratio);
-        actor.graphics.lineTo(raw_points.lhs[2].x*ratio, raw_points.lhs[2].y*ratio);
-        actor.graphics.lineTo(raw_points.lhs[1].x*ratio, raw_points.lhs[1].y*ratio);
-
-        actor.graphics.endFill();
-
-        actor.obj_ix = actors.length;//TODO THINK MORE CAREFULLY ABOUT INDEXING
-
-        //actor.addEventListener(MouseEvent.MOUSE_MOVE, Jump);  
-        stage.addChild(actor);
-        actors.push(actor);
-		
-		removed.push(false);
-
-        console.log('added:', piece_type);
     }
 }
 
@@ -341,7 +347,7 @@ function AddPiece(e)
  
 function onEF(e) 
 {
-    world.Step(1 / 60,  3,  3);
+    world.Step(1/60,  3,  3);//1 / 60
     world.ClearForces();
 
     if (e.target.mouseX > 0 | e.target.mouseY > 0) {
@@ -410,6 +416,8 @@ function RemovePiece(e)
 {
 	console.log('remove piece triggered');
 	var ix = e.target.obj_ix;
+    pieces[ix] = pieces[ix]-1;
+
     if (ix != undefined) {
 		stage.removeChild(actors[ix]);
 		world.DestroyBody(bodies[ix]);
@@ -419,6 +427,7 @@ function RemovePiece(e)
     } else {
         console.log('missed removal!', e.target);
     }
+    console.log('pieces', pieces);
 }
 
 function AssumeControl(e) {
@@ -498,13 +507,14 @@ function onMOu(e){ e.target.alpha = 0.7; }
 function TestDevice(e){
 
 	var atRestCheck = true;
-	for (i=0; i<bodies.length; i++)
-   	{
-   		if (bodies[i].IsAwake()===true & removed[i]===false)
-   		{
-   			atRestCheck=false;
-   		}
-   	}
+	//Its a bit too sensitive...
+    // for (i=0; i<bodies.length; i++)
+     //   	{
+     //   		if (bodies[i].IsAwake()===true & removed[i]===false)
+     //   		{
+     //   			atRestCheck=false;
+     //   		}
+     //   	}
 
     if (atRestCheck==true)
     {
@@ -521,7 +531,8 @@ function TestDevice(e){
 	    var contact = [];
 	    var colors = [];
 	    var sizes = [];
-	   	
+	   	pieces = [0,0,0,0,0,0,0,0,0];
+
 	   	for (i=0; i<bodies.length; i++)
 	   	{
 	   		if (removed[i]===false)
@@ -583,7 +594,7 @@ function DrawHistory(td, bn)
         trial_pics.push(trial_pic);
 
 		//Frame
-		trial_pics[t].graphics.lineStyle(3, 0x777777);
+		trial_pics[t].graphics.lineStyle(5, 0x777777);
         trial_pics[t].graphics.moveTo(0, 0);
         trial_pics[t].graphics.lineTo(stage.stageWidth, 0);
         trial_pics[t].graphics.lineTo(stage.stageWidth, stage.stageHeight);
@@ -591,7 +602,7 @@ function DrawHistory(td, bn)
         trial_pics[t].graphics.endFill();
 		
 		//Floor
-		trial_pics[t].graphics.lineStyle(3, 0x222222);
+		trial_pics[t].graphics.lineStyle(5, 0x222222);
 		trial_pics[t].graphics.moveTo(0, (stage.stageHeight) - 1.5 * ratio);
 		trial_pics[t].graphics.lineTo(stage.stageWidth, (stage.stageHeight) - 1.5 * ratio);
 		trial_pics[t].graphics.endFill();
@@ -653,17 +664,19 @@ function DrawHistory(td, bn)
 
 		}
 
-		objects.push(new Sprite());
+        //objects.push(new Sprite());
 		if (bn===true)
 		{
-
-			objects[objects.length-1].graphics.beginFill(0x55ffff);
+            var bd  = new BitmapData('images/tick.png');
+            //objects[objects.length-1].graphics.beginFill(0x55ffff);
 		} else if (bn===false)
 		{
-			objects[objects.length-1].graphics.beginFill(0xff55ff);
+            var bd = new BitmapData('images/cross.png');
+			//objects[objects.length-1].graphics.beginFill(0xff55ff);
 		}
-		objects[objects.length-1].graphics.drawCircle(0,0,100);
-		objects[objects.length-1].graphics.endFill();
+        objects.push(new Bitmap(bd));
+		// objects[objects.length-1].graphics.drawCircle(0,0,100);
+		// objects[objects.length-1].graphics.endFill();
 		trial_pics[t].addChild(objects[objects.length-1]);
 		objects[objects.length-1].x=50;
 		objects[objects.length-1].y=50;
