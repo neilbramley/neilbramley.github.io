@@ -21,7 +21,7 @@ var step_size = 1/60
 console.log('task_stage', task_stage);
 
 var f1 = new TextFormat("Helvetica", 15 * pixel_ratio, 0x000000, true, false, false);
-var f2 = new TextFormat("Helvetica", 70 * pixel_ratio, 0x009900, true, false, false);
+var f2 = new TextFormat("Helvetica", 70 * pixel_ratio, 0xCC0000, true, false, false);
 var global_params = [];
 var hit_wall = [false, false];
 
