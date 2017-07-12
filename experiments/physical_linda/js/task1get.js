@@ -17,7 +17,7 @@ var pixel_ratio =  window.devicePixelRatio;
 var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
 var pause_at = 60;
 var task_stage = 0;
-
+var step_size = 1/60
 console.log('task_stage', task_stage);
 
 var f1 = new TextFormat("Helvetica", 15 * pixel_ratio, 0x000000, true, false, false);
@@ -64,16 +64,31 @@ function PreStart()
 	var o3a = getQueryVariable('o3a');
 	var wa = getQueryVariable('wa');
 
-    var tmp = getQueryVariable('upi');
+	var tmp = getQueryVariable('sb');
+    if (tmp!==undefined)
+    {
+        start_buffer = Number(tmp);
+    } else {
+    	start_buffer = 1000;
+    }
+
+    tmp = getQueryVariable('ss');
+    if (tmp!==undefined)
+    {
+        step_size = Number(tmp);
+    }
+
+    tmp = getQueryVariable('upi');
     if (tmp!==undefined)
     {
         upi = tmp;
     }
-    var tmp = getQueryVariable('tix');
+    tmp = getQueryVariable('tix');
     if (tmp!==undefined)
     {
         tix = tmp;
     }
+
 
     data_string = [upi, tix, wa, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a];
 
@@ -305,7 +320,7 @@ function PreStart()
 
 	//Wait half a second then get started
 	start_time = new Date();
-	setTimeout(startEnterFrame, 500);
+	setTimeout(startEnterFrame, start_buffer);
 }
 
 function startEnterFrame()
@@ -350,7 +365,7 @@ function resetTask()
 
 function onEF(e) 
 {
-	world.Step(1 / 60,  3,  3);
+	world.Step(step_size,  3,  3);
 	world.ClearForces();
 	
 	// var out = 0;
