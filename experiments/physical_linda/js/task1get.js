@@ -41,7 +41,7 @@ b2ContactListener = Box2D.Dynamics.b2ContactListener;
 //Something to do with defining colors
 var Color = net.brehaut.Color;
 //Trial length
-var timeout = 240;//Frames (60 per second)
+var timeout = 4;//Frames (60 per second)
 
 function PreStart()
 {
@@ -82,6 +82,11 @@ function PreStart()
     if (tmp!==undefined)
     {
         pause_at = Number(tmp);
+    }
+    tmp = getQueryVariable('to');
+    if (tmp!==undefined)
+    {
+        timeout = Number(to);
     }
 
     tmp = getQueryVariable('upi');
@@ -396,7 +401,7 @@ function onEF(e)
     // }
 
     //Criteria for when to pause
-    if (counter>=Math.floor(pause_at/step_size) & task_stage===0)
+    if (counter>=Math.floor(pause_at*60) & task_stage===0)
     {
         // & task_stage===0
         console.log('task stage at pause', task_stage===0, task_stage);
@@ -413,7 +418,7 @@ function onEF(e)
     }
 
     //Criteria for when to stop entirely
-    if (counter>=timeout)
+    if (counter>=(timeout*60))
     {
     	console.log('Stopping clip', counter);
 
