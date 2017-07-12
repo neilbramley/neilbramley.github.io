@@ -15,7 +15,7 @@ var bodies = []; // instances of b2Body (from Box2D)
 var actors = []; // instances of Bitmap (from IvanK)
 var pixel_ratio =  window.devicePixelRatio;
 var ratio = 100 * pixel_ratio; //1 meter == 100 pixels (worry about pixel_ratio later!)
-var pause_at = 60;
+var pause_at = 1;
 var task_stage = 0;
 var step_size = 1/60
 console.log('task_stage', task_stage);
@@ -67,7 +67,7 @@ function PreStart()
 	var tmp = getQueryVariable('sb');
     if (tmp!==undefined)
     {
-        start_buffer = Number(tmp);
+        start_buffer = Number(tmp)*1000;
     } else {
     	start_buffer = 1000;
     }
@@ -76,6 +76,12 @@ function PreStart()
     if (tmp!==undefined)
     {
         step_size = Number(tmp);
+    }
+
+    tmp = getQueryVariable('pa');
+    if (tmp!==undefined)
+    {
+        pause_at = Number(tmp);
     }
 
     tmp = getQueryVariable('upi');
@@ -390,7 +396,7 @@ function onEF(e)
     // }
 
     //Criteria for when to pause
-    if (counter===pause_at)
+    if (counter>=Math.floor(pause_at/step_size) & task_stage===0)
     {
         // & task_stage===0
         console.log('task stage at pause', task_stage===0, task_stage);
