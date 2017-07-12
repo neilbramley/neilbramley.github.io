@@ -96,7 +96,7 @@ function PreStart()
     }
 
 
-    data_string = [upi, tix, wa, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a];
+    data_string = [upi, tix, wa, o1x, o1y, o1v, o1a, o2x , o2y, o2v, o2a, o3x, o3y, o3v, o3a, start_buffer, step_size, pause_at, timeout];
 
     console.log('datastring in prestart', data_string);
 
