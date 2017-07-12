@@ -324,6 +324,7 @@ function PreStart()
 	//Wait half a second then get started
 	start_time = new Date();
 	onEF(null);//Run one frame to move objects in?
+	info_box.text = cc;
 	countdown = setInterval(updateCountdown, 1000);
 	setTimeout(startEnterFrame, start_buffer);
 }
