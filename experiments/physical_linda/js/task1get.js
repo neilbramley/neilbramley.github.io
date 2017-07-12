@@ -21,6 +21,7 @@ var step_size = 1/60
 console.log('task_stage', task_stage);
 
 var f1 = new TextFormat("Helvetica", 15 * pixel_ratio, 0x000000, true, false, false);
+var f2 = new TextFormat("Helvetica", 70 * pixel_ratio, 0x009900, true, false, false);
 var global_params = [];
 var hit_wall = [false, false];
 
@@ -42,6 +43,7 @@ b2ContactListener = Box2D.Dynamics.b2ContactListener;
 var Color = net.brehaut.Color;
 //Trial length
 var timeout = 4;//Frames (60 per second)
+var cc = 0; //Countdown counter
 
 function PreStart()
 {
@@ -71,6 +73,7 @@ function PreStart()
     } else {
     	start_buffer = 1000;
     }
+    cc = start_buffer/1000;//Initialise countdown counter (for a '3','2','1')
 
     tmp = getQueryVariable('ss');
     if (tmp!==undefined)
@@ -86,7 +89,7 @@ function PreStart()
     tmp = getQueryVariable('to');
     if (tmp!==undefined)
     {
-        timeout = Number(to);
+        timeout = Number(tmp);
     }
 
     tmp = getQueryVariable('upi');
@@ -165,34 +168,6 @@ function PreStart()
     {
     	stage = new Stage("c");
 
-    	////////////
-	    //Background
-	    ////////////
-	    // var bg = new Bitmap( new BitmapData("border.png") );
-	    // bg.scaleX = bg.scaleY = stage.stageHeight/512;
-	    // stage.addChild(bg);
-	    
-	    ///////////////// 
-	    //Track the mouse
-		/////////////////
-		// info_box = new TextField();
-
-    	 //    info_box.selectable = false; // default is true
-    	 //    info_box.setTextFormat(f1);
-    	 //    info_box.text = "                             ";
-    	 //    info_box.width = info_box.textWidth;
-    	 //    info_box.height = info_box.textHeight;
-    	 //    stage.addChild(info_box);
-    	 //    info_box.x = (4/5)*wp - info_box.width/2;//0;
-    	 //    info_box.y = (4/5)*hp;
-
-	    // document.onmousemove = function(e){
-	    // 	mouseX = e.pageX;
-	    // 	mouseY = e.pageY;
-	    //     //elementMouseIsOver = document.elementFromPoint(mouseX, mouseY);
-	    //     //console.log(elementMouseIsOver);
-	    //     info_box.text = 'x:' + mouseX/100 + ' y:' + mouseY/100;
-	    // };
 
 	    /////////////
 	    //BOX2D WORLD
@@ -200,6 +175,8 @@ function PreStart()
 	    world = new b2World(new b2Vec2(0, 0),  true);
 
 	    world.SetContactListener(listener);
+
+
 
 		//////////////
 		//CENTRAL WALL
@@ -238,6 +215,20 @@ function PreStart()
         wall.SetAngle(params[params.length-1].a); //
         s.rotation = wall.GetAngle() * 180/Math.PI;//
         //params[params.length-1].a * (Math.PI / 180);
+
+
+	    //////////////
+	    //Countdown box
+	    //////////////
+		info_box = new TextField();
+	    info_box.selectable = false; // default is true
+	    info_box.setTextFormat(f2);
+	    info_box.text = "  ";
+	    info_box.width = info_box.textWidth;
+	    info_box.height = info_box.textHeight;
+	    stage.addChild(info_box);
+	    info_box.x = wp/2 - info_box.width/2;
+	    info_box.y = hp/2 - info_box.height/2;
 
     } else {
     	//Remove any existing objects
@@ -332,12 +323,23 @@ function PreStart()
 
 	//Wait half a second then get started
 	start_time = new Date();
+	onEF(null);//Run one frame to move objects in?
+	countdown = setInterval(updateCountdown, 1000);
 	setTimeout(startEnterFrame, start_buffer);
+}
+
+function updateCountdown()
+{
+	cc = cc-1;
+	info_box.text = cc;
+
 }
 
 function startEnterFrame()
 {
 	stage.addEventListener(Event.ENTER_FRAME, onEF);
+	clearInterval(countdown);
+	info_box.text = '';
 }
 
 function resetTask()
