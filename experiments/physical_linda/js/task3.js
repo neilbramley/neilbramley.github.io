@@ -80,7 +80,7 @@ function LoadWorld(params)
 	    s.graphics.endFill();
 	    stage.addChild(s);
 	    //s.x=(stage.stageWidth)/2
-	    s.y=4*ratio - 0.05 * ratio;
+	    s.y=4*ratio - 0.2 * ratio;
 
 
 
