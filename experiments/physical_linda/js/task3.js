@@ -113,67 +113,77 @@ function LoadWorld(params)
     removed = [];//Track indices of deleted objects (maybe remove this)
     cols = [];
 
+    console.log('params', params)
+
     //Colour i
     for (var i=0; i<params.length; i++)
     {
     	removed.push([]);
     	userdata.push([]);
     	//Shape j
-	    for (var j=0; j<params[i]; j++)
+	    for (var j=0; j<params[i].length; j++)
 		{
-	    	//cols[i].push(coloptions[i]);
-	    	userdata[i].push({col:['red','green','blue'][i], col_ix:i, shape:j, ix:bodies.length});
-	    	removed[i].push(false);
+            removed[i].push([]);
+            userdata[i].push([]);
+            for (var k=0; k<params[i][j]; k++)
+            {
+                console.log('ping', i, j, k, '\n')
 
-	    	/////////////////
-		    //Add the blocks
-		    /////////////////
-	    	console.log('colour', i, 'shape', j, bodies.length);
+                //cols[i].push(coloptions[i]);
+                userdata[i][j].push({col:['red','green','blue'][i], col_ix:i, shape:j, ix:bodies.length});
+                removed[i][j].push(false);
 
-	        var bodyDef = new b2BodyDef();
-	        bodyDef.type = b2Body.b2_dynamicBody;
+                /////////////////
+                //Add the blocks
+                /////////////////
+                console.log('colour', i, 'shape', j, bodies.length);
 
-	        var blFixDef   = new b2FixtureDef();   // box  fixture definition
-	        blFixDef.shape = new b2PolygonShape();
+                var bodyDef = new b2BodyDef();
+                bodyDef.type = b2Body.b2_dynamicBody;
+
+                var blFixDef   = new b2FixtureDef();   // box  fixture definition
+                blFixDef.shape = new b2PolygonShape();
 
 
-	        blFixDef.shape.SetAsBox(dims[j].w, dims[j].h);//One meter by one meter
-	        blFixDef.density = 1;
-	        blFixDef.restitution = 0.1;
+                blFixDef.shape.SetAsBox(dims[j].w, dims[j].h);//One meter by one meter
+                blFixDef.density = 1;
+                blFixDef.restitution = 0.1;
 
-	        bodyDef.position.Set(Math.random()*4+1, Math.random()*3);
+                bodyDef.position.Set(Math.random()*4+1, Math.random()*3);
 
-	        //////////////////
-	        //The Box2d object
-	        //////////////////
-	           
-	        var body = world.CreateBody(bodyDef);
+                //////////////////
+                //The Box2d object
+                //////////////////
+                   
+                var body = world.CreateBody(bodyDef);
 
-	        body.CreateFixture(blFixDef);
-	        bodies.push(body);
+                body.CreateFixture(blFixDef);
+                bodies.push(body);
 
-	        //body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
-	        body.SetAngularDamping(.1);
-	        body.SetUserData(userdata[i][j]);
+                //body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
+                body.SetAngularDamping(.1);
+                body.SetUserData(userdata[i][j]);
 
-	        /////////////////////////
-	        //The visualization of them
-	        /////////////////////////
-	        var actor = new Sprite();
-			actor.graphics.beginFill(coloptions[i], .7);
-	    	actor.graphics.drawRect(-dims[j].w*ratio,-dims[j].h*ratio, dims[j].w*ratio*2, dims[j].h*ratio*2);
-	    	actor.graphics.endFill();
-	        
-	        actor.obj_ix = actors.length;
-	        
-	        // actor.graphics.drawRect(-hw*ratio,-hh*ratio,2*hw*ratio,2*hh*ratio);
-	        pos = body.GetPosition();
-	        console.log('i', i, 'pos', pos);
+                /////////////////////////
+                //The visualization of them
+                /////////////////////////
+                var actor = new Sprite();
+                actor.graphics.beginFill(coloptions[i], .7);
+                actor.graphics.drawRect(-dims[j].w*ratio,-dims[j].h*ratio, dims[j].w*ratio*2, dims[j].h*ratio*2);
+                actor.graphics.endFill();
+                
+                actor.obj_ix = actors.length;
+                
+                // actor.graphics.drawRect(-hw*ratio,-hh*ratio,2*hw*ratio,2*hh*ratio);
+                pos = body.GetPosition();
+                console.log('i', i, 'pos', pos);
 
-	        stage.addChild(actor);
-	        actor.x = pos.x*ratio;
-	        actor.y = pos.y*ratio;
-	        actors.push(actor);
+                stage.addChild(actor);
+                actor.x = pos.x*ratio;
+                actor.y = pos.y*ratio;
+                actors.push(actor);
+            }
+            
 		}
     }
 
