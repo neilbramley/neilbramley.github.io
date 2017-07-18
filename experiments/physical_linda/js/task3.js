@@ -106,7 +106,7 @@ function LoadWorld(params)
    
     //The colours of the blocks
     coloptions = [0xff0000, 0x00ff00, 0x0000ff];
-    dims = [{w:1/2, h:1/4}, {w:1/6,h:1/6}, {w:2/3, h:1/16}];
+    dims = [{w:1/2, h:1/4}, {w:1/4,h:1/4}, {w:1/2, h:1/8}];
 	bodies = [];
 	actors = [];
     userdata = [];
@@ -119,7 +119,7 @@ function LoadWorld(params)
     	removed.push([]);
     	userdata.push([]);
     	//Shape j
-	    for (var j=0; j<params[i].length; j++)
+	    for (var j=0; j<params[i]; j++)
 		{
 	    	//cols[i].push(coloptions[i]);
 	    	userdata[i].push({col:['red','green','blue'][i], col_ix:i, shape:j, ix:bodies.length});
