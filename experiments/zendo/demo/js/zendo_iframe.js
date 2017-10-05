@@ -59,7 +59,7 @@ function Start()
     bxFixDef.shape = new b2PolygonShape();
     bxFixDef.density = 1;
     bxFixDef.friction = 1.5;
-    bxFixDef.restitution = 0.1;
+    bxFixDef.restitution = 0;
     var bodyDef = new b2BodyDef();
     bodyDef.type = b2Body.b2_staticBody;
 
@@ -107,7 +107,7 @@ function Start()
                         }
                 };
 
-                //The colours of the blocks
+    //The colours of the blocks
     cols = [0xff0000, 0x00ff00, 0x0000ff];
 
 
@@ -210,8 +210,6 @@ function Start()
 
 
         stage.addChild(s);
-        //WHY WON'T YOU REGISTER A CLICK/ SEEMS TO BE COVERD BY STAGE
-        ////May be related to the weird width thing (make the canvas a particular width)
         s.addEventListener(MouseEvent.CLICK, AddPiece);
 
         piece_buttons.push(s);
@@ -253,19 +251,19 @@ function AddPiece(e)
             var rhsFixDef   = new b2FixtureDef();   // box  fixture definition
             rhsFixDef.shape = new b2PolygonShape();
             rhsFixDef.density = 1;
-            rhsFixDef.restitution = 0.1; 
+            rhsFixDef.restitution = 0.05; 
             rhsFixDef.shape.SetAsArray(points.rhs, points.rhs.length);
 
 
             var lhsFixDef   = new b2FixtureDef();   // box  fixture definition
             lhsFixDef.shape = new b2PolygonShape();
             lhsFixDef.density = 1;
-            rhsFixDef.restitution = 0.1; 
+            rhsFixDef.restitution = 0.05; 
             lhsFixDef.shape.SetAsArray(points.lhs, points.lhs.length);
 
 
 
-            bodyDef.position.Set(Math.random()*7, -5 + Math.random()*5);
+            bodyDef.position.Set(Math.random()*7,1);
 
             //////////////////
             //The Box2d object
@@ -283,7 +281,7 @@ function AddPiece(e)
             body.SetAngle(Math.PI + Math.random()*0.1 - 0.05);
 
             //body.SetLinearDamping(1);
-            body.SetAngularDamping(.1);
+            body.SetAngularDamping(.5);
             body.SetUserData({type:"piece", size:['small','medium','large'][piece_type%3],
             color:['red','green','blue'][Math.floor(piece_type/3)],
             id:(bodies.length-1)});
@@ -440,7 +438,7 @@ function AssumeControl(e) {
         bodies[idco].m_linearDamping = CO_damping;
 
         //We want high angular damping for the conrtolled object so it doesn't spin too much
-        bodies[idco].SetAngularDamping(2);
+        bodies[idco].SetAngularDamping(7.5);
 
     } else {
         console.log('missed!', e.target);
@@ -451,7 +449,7 @@ function AssumeControl(e) {
 function RenegeControl(e) {
     if (idco != undefined) {
         bodies[idco].m_linearDamping = damping;
-        bodies[idco].SetAngularDamping(.1);
+        bodies[idco].SetAngularDamping(.5);
         console.log('reneging!', idco);
         idco = undefined;
     }
