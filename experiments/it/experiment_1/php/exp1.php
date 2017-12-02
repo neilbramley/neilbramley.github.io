@@ -3,8 +3,8 @@
 // Create a database connection
 
 
-	$connection = mysql_connect("mysql-server.ucl.ac.uk","ucjtw3g","vXq37JTQc4J22R9uIITd");//1Ammooi9
-
+	//$connection = mysql_connect("mysql-server.ucl.ac.uk","ucjtw3g","vXq37JTQc4J22R9uIITd");//1Ammooi9
+	$connection = mysql_connect("gureckislab.org","lab","fishneversink");
 
 	
 	if (!$connection)
