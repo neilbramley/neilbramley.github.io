@@ -3,26 +3,11 @@
 //Set up variables
 //////////////////
 var learn_cond = ['active','passive'][0];//[Math.floor(Math.random()*2)];
-var delay_cond = ['rel_within_var_between', 'var_both', 'rel_both'][Math.floor(Math.random()*3)];//, 'var_both', 'rel_both'
+var delay_cond = ['var_both', 'rel_both'][Math.floor(Math.random()*2)];//, 'var_both', 'rel_both' 'rel_within_var_between', 
 
 console.log('learn_cond',learn_cond,'delay_cond',delay_cond);
 
 var networks = [
-// [[0,0,1],[0,0,1],[0,0,0]],
-// [[0,1,1],[0,0,0],[0,0,0]],
-// [[0,1,0],[0,0,1],[0,0,0]],
-
-//  [[0,0,0,1],[0,0,0,1],[0,0,0,1],[0,0,0,0]],
-//  [[0,1,1,1],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
-//  [[0,1,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]],
-
-//  [[0,1,0],[0,0,1],[1,0,0]],
-//  [[0,1,1],[1,0,0],[0,0,0]],
-//  [[0,1,0],[0,0,1],[0,1,0]],
-
-//  [[0,1,0,0],[0,0,1,0],[0,0,0,1],[1,0,0,0]],
-//  [[0,1,0,0],[1,0,0,0],[0,0,0,1],[0,0,1,0]],
-//  [[0,1,0,0],[0,0,1,0],[0,1,0,1],[0,0,0,0]]
 
 [[0,0,1],[0,0,1],[0,0,0]],
 [[0,1,0],[0,0,1],[0,0,0]],
@@ -64,7 +49,7 @@ var trial_order = shuffle([0,1,2,3,4,5,6,7,8,9,10,11]);//,10,11]);//,12,13,14]);
 
 trial_order.unshift(0);//Add a practice trial
 
-var n_trials = trial_order.length;//10
+var n_trials = 2;//trial_order.length;//10
 console.log('trial_order', trial_order);
 
 var node_positions = new Array();
@@ -118,8 +103,22 @@ if (delay_cond=='rel_both')
 
 
 var pay_rate = 5;
-var upi = makeid();
-document.getElementById('display-upi').innerHTML = "Code for mechanical turk:  " + upi;
+
+
+
+
+var tmp = getQueryVariable('prolific_pid');
+if (tmp!==undefined)
+{
+	console.log('get set upi', tmp);
+	var upi = tmp;
+} else {
+	console.log('no get set upi');
+	var upi = makeid();
+}
+document.getElementById('display-upi').innerHTML = "Code for Prolific Academic:  9vd7Kh1Ra1fTkSKZ";
+ 
+
 var total_score = 0;
 var total_bonus = 0;
 
@@ -575,7 +574,17 @@ $('.numberQ').change(function (e) {
 	}
 });
 
-
+function getQueryVariable(variable) {
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		if (pair[0] == variable) {
+			return pair[1];
+		}
+	} 
+	console.log('Query Variable ' + variable + ' not found');
+}
 
 
 
@@ -585,4 +594,5 @@ $('.numberQ').change(function (e) {
 
 
 console.log('Experiment js loaded');
-ipcheck();
+//ipcheck();
+document.getElementById('i-agree').disabled = false;
