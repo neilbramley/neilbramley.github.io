@@ -594,5 +594,5 @@ function getQueryVariable(variable) {
 
 
 console.log('Experiment js loaded');
-//ipcheck();
+ipcheck();
 document.getElementById('i-agree').disabled = false;
