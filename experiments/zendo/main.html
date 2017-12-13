@@ -50,13 +50,13 @@
     <p>In this task you will be using your scientific investigation skills.</p>
     <p>You have arrived on a bizarre alien planet where the only objects you can see are colored cones clumped into small groups in an otherwise empty landscape (Figure 1).</p>
     <div align=center>
-       <img src="../static/images/instructions/ins1_1.png" alt="ex1" style="width:600px;">
+       <img src="./static/images/instructions/ins1_1.png" alt="ex1" style="width:600px;">
        <figcaption>Figure 1 - Bizarre alien planet.</figcaption>
    </div>
    <br>
     <p>You have brought a scientific measuring device.  It can be tuned to detect different types of radiation.  At particular settings, it reveals that some of the clumps of cones emit colorful radiation, while others do not do not (Figure 2).</p>
     <div align=center>
-        <img src="../static/images/instructions/ins1_2.png" alt="ex1" style="width:600px;">
+        <img src="./static/images/instructions/ins1_2.png" alt="ex1" style="width:600px;">
         <figcaption>Figure 2 - Testing for radiation.  Only the arrangement on the left emits this kind of radiation.</figcaption>
     </div>
     <br>
@@ -70,19 +70,19 @@
     <p>Study the list below to help you get started.  For each type of radiation we give several examples.  The examples with the yellow stars <b>do</b> emit this kind of radiation, those with white stars <b>do not</b>.</p>
         <ol>
             <li>Alpha waves: <i>Whenever there is at least one small cone</i><br><br>
-                <img src="../static/images/instructions/ins2_1.png" alt="ex1" style="width:600px;">
+                <img src="./static/images/instructions/ins2_1.png" alt="ex1" style="width:600px;">
                 <br><br>
             <li>Beta waves: <i>If all cones are all the same color</i><br><br>
-                <img src="../static/images/instructions/ins2_2.png" alt="ex1" style="width:600px;">
+                <img src="./static/images/instructions/ins2_2.png" alt="ex1" style="width:600px;">
                 <br><br>
             <li>Delta waves: <i>If none of the cones are touching</i><br><br>
-                <img src="../static/images/instructions/ins2_3.png" alt="ex1" style="width:600px;">
+                <img src="./static/images/instructions/ins2_3.png" alt="ex1" style="width:600px;">
                 <br><br>
             <li>Gamma waves: <i>If all the cones point in the same direction</i><br><br>
-                <img src="../static/images/instructions/ins2_4.png" alt="ex1" style="width:600px;">
+                <img src="./static/images/instructions/ins2_4.png" alt="ex1" style="width:600px;">
                 <br><br>
             <li>Epsilon waves: <i>If there is a a blue cone that is larger than any red cones</i><br><br>
-                <img src="../static/images/instructions/ins2_5.png" alt="ex1" style="width:600px;">
+                <img src="./static/images/instructions/ins2_5.png" alt="ex1" style="width:600px;">
                 <br><br>
             <!--<li>At least one cone is medium or large sized<br>
             <li>Exactly two are blue<br>
@@ -118,13 +118,13 @@
         <p>To design your own experiments you will add pieces to the world using a construction interface.  Watch the video below to see how this works.  Note you must watch the video before you can continue to the  next page.</p>
         <div align=center>
             <video controls height=300 id="construction_mov" name="construction_mov" controls="controls"  onended="$('#next').prop('disabled', false);" muted preload="auto">
-                <source src = "../static/movies/construction_psi.mp4" type="video/mp4">
-                <source src="../static/movies/construction_psi.mov"  type="video/mov">
-                <!-- <source src="../static/movies/construction_psi.webm"  type="video/webm"> -->
+                <source src = "./static/movies/construction_psi.mp4" type="video/mp4">
+                <source src="./static/movies/construction_psi.mov"  type="video/mov">
+                <!-- <source src="./static/movies/construction_psi.webm"  type="video/webm"> -->
                 <p>Sorry.  If this video wont play you wont be able to complete the experiment.</p>
             </video>
         </div>
-        <!-- <video controls="controls" width="600" name="Shaking" src="../static/movies/construction_phi.mp4"></video> -->
+        <!-- <video controls="controls" width="600" name="Shaking" src="./static/movies/construction_phi.mp4"></video> -->
 
         <p>In the interface you can:</p>
         <ol>
@@ -146,8 +146,8 @@
         
         <div align=center>
             <video controls height=300 id="selection_vid" name="selection_vid" controls="controls" onended="$('#next').prop('disabled', false);" muted>
-                <source src="../static/movies/selection_mu.mp4"  type="video/mp4">
-                <source src="../static/movies/selection_mu.mov"  type="video/mov">
+                <source src="./static/movies/selection_mu.mp4"  type="video/mp4">
+                <source src="./static/movies/selection_mu.mov"  type="video/mov">
                  <p>Sorry.  If this video wont play you wont be able to complete the experiment.</p>
             </video>
         </div>
@@ -158,7 +158,7 @@
         <p>Finally, you will be asked to <b>describe in your own words</b> what you think is the hidden rule that causes the radiation to be emitted at this frequency.  For instance you might write, "I think all the cones have to be large".  You should be as specific as possible with this.  Try to use unambiguous phrases like "There must be at least..." / "There are at most.." / "There is exactly one..."</p>
         
         <div align=center>
-            <img src="../static/images/instructions/free_response.png" alt="ex1" style="width:400px;">
+            <img src="./static/images/instructions/free_response.png" alt="ex1" style="width:400px;">
         </div>
 
         <p><b>Note:</b> The true rule has <i>nothing to do with:</i> the radiation's name; <i>nor</i> the way radiation might work on Earth; <i>nor</i> the order in which you perform your tests <i>nor</i> with what was true for the other frequencies of radiation.  I.e., on this planet, all types of radiation operate independently.</p><br><br>
@@ -247,7 +247,7 @@ function StartIframe() {
 
     $.ajax({
         dataType: "json",
-        url: "/static/json/zendo_cases.json",
+        url: "./static/json/zendo_cases.json",
         async: false,
         success: function(data) {
 
