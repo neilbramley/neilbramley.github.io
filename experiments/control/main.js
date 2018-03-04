@@ -4,8 +4,8 @@
 
 
 var count = 0; //For keeping track of how long the process has run for
-var timeout = 200;//200;//How many steps to run for (10 steps per second)
-var delay = 100; //How many ms per step
+var timeout = 400;//200;//How many steps to run for (5 steps per second)
+var delay = 200; //How many ms per step
 var mu = 20;
 var lambda = .1;
 var sigma = 5;
@@ -320,15 +320,15 @@ function Step(betas, cur_phase)
 		            'intervention: ', int_state, 'score: ', score, '\n');
 	}
 
-	if ((timeout-count) % 10 === 0)
+	if ((timeout-count) % 5 === 0)
 	{
-		document.getElementById("countdown").innerHTML = (timeout-count)/10 + " seconds remaining";
+		document.getElementById("countdown").innerHTML = (timeout-2*count)/10 + " seconds remaining";
 	}
 
 	//Stop at the end
-	if (count>timeout)
+	if ((2*count)>timeout)
 	{
-		console.log(phase)
+		console.log(phase);
 		Stop();
 
 		//Showing an overlay to start phase 2, or next device
