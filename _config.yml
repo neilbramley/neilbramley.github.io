@@ -1,2 +1,4 @@
 name: Neil Bramley, Postdoc
 markdown: kramdown
+plugins:
+  - jekyll-redirect-from
