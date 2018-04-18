@@ -41,7 +41,7 @@
     <div style='position:relative;float:left;'>
         <fieldset style='float:left;width:450px;margin:5px'>
             <legend>Select participant</legend>
-            <select id='participant_select'>  
+            <select id='participant_select'>
                 <option value="A2MWAXV1YRK5GH"  >1----<b>Active:</b>  <i>Force = 56%  Mass = 22%</i>----<b>Yoked:</b> <i>Force = 67%, Mass = 33% </i></option>
                 <option value="A1P0NNR8HOQ95R"  >2----<b>Active:</b>  <i>Force = 56%  Mass = 78%</i>----<b>Yoked:</b> <i>Force = 44%, Mass = 67% </i></option>
                 <option value="A3VMKLJTSGYKHN"  >3----<b>Active:</b>  <i>Force = 100% Mass = 89%</i>----<b>Yoked:</b> <i>Force = 100%, Mass = 44%</i> </option>
@@ -197,6 +197,10 @@ function InitialSelect()
     //If a get participant variable is sent, initially set this as current participant
     if (ppt_get!==undefined)
     {
+        if (ppt_get=='1')
+        {
+            ppt_get='A3VMKLJTSGYKHN';
+        } 
         //Set by workerid   
         var options = document.getElementById('participant_select').options;
         for (var i = 0, optionsLength = options.length; i < optionsLength; i++) {
@@ -218,9 +222,15 @@ function InitialSelect()
         document.getElementById('trial_select').getElementsByTagName('option')[Number(trial_get)-1].selected = 'selected';
         console.log('set trial from GET to', trial_get);
     } else {
-        //Otherwise choose a random one
-        var rand_trial = Math.floor(Math.random() * document.getElementById('trial_select').length);
-        document.getElementById('trial_select')[rand_trial].selected = 'selected';
+        if (ppt_get=='A3VMKLJTSGYKHN')
+        {
+            document.getElementById('trial_select')[3].selected = 'selected';
+        } else {
+           //Otherwise choose a random one
+            var rand_trial = Math.floor(Math.random() * document.getElementById('trial_select').length);
+            document.getElementById('trial_select')[rand_trial].selected = 'selected'; 
+        }
+
     }
 
     //Load the initial trial data
