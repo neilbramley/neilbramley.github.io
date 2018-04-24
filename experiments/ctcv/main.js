@@ -389,6 +389,7 @@ function Step(betas)
 	if (count>timeout)
 	{
 		Stop();
+    SaveData(trial_data);
 	}
 }
 
@@ -449,4 +450,72 @@ function makeid() {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
+}
+
+
+function SaveData(td)
+{
+  trial_string = '';
+
+  //Loop over nodes
+  for (var j = 0; j < td.length; j++) {
+    //Loop over trials
+    for (var i = 0; i < trial_data[0].length; i++)
+    {
+      trial_string+= td[j][i].toString() + '\n';
+    }
+  }
+
+  //WORKING POSTING TO SQL DATABASE (ONLY WORKS WHEN THE EXP IS ONLINE)
+  jQuery.ajax({
+    url:  "./php/main.php",
+    type:'POST',
+    data:{
+      trial_data:trial_string
+    },
+    success:function(data){
+      console.log('AJAX success');
+      alert('data saved!');
+
+    },
+    error: function(err){
+      
+      jQuery('.errorText').fadeIn();
+
+      // console.log('save function ',
+      // event_string, event_data[0], event_data[1]);//belief_data, trial_data,
+      //subject_data, feedback_data);
+
+      alert('Oops there was a problem linking with our database.\n\nPlease email the experimenter at neil.bramley@ucl.ac.uk to ensure you get paid!');
+
+      // //Save locally with this
+      // csvContent = "data:text/csv;charset=utf-8," + event_string;
+      // var encodedUri = encodeURI(csvContent);
+      // var link = document.createElement("a");
+      // link.setAttribute("href", encodedUri);
+      // link.setAttribute("download", "events" + filename + ".csv");
+      // document.body.appendChild(link); // Required for FF
+      // link.click();
+
+      // csvContent = "data:text/csv;charset=utf-8," + belief_string;
+      // var encodedUri = encodeURI(csvContent);
+      // var link = document.createElement("a");
+      // link.setAttribute("href", encodedUri);
+      // link.setAttribute("download", "beliefs" + filename + ".csv");
+      // document.body.appendChild(link); // Required for FF
+      // link.click();
+
+      csvContent = "data:text/csv;charset=utf-8," + trial_string;
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "trials" + filename + ".csv");
+      document.body.appendChild(link); // Required for FF
+      link.click();
+
+      
+    }
+  });
+
+
 }
