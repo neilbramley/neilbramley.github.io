@@ -460,21 +460,11 @@ function SaveData(td)
     //Loop over trials
     for (var i = 0; i < trial_data.x.length; i++)
     {
-      x_string+= td[j][i].toString() + '\n';
+      x_string+= td.x[i].toString() + '\n';
+      y_string+= td.y[i].toString() + '\n';
+      z_string+= td.z[i].toString() + '\n';
     }
 
-    //Loop over trials
-    for (var i = 0; i < trial_data.y.length; i++)
-    {
-      y_string+= td[j][i].toString() + '\n';
-    }
-
-    //Loop over trials
-    for (var i = 0; i < trial_data.z.length; i++)
-    {
-      z_string+= td[j][i].toString() + '\n';
-    }
-  
 
   //WORKING POSTING TO SQL DATABASE (ONLY WORKS WHEN THE EXP IS ONLINE)
   jQuery.ajax({
