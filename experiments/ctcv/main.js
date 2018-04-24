@@ -455,7 +455,9 @@ function makeid() {
 
 function SaveData(td)
 {
-  x_string = '';
+    x_string = '';
+    y_string = '';
+    z_string = '';
 
     //Loop over trials
     for (var i = 0; i < trial_data.x.length; i++)
