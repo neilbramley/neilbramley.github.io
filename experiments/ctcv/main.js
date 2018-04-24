@@ -4,7 +4,7 @@
 
 var upi = makeid();
 var count = 0; //For keeping track of how long the process has run for
-var timeout = 450;//How many steps to run for
+var timeout = 10//450;//How many steps to run for
 var delay = 100; //How many ms per step
 var mu = 20
 var lambda = .1
@@ -455,23 +455,35 @@ function makeid() {
 
 function SaveData(td)
 {
-  trial_string = '';
+  x_string = '';
 
-  //Loop over nodes
-  for (var j = 0; j < td.length; j++) {
     //Loop over trials
-    for (var i = 0; i < trial_data[0].length; i++)
+    for (var i = 0; i < trial_data.x.length; i++)
     {
-      trial_string+= td[j][i].toString() + '\n';
+      x_string+= td[j][i].toString() + '\n';
     }
-  }
+
+    //Loop over trials
+    for (var i = 0; i < trial_data.y.length; i++)
+    {
+      y_string+= td[j][i].toString() + '\n';
+    }
+
+    //Loop over trials
+    for (var i = 0; i < trial_data.z.length; i++)
+    {
+      z_string+= td[j][i].toString() + '\n';
+    }
+  
 
   //WORKING POSTING TO SQL DATABASE (ONLY WORKS WHEN THE EXP IS ONLINE)
   jQuery.ajax({
     url:  "./php/main.php",
     type:'POST',
     data:{
-      trial_data:trial_string
+      x_data:x_string,
+      y_data:y_string,
+      z_data:z_string
     },
     success:function(data){
       console.log('AJAX success');

@@ -21,10 +21,12 @@
 	// Get values passed from JAVASCRIPT
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$date = date('Y-m-d');
-	$trial_data = $_POST['trial_data'];
+	$x_data = $_POST['x_data'];
+	$y_data = $_POST['x_data'];
+	$z_data = $_POST['x_data'];
 
 
-	$query = "INSERT INTO ctcv_demo (ip, date, events, beliefs, trials, extras, feedback) VALUES ('{$ip}', '{$date}', '{$events}', '{$beliefs}', '{$trials}', '{$extras}', '{$feedback}')";
+	$query = "INSERT INTO ctcv_demo (ip, date, events, beliefs, trials, extras, feedback) VALUES ('{$ip}', '{$date}', '{$x_data}', '{$y_data}', '{$z_data}')";
 	mysql_query($query, $connection);
 
 
