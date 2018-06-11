@@ -4,7 +4,7 @@
 
 var upi = makeid();
 var count = 0; //For keeping track of how long the process has run for
-var timeout = 10//450;//How many steps to run for
+var timeout = 450;//450;//How many steps to run for
 var delay = 100; //How many ms per step
 var mu = 20
 var lambda = .1
@@ -389,7 +389,7 @@ function Step(betas)
 	if (count>timeout)
 	{
 		Stop();
-    SaveData(trial_data);
+    // SaveData(trial_data);
 	}
 }
 
