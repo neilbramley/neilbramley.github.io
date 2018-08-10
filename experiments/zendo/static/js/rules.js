@@ -150,7 +150,7 @@ function Rule7(td)
         }
         outer_res.push(inner_res.every(isTrue));
     }
-    
+    console.log('check rule 7', inner_res, outer_res, outer_res.some(isTrue));
     return outer_res.some(isTrue)
 }
 
