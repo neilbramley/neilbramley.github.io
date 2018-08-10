@@ -231,7 +231,7 @@ function Rule10(td)
 
 
 isTrue = function(x){
-    x===true;
+    return x===true
 }
 // c("any(equal(instance$colour, 'red'))",
 //          "rel('all', T,T,'all',T,T,equal,'size')",
