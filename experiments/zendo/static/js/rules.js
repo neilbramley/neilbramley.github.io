@@ -124,9 +124,9 @@ function Rule6(td)
 
 function Rule7(td)
 {
-    console.log('rule: a red is bigger than all nonreds');
+    console.log('rule: a red is bigger than all nonreds', td);
 
-        var x = [];
+    var x = [];
     var y = [];
 
     for (var i=0; i<td.colours.length; i++)
