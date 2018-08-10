@@ -140,6 +140,7 @@ function Rule7(td)
         }
     }
 
+    var outer_res = [];
     for (var i=0; i<x.length; i++)
     {
         var inner_res = [];
