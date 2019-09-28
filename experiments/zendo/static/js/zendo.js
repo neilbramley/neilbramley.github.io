@@ -51,7 +51,8 @@ b2ContactListener = Box2D.Dynamics.b2ContactListener;
 
 function Start(fun, ss, tt, rn, counterbalance) 
 {
-
+    //Create the stage
+    stage = new Stage("c");
 
     CurrentRule = fun;//Set the rule up globally (check it works)
     start_state = ss;
@@ -71,236 +72,229 @@ function Start(fun, ss, tt, rn, counterbalance)
     // var bg = new Bitmap( new BitmapData("border.png") );
     // bg.scaleX = bg.scaleY = stage.stageHeight/512;
     // stage.addChild(bg);
-    if (typeof(world)=='undefined')
+
+    world = new b2World(new b2Vec2(0, 10));
+	world.SetContactListener(listener);	
+    
+
+    var bxFixDef   = new b2FixtureDef();   // box  fixture definition
+    bxFixDef.shape = new b2PolygonShape();
+    bxFixDef.density = 1;
+    bxFixDef.friction = 1.5;
+    bxFixDef.restitution = 0;
+    var bodyDef = new b2BodyDef();
+    bodyDef.type = b2Body.b2_staticBody;
+
+    // create ground
+    bxFixDef.shape.SetAsBox(stage.stageWidth/ratio, (stage.stageHeight/ratio)/6);//10m by 1m static box
+    bodyDef.position.Set(0, stage.stageHeight/ratio);//Places it in the bottom 1m of the window
+    ground = world.CreateBody(bodyDef);
+    ground.CreateFixture(bxFixDef);
+    
+    groundActor = new Sprite();
+    groundActor.graphics.beginFill(0x926239, .3);
+    groundActor.graphics.drawRect(0,0, stage.stageWidth, stage.stageHeight/6);
+    groundActor.graphics.endFill();
+    groundActor.graphics.beginFill(0x000000, .7);
+    groundActor.graphics.drawRect(0,0, stage.stageWidth, 0.05*stage.stageHeight/6);
+    groundActor.graphics.endFill();
+    
+    stage.addChild(groundActor);
+    //s.x=(stage.stageWidth)/2
+    groundActor.y=stage.stageHeight * (5/6);
+
+    ground.SetUserData({type:"ground", id:"ground"});
+    
+    console.log('ground', ground);
+
+    bxFixDef.shape.SetAsBox(1, 100);//1 meter wide by 100 meter high walls
+    // left wall
+    bodyDef.position.Set(-1, 3);
+    world.CreateBody(bodyDef).CreateFixture(bxFixDef);
+    // right wall
+    bodyDef.position.Set(stage.stageWidth/ratio+1, 3);
+    world.CreateBody(bodyDef).CreateFixture(bxFixDef);
+
+    // Both images are supposed to be 200 x 200 px
+    //var bxBD = new BitmapData("../images/box.png");
+
+    //Create a polygon shape for the box2d objects
+
+    all_points = {small:{
+                        rhs:[{x: 0.2, y: 0}, {x: 0.3, y: 0}, {x: 0.05, y:0.667}, {x: -0.05, y:0.667}],
+                        lhs:[{x: -0.2, y: 0}, {x: -0.3, y: 0}, {x: -0.05, y:0.667}, {x: 0.05, y:0.667}]
+                        },
+
+                    med:{
+                        rhs:[{x: 0.3, y: 0}, {x: 0.4, y: 0}, {x: 0.05, y:1}, {x: -0.05, y:1}],
+                        lhs:[{x: -0.3, y: 0}, {x: -0.4, y: 0}, {x: -0.05, y:1}, {x: 0.05, y:1}]
+                        },
+
+                    large:{
+                        rhs:[{x: 0.4, y: 0}, {x: 0.5, y: 0}, {x: 0.05, y:1.333}, {x: -0.05, y:1.333}],
+                        lhs:[{x: -0.4, y: 0}, {x: -0.5, y: 0}, {x: -0.05, y:1.333}, {x: 0.05, y:1.333}]
+                        }
+                };
+
+    //The colours of the blocks
+    cols = [0xff0000, 0x00ff00, 0x0000ff];
+
+
+
+
+    ////////////////////
+    //Add test a button
+    ////////////////////
+    btn = new Sprite();
+
+    btn.graphics.beginFill(0x000000, 1);
+    btn.graphics.drawRoundRect(-1*half_ratio, -.5*half_ratio, 2*half_ratio, half_ratio, 6, 6);
+    btn.graphics.endFill();
+
+    btn.graphics.beginFill(0xeeeeee, 1);
+    btn.graphics.drawRoundRect(-1*half_ratio+2, -.5*half_ratio + 1, 2*half_ratio-4, half_ratio-2, 3, 3);
+    btn.graphics.endFill();
+
+    var t1 = new TextField();
+    t1.selectable = false; // default is true
+    t1.setTextFormat(f1);
+    t1.text = 'Test';
+    t1.width = t1.textWidth;
+    t1.height = t1.textHeight;
+    //t1.obj_id = actors.length;
+    btn.addChild(t1);
+    t1.x = -t1.textWidth / 2;
+    t1.y = -t1.textHeight / 2;//-25;
+
+    btn.buttonMode = true;
+
+    stage.addChild(btn);
+
+    btn.x = stage.stageWidth * 0.95;
+    btn.y = stage.stageHeight * 0.93;
+    btn.addEventListener(MouseEvent.CLICK, TestDevice);
+    btn.addEventListener(MouseEvent.MOUSE_OVER, onMOv);
+    btn.addEventListener(MouseEvent.MOUSE_OUT , onMOu);
+
+    ////////////////////
+    //Add a Continue button
+    ////////////////////
+    cbtn = new Sprite();
+   
+    cbtn.graphics.beginFill(0x000000, 1);
+    cbtn.graphics.drawRoundRect(-1.75*half_ratio, -.5*half_ratio, 3.5*half_ratio, half_ratio, 6, 6);
+    cbtn.graphics.endFill();
+
+    cbtn.graphics.beginFill(0xeeeeee, 1);
+    cbtn.graphics.drawRoundRect(-1.75*half_ratio+2, -.5*half_ratio + 1, 3.5*half_ratio-4, half_ratio-2, 3, 3);
+    cbtn.graphics.endFill();
+
+    var t2 = new TextField();
+    t2.selectable = false; // default is true
+    t2.setTextFormat(f1);
+    t2.text = 'Continue';
+    t2.width = t2.textWidth;
+    t2.height = t2.textHeight;
+    cbtn.addChild(t2);
+    t2.x = -t2.textWidth / 2;
+    t2.y = -t2.textHeight / 2;//-25;
+
+    cbtn.buttonMode = true;
+
+    stage.addChild(cbtn);
+
+    cbtn.x = stage.stageWidth /2 - t1.textWidth/2;//stage.stageWidth * 0.90;//
+    cbtn.y = stage.stageHeight * 0.93;
+
+    cbtn.addEventListener(MouseEvent.CLICK, Continue);
+    cbtn.addEventListener(MouseEvent.MOUSE_OVER, onMOv);
+    cbtn.addEventListener(MouseEvent.MOUSE_OUT , onMOu);
+    cbtn.visible = false;
+
+    ///////////////////
+    //Create the pieces
+    ///////////////////
+
+
+
+    /////////////////
+    //Add the piece buttons
+    /////////////////
+    piece_buttons = [];
+    for (var i=0; i<9; i++)
     {
-	    //Create the stage
-    	stage = new Stage("c");
+    	var btn_order = ([[0,1,2,3,4,5,6,7,8],
+    	                 [6,7,8,0,1,2,3,4,5],
+						 [3,4,5,6,7,8,0,1,2],
 
-    	console.log('world undefined so (re)defining');
-        world = new b2World(new b2Vec2(0, 10));
-    	world.SetContactListener(listener);
+    	                 [8,7,6,5,4,3,2,1,0],
+    	                 [2,1,0,8,7,6,5,4,3],
+    	                 [5,4,3,2,1,0,8,7,6],
 
+    	                 [0,3,6,1,4,7,2,5,8],
+    	                 [2,5,8,0,3,6,1,4,7],
+    	                 [1,4,7,2,5,8,0,3,6],
 
-	    var bxFixDef   = new b2FixtureDef();   // box  fixture definition
-	    bxFixDef.shape = new b2PolygonShape();
-	    bxFixDef.density = 1;
-	    bxFixDef.friction = 1.5;
-	    bxFixDef.restitution = 0;
-	    var bodyDef = new b2BodyDef();
-	    bodyDef.type = b2Body.b2_staticBody;
+    	                 [8,5,2,7,4,1,6,3,0],
+    	                 [6,3,0,8,5,2,7,4,1],
+    	                 [7,4,1,6,3,0,8,5,2]])[counterbalance];
+        //Set the colour and local coordinates
+        col = cols[Math.floor(i/3)];
+        points = [all_points.small, all_points.med, all_points.large][i%3];
 
-	    // create ground
-	    bxFixDef.shape.SetAsBox(stage.stageWidth/ratio, (stage.stageHeight/ratio)/6);//10m by 1m static box
-	    bodyDef.position.Set(0, stage.stageHeight/ratio);//Places it in the bottom 1m of the window
-	    ground = world.CreateBody(bodyDef);
-	    ground.CreateFixture(bxFixDef);
-	    
-	    groundActor = new Sprite();
-	    groundActor.graphics.beginFill(0x926239, .3);
-	    groundActor.graphics.drawRect(0,0, stage.stageWidth, stage.stageHeight/6);
-	    groundActor.graphics.endFill();
-	    groundActor.graphics.beginFill(0x000000, .7);
-	    groundActor.graphics.drawRect(0,0, stage.stageWidth, 0.05*stage.stageHeight/6);
-	    groundActor.graphics.endFill();
-	    
-	    stage.addChild(groundActor);
-	    //s.x=(stage.stageWidth)/2
-	    groundActor.y=stage.stageHeight * (5/6);
+        var s = new Sprite();
 
-	    ground.SetUserData({type:"ground", id:"ground"});
-	    
-	    console.log('ground', ground);
+        
+        //Frame
+        s.graphics.beginFill(0xeeeeee, .9);
+        s.graphics.drawRect(-1*half_ratio, -.3*half_ratio, 2*half_ratio, 2*half_ratio);
+        s.graphics.endFill();
 
-	    bxFixDef.shape.SetAsBox(1, 100);//1 meter wide by 100 meter high walls
-	    // left wall
-	    bodyDef.position.Set(-1, 3);
-	    world.CreateBody(bodyDef).CreateFixture(bxFixDef);
-	    // right wall
-	    bodyDef.position.Set(stage.stageWidth/ratio+1, 3);
-	    world.CreateBody(bodyDef).CreateFixture(bxFixDef);
+        s.graphics.lineStyle(1, 0x000000);
+        s.graphics.moveTo(-1*half_ratio, -.3*half_ratio);
+        s.graphics.lineTo(1*half_ratio, -.3*half_ratio);
+        s.graphics.lineTo(1*half_ratio, 1.7*half_ratio);
+        s.graphics.lineTo(-1*half_ratio, 1.7*half_ratio);
+        s.graphics.lineTo(-1*half_ratio, -.3*half_ratio);
 
-	    // Both images are supposed to be 200 x 200 px
-	    //var bxBD = new BitmapData("../images/box.png");
+        //Right hand side
+        s.graphics.beginFill(col, .5);
+        s.graphics.moveTo(points.rhs[0].x*half_ratio, points.rhs[0].y*half_ratio);
+        for (var j=1; j<points.rhs.length; j++)
+        {s.graphics.lineTo(points.rhs[j].x*half_ratio, points.rhs[j].y*half_ratio);}
+        s.graphics.endFill();
 
-	    //Create a polygon shape for the box2d objects
+        //Left hand side
+        s.graphics.beginFill(col, .5);
+        s.graphics.moveTo(points.lhs[0].x*half_ratio, points.lhs[0].y*half_ratio);
+        for (var j=1; j<points.rhs.length; j++)
+        {s.graphics.lineTo(points.lhs[j].x*half_ratio, points.lhs[j].y*half_ratio);}
+        s.graphics.endFill();
 
-	    all_points = {small:{
-	                        rhs:[{x: 0.2, y: 0}, {x: 0.3, y: 0}, {x: 0.05, y:0.667}, {x: -0.05, y:0.667}],
-	                        lhs:[{x: -0.2, y: 0}, {x: -0.3, y: 0}, {x: -0.05, y:0.667}, {x: 0.05, y:0.667}]
-	                        },
+        //Surface
+        s.graphics.beginFill(col, .1);
+        s.graphics.moveTo(points.rhs[1].x*half_ratio, points.rhs[1].y*half_ratio);
+        s.graphics.lineTo(points.rhs[2].x*half_ratio, points.rhs[2].y*half_ratio);
+        s.graphics.lineTo(points.lhs[2].x*half_ratio, points.lhs[2].y*half_ratio);
+        s.graphics.lineTo(points.lhs[1].x*half_ratio, points.lhs[1].y*half_ratio);
+        s.graphics.endFill();
+        s.button_ix = i;
+        
+        //Place the button
+        s.x = 0.05*stage.stageWidth + 0.1 * stage.stageWidth * btn_order[i];
+        s.y = stage.stageHeight * (97/100);
 
-	                    med:{
-	                        rhs:[{x: 0.3, y: 0}, {x: 0.4, y: 0}, {x: 0.05, y:1}, {x: -0.05, y:1}],
-	                        lhs:[{x: -0.3, y: 0}, {x: -0.4, y: 0}, {x: -0.05, y:1}, {x: 0.05, y:1}]
-	                        },
+        s.rotation = 180; //Flips it the right way up
 
-	                    large:{
-	                        rhs:[{x: 0.4, y: 0}, {x: 0.5, y: 0}, {x: 0.05, y:1.333}, {x: -0.05, y:1.333}],
-	                        lhs:[{x: -0.4, y: 0}, {x: -0.5, y: 0}, {x: -0.05, y:1.333}, {x: 0.05, y:1.333}]
-	                        }
-	                };
-
-	    //The colours of the blocks
-	    cols = [0xff0000, 0x00ff00, 0x0000ff];
+        s.buttonMode = true;
 
 
 
+        stage.addChild(s);
+        s.addEventListener(MouseEvent.CLICK, AddPiece);
 
-	    ////////////////////
-	    //Add test a button
-	    ////////////////////
-	    btn = new Sprite();
-
-	    btn.graphics.beginFill(0x000000, 1);
-	    btn.graphics.drawRoundRect(-1*half_ratio, -.5*half_ratio, 2*half_ratio, half_ratio, 6, 6);
-	    btn.graphics.endFill();
-
-	    btn.graphics.beginFill(0xeeeeee, 1);
-	    btn.graphics.drawRoundRect(-1*half_ratio+2, -.5*half_ratio + 1, 2*half_ratio-4, half_ratio-2, 3, 3);
-	    btn.graphics.endFill();
-
-	    var t1 = new TextField();
-	    t1.selectable = false; // default is true
-	    t1.setTextFormat(f1);
-	    t1.text = 'Test';
-	    t1.width = t1.textWidth;
-	    t1.height = t1.textHeight;
-	    //t1.obj_id = actors.length;
-	    btn.addChild(t1);
-	    t1.x = -t1.textWidth / 2;
-	    t1.y = -t1.textHeight / 2;//-25;
-
-	    btn.buttonMode = true;
-
-	    stage.addChild(btn);
-
-	    btn.x = stage.stageWidth * 0.95;
-	    btn.y = stage.stageHeight * 0.93;
-	    btn.addEventListener(MouseEvent.CLICK, TestDevice);
-	    btn.addEventListener(MouseEvent.MOUSE_OVER, onMOv);
-	    btn.addEventListener(MouseEvent.MOUSE_OUT , onMOu);
-
-	    ////////////////////
-	    //Add a Continue button
-	    ////////////////////
-	    cbtn = new Sprite();
-	   
-	    cbtn.graphics.beginFill(0x000000, 1);
-	    cbtn.graphics.drawRoundRect(-1.75*half_ratio, -.5*half_ratio, 3.5*half_ratio, half_ratio, 6, 6);
-	    cbtn.graphics.endFill();
-
-	    cbtn.graphics.beginFill(0xeeeeee, 1);
-	    cbtn.graphics.drawRoundRect(-1.75*half_ratio+2, -.5*half_ratio + 1, 3.5*half_ratio-4, half_ratio-2, 3, 3);
-	    cbtn.graphics.endFill();
-
-	    var t2 = new TextField();
-	    t2.selectable = false; // default is true
-	    t2.setTextFormat(f1);
-	    t2.text = 'Continue';
-	    t2.width = t2.textWidth;
-	    t2.height = t2.textHeight;
-	    cbtn.addChild(t2);
-	    t2.x = -t2.textWidth / 2;
-	    t2.y = -t2.textHeight / 2;//-25;
-
-	    cbtn.buttonMode = true;
-
-	    stage.addChild(cbtn);
-
-	    cbtn.x = stage.stageWidth /2 - t1.textWidth/2;//stage.stageWidth * 0.90;//
-	    cbtn.y = stage.stageHeight * 0.93;
-
-	    cbtn.addEventListener(MouseEvent.CLICK, Continue);
-	    cbtn.addEventListener(MouseEvent.MOUSE_OVER, onMOv);
-	    cbtn.addEventListener(MouseEvent.MOUSE_OUT , onMOu);
-	    cbtn.visible = false;
-
-	    ///////////////////
-	    //Create the pieces
-	    ///////////////////
-
-
-
-	    /////////////////
-	    //Add the piece buttons
-	    /////////////////
-	    piece_buttons = [];
-	    for (var i=0; i<9; i++)
-	    {
-	    	var btn_order = ([[0,1,2,3,4,5,6,7,8],
-	    	                 [6,7,8,0,1,2,3,4,5],
-							 [3,4,5,6,7,8,0,1,2],
-
-	    	                 [8,7,6,5,4,3,2,1,0],
-	    	                 [2,1,0,8,7,6,5,4,3],
-	    	                 [5,4,3,2,1,0,8,7,6],
-
-	    	                 [0,3,6,1,4,7,2,5,8],
-	    	                 [2,5,8,0,3,6,1,4,7],
-	    	                 [1,4,7,2,5,8,0,3,6],
-
-	    	                 [8,5,2,7,4,1,6,3,0],
-	    	                 [6,3,0,8,5,2,7,4,1],
-	    	                 [7,4,1,6,3,0,8,5,2]])[counterbalance];
-	        //Set the colour and local coordinates
-	        col = cols[Math.floor(i/3)];
-	        points = [all_points.small, all_points.med, all_points.large][i%3];
-
-	        var s = new Sprite();
-
-	        
-	        //Frame
-	        s.graphics.beginFill(0xeeeeee, .9);
-	        s.graphics.drawRect(-1*half_ratio, -.3*half_ratio, 2*half_ratio, 2*half_ratio);
-	        s.graphics.endFill();
-
-	        s.graphics.lineStyle(1, 0x000000);
-	        s.graphics.moveTo(-1*half_ratio, -.3*half_ratio);
-	        s.graphics.lineTo(1*half_ratio, -.3*half_ratio);
-	        s.graphics.lineTo(1*half_ratio, 1.7*half_ratio);
-	        s.graphics.lineTo(-1*half_ratio, 1.7*half_ratio);
-	        s.graphics.lineTo(-1*half_ratio, -.3*half_ratio);
-
-	        //Right hand side
-	        s.graphics.beginFill(col, .5);
-	        s.graphics.moveTo(points.rhs[0].x*half_ratio, points.rhs[0].y*half_ratio);
-	        for (var j=1; j<points.rhs.length; j++)
-	        {s.graphics.lineTo(points.rhs[j].x*half_ratio, points.rhs[j].y*half_ratio);}
-	        s.graphics.endFill();
-
-	        //Left hand side
-	        s.graphics.beginFill(col, .5);
-	        s.graphics.moveTo(points.lhs[0].x*half_ratio, points.lhs[0].y*half_ratio);
-	        for (var j=1; j<points.rhs.length; j++)
-	        {s.graphics.lineTo(points.lhs[j].x*half_ratio, points.lhs[j].y*half_ratio);}
-	        s.graphics.endFill();
-
-	        //Surface
-	        s.graphics.beginFill(col, .1);
-	        s.graphics.moveTo(points.rhs[1].x*half_ratio, points.rhs[1].y*half_ratio);
-	        s.graphics.lineTo(points.rhs[2].x*half_ratio, points.rhs[2].y*half_ratio);
-	        s.graphics.lineTo(points.lhs[2].x*half_ratio, points.lhs[2].y*half_ratio);
-	        s.graphics.lineTo(points.lhs[1].x*half_ratio, points.lhs[1].y*half_ratio);
-	        s.graphics.endFill();
-	        s.button_ix = i;
-	        
-	        //Place the button
-	        s.x = 0.05*stage.stageWidth + 0.1 * stage.stageWidth * btn_order[i];
-	        s.y = stage.stageHeight * (97/100);
-
-	        s.rotation = 180; //Flips it the right way up
-
-	        s.buttonMode = true;
-
-
-
-	        stage.addChild(s);
-	        s.addEventListener(MouseEvent.CLICK, AddPiece);
-
-	        piece_buttons.push(s);
-	    }
+        piece_buttons.push(s);
     }
-
 
 
     NextTest();

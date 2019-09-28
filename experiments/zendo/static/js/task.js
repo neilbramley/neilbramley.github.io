@@ -62,6 +62,11 @@ function advance_trial() {
 		// 	r:sizes[trials[trial]]});
 		$('#trial_counter').text('Question ' + trial + ' of 10');
 
+		if (trial>1)
+		{
+			var iframe = document.getElementById("game_frame");
+			iframe.src += ''; //Refresh iframe
+		}
 		run_trial();
 	} else if (trial>trials.length) {
 		goto_debrief();
@@ -190,9 +195,6 @@ function start()
 		goto_task();
 	});
 
-	$('#task_btn').click(function () {
-		save_data();
-	});
 	// Listen for actions on radio buttons for when all questions answered
 	$('.comp_questions').change(function() {
 		comp_change_checker();
