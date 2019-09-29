@@ -1,13 +1,14 @@
 var trial = 0;
 var trials = _.shuffle([0,1,2,3,4,5,6,7,8,9]);
-var colours = []; //To be populated from stim.json
-var sizes = []; //To be populated from stim.json
-var responses = []; //Participants responses stored here
 var start_time = new Date();
 var start_task_time;
 var end_time;
-var this_trial_data;
-var this_free_response_data;
+var scenes = [];
+var selected = [];
+var free_responses = [];
+var subjectwise = [];
+var ready_to_start = false;
+
 // MAIN TRIAL BEHAVIOUR
 //////////////////////////
 function goto_task()
@@ -17,6 +18,7 @@ function goto_task()
 	$('#main_task').show();
 	$('#completed').hide();
 	start_task_time = new Date();
+	ready_to_start = true;
 	advance_trial();
 }
 
@@ -42,13 +44,12 @@ function save_data() {
 	if (iframe)
 	{
 		var iframeContent = (iframe.contentWindow || iframe.contentDocument);
-		this_trial_data = iframeContent.trialdata;
-		this_free_resp_data = $('#free_response_tb').val();
+		scenes[trial-1] = iframeContent.trialdata;
+		selected[trial-1] = iframeContent.selected;
+		free_responses[trial-1] = $('#free_response_tb').val();
 	} else {
 		alert('missing iframe');
 	}
-
-
 	advance_trial();
 }
 
@@ -58,17 +59,12 @@ function advance_trial() {
 
 	if (trial<trials.length)
 	{
-		// $('#drawing').attr({fill: colours[trials[trial]],
-		// 	r:sizes[trials[trial]]});
 		$('#trial_counter').text('Question ' + trial + ' of 10');
+		//Refresh the iframe (when it is loads it should trigger the trial)
+		document.getElementById("game_frame").src += '';
 
-		if (trial>1)
-		{
-			var iframe = document.getElementById("game_frame");
-			iframe.src += ''; //Refresh iframe
-		}
-		run_trial();
 	} else if (trial>trials.length) {
+		end_time = new Date();
 		goto_debrief();
 	}
 }
@@ -131,14 +127,14 @@ function response_change_checker() {
 	var text_resp = $('#free_response_tb').val();
 
 	//Make sure start button is disabled because the answers haven't been checked
-	$('#task_btn').prop('disabled', true);
+	$('#task_btn').hide();//prop('disabled', true);
 
  	//Only release the check button if there is a response on all questions
-	if (text_resp.length>3)
+	if (text_resp.length>6)
 	{
-		$('#task_btn').prop('disabled', false);
+		$('#task_btn').show();s
 	} else {
-		$('#task_btn').prop('disabled', true);
+		$('#task_btn').hide();
 	}
 };
 
@@ -159,7 +155,8 @@ function start()
 
 	// DECORATE THE BUTTONS ETC
 	$('#task_btn').click(save_data);
-	$('#free_response_tb').change(function() {
+
+	$('#free_response_tb').on('input', function() {
 		response_change_checker();
 	});
 	// INSTRUCTION SLIDE BEHAVIOUR
@@ -266,16 +263,24 @@ function run_trial()
     $('#free_response_prompt').hide();
     $('#free_response_tb').hide();
     $('#task_btn').hide();
-    $('#task_btn').prop("disabled", true);
+    // $('#task_btn').prop("disabled", true);
 }
 
 function description_phase()
 {
 	$('#free_response_prompt').show();
     $('#free_response_tb').show();
-    $('#task_btn').show();
+    // $('#task_btn').show();
+    window.scrollTo(0,600);
     // document.getElementById('game_frame').src = document.getElementById('game_frame').src;
     // StartIframe();   
 }
 
+function iframe_loaded() {
+	console.log('iframe loaded');
+	if (ready_to_start == true)
+	{
+		run_trial();
+	}
+}
 //END

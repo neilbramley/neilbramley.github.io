@@ -226,7 +226,7 @@
     <div class="slide" align=center>
         <h1 id="trial_counter"></h1>
         <div id="game">
-            <iframe src="zendo_iframe.html" width=800 height=500 id="game_frame" name="game_frame" tabindex="0"></iframe>
+            <iframe src="zendo_iframe.html" width=800 height=500 id="game_frame" name="game_frame" tabindex="0" onload="iframe_loaded()"></iframe>
         </div>
         <!-- <input id="free_response_tb" type="text"> -->
         <div id="free_response_prompt" class = "container" align = left width = 800>
@@ -244,10 +244,8 @@
         <div align=center>
             <button id="task_btn" class="btn-primary btn-lg">Next</button>
         </div>
+    </div>
 </div>
-
-
-
 
 
 
@@ -266,7 +264,7 @@
             <textarea name="feedback" id="feedback" class="posttestQ" style="width:760px; height:100px;"  ></textarea> 
             <br>
             <p><b>1.</b> How old are you?:
-              <input id="ageinput" class="posttestQ" type="number" maxlength = "3" name="age" id="age" min="18" max="100" step = "1"> years
+              <input id="ageinput" class="posttestQ" type="number" maxlength = "3" name="age" id="age" min="1" max="100" step = "1"> years <input id="ageinput2" class="posttestQ" type="number" maxlength = "3" name="age" id="age" min="0" max="12" step = "1"> months
             </p>
 
             <p><b>2.</b> What is your gender?
@@ -275,7 +273,7 @@
                <option value="female">Female</option>
                <option value="male">Male</option>
                <option value="other">Other</option>
-               <option value="noresponse">I’d prefer not to respond</option>
+               <option value="noresponse">I'd prefer not to respond</option>
              </select>
             </p>
             <br/>
