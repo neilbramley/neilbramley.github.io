@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../static/css/main.css"/>
+  <script src="../static/lib/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <h2>Instructions</h2>
+    <ol>
+        <li>Select the condition and world you want to see below the window.
+        <li>Click "Load" then "Start" to play a trial.
+        <li>Pause, Resume and Stop and (Re)start using the buttons.
+        <li>In Active condition, click on the objects to control them.
+        <li>Select a different setting and click "Load" again to view different worlds and conditions.
+        <li>Refresh page if it breaks, if it is still broken email nrbramley@gmail.com :).<br>
+    </ol>
+
+
+<h2>Instructions</h2>
+<div id="game" style="position:relative;float:left;">
+    <iframe src="physics_world.html" width=600 height=400 id="game-frame"></iframe>
+</div>
+
+<div style="position:relative;float:left;">
+    <textarea id="conditionDetails" type="text" readonly="readonly" rows="25" cols="40"></textarea>
+</div>
+
+<div class="spacer" style = "clear:both"></div>
+<h2>Selection controls</h2>
+<div id="select_condition"  style="position:relative;float:left;">
+   <fieldset>
+    <legend>Select condition</legend>
+    
+    <fieldset style="float:left;width:100px;margin:5px">
+        Condition<br>
+        <input type="radio" name="condition" id="co_pa"  >Passive<br>
+        <input type="radio" name="condition" id="co_bg"  >Active<br>
+    </fieldset>
+
+    <fieldset style="float:left;width:120px;margin:5px">
+        World<br>
+        1. <input type="radio" name="world" id="w1"  > 
+        2. <input type="radio" name="world" id="w2"  > 
+        3. <input type="radio" name="world" id="w3"  ><br><br>
+        4. <input type="radio" name="world" id="w4"  > 
+        5. <input type="radio" name="world" id="w5"  > 
+        6. <input type="radio" name="world" id="w6"  ><br><br>
+        7. <input type="radio" name="world" id="w7"  > 
+        8. <input type="radio" name="world" id="w8"  > 
+        9. <input type="radio" name="world" id="w9"  >
+    </fieldset>
+</fieldset>
+</div>
+
+<div style="position:relative;float:left;">
+    <button class="button big-btn" id="loadButton"; onclick="LoadJS();"; >Load</button><br>
+    <button class="button big-btn" id="startButton"; onclick="Start();"; >Start</button>
+    <button class="button big-btn" id="pauseButton"; onclick="Pause();"; >Pause</button>
+    <button class="button big-btn" id="resumeButton"; onclick="Resume();"; >Resume</button>
+    <button class="button big-btn" id="stopButton"; onclick="Stop();"; >Stop</button>
+
+</div>
+
+
+<script>
+
+    //Set up variables
+    //var cond=[0,1,0,1,2,1,2,4,0,4,1,0,0];
+    var trial_specs = [[0,1],[0,1,2,3,4,5,6,7,8]];
+    var choosers = [[co_pa, co_bg],[w1,w2,w3,w4,w5,w6,w7,w8,w9]];
+    var cond = [];
+    var selected = [];
+    var tmp = 0;
+
+    document.getElementById("startButton").disabled = true;
+    document.getElementById("stopButton").disabled = true;
+    document.getElementById("pauseButton").disabled = true;
+    document.getElementById("resumeButton").disabled = true;
+
+    //Initially, randomly select a condition
+    for (var i = 0; i<(choosers.length); i++){
+
+      tmp = Math.floor((Math.random() * choosers[i].length));
+      //cond[i] = trial_specs[i][tmp];
+      console.log(tmp);
+      $( choosers[i][tmp] ).prop( "checked", true );
+  }
+
+
+function LoadJS() {
+
+    //Update cond to user's selection
+    for (var i = 0; i<(choosers.length); i++){
+        for (var j = 0; j<(choosers[i].length); j++){
+            if ($( choosers[i][j] ).prop( "checked" ) == true) {
+                cond[i] = trial_specs[i][j];  
+            }
+        }
+    }
+
+    jQuery.ajax({
+        url:  "stim2.json",
+        type:'GET',
+        data:{
+          //?
+        },
+        success:function(data){
+            console.log('AJAX success!');
+            console.log(data);
+            // stim_data = data.stim;
+            postloadfunction(data);
+        },
+        error: function(err){
+            alert('Oops there was a problem linking with our database.\n\nPlease email the experimenter at neil.bramley@ucl.ac.uk');
+        }
+      });
+}
+    // $.getJSON('stim2.json', function(json) {
+    //   stim_data = json
+    // });
+
+function postloadfunction(stim_data)
+{
+    //Release start button
+    document.getElementById("startButton").disabled = false;
+    //document.getElementById("stopButton").disabled = false;
+    //document.getElementById("pauseButton").disabled = false;
+    //document.getElementById("resumeButton").disabled = false;
+
+    //Update cond to user's selection
+    for (var i = 0; i<(trial_specs.length); i++){
+        for (var j = 0; j<(trial_specs[i].length); j++){
+            if ($( choosers[i][j] ).prop( "checked" ) == true) {
+            selected[i] = trial_specs[i][j];
+            //$( choosers[i][j] ).prop( "checked", true );        
+            }
+        }
+    }
+
+
+    r_forces = [[-3,0,3][Math.floor(Math.random()*3)],
+    [-3,0,3][Math.floor(Math.random()*3)],
+    [-3,0,3][Math.floor(Math.random()*3)],
+    [-3,0,3][Math.floor(Math.random()*3)],
+    [-3,0,3][Math.floor(Math.random()*3)]];
+
+    r_masses = [stim_data.stim[selected[1]].world[1],
+    stim_data.stim[selected[1]].world[2], 1, 1];
+
+    r_elasticities = [.98,.98,.98,.98,.98];
+    //[  $c.condition, that.trialinfo.world[0],              r_forces, 0, 0,  r_masses, r_elasticities, 0,0,0, STATE.index] //(example from psiturk)
+    cond=[selected[0], stim_data.stim[selected[1]].world[0], r_forces, 0, 0,  r_masses, r_elasticities, 0,0,0,      0];
+
+    document.getElementById("conditionDetails").value = 'Condition: ' + ["Passive", "Active"][cond[0]] + '\n\n' +
+    'Target force: ' + cond[1] + '\n\n' +
+    'Distractor forces: ' + cond[2] + '\n\n' +
+    'Object masses ' + cond[5] + 'Kg';
+
+    //window.setTimeout(postloadfunction, 100);
+}
+
+
+function Start() {
+
+    document.getElementById("loadButton").disabled = true;
+    document.getElementById("startButton").disabled = true;
+    document.getElementById("pauseButton").disabled = false;
+    document.getElementById("stopButton").disabled = false;
+
+    console.log('selected trial_spec', cond);
+
+    // ["passive","baby fist","ball grabber"]
+    
+
+    //document.getElementById("conditionDetails").value = 
+
+
+
+    document.getElementById("conditionDetails").value = 'Condition: ' + ["Passive", "Active"][cond[0]] + '\n\n' +
+    'Target force: ' + cond[1] + '\n\n' +
+    'Distractor forces: ' + cond[2] + '\n\n' +
+    'Object masses ' + cond[5] + 'Kg';
+
+    var iframe = document.getElementById("game-frame");
+
+
+    if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Start();
+        iframeContent.RemoveCurtain();
+    }
+}
+
+function Stop() {
+  var iframe = document.getElementById("game-frame");
+  if (iframe) {
+    var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+    iframeContent.EndClip();
+        // document.getElementById("dataBox").value = 'Events: ' + iframeContent.data.events + '\n\n' +
+        // 'Timeline data: ' + iframeContent.data.timeline;
+    }
+
+    document.getElementById("loadButton").disabled = false;
+    document.getElementById("startButton").disabled = false;
+}
+
+function Pause() {
+  var iframe = document.getElementById("game-frame");
+  if (iframe) {
+    var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+    iframeContent.Pause();
+
+    document.getElementById("pauseButton").disabled = false;
+    document.getElementById("resumeButton").disabled = false;
+}
+
+document.getElementById("pauseButton").disabled = true;
+}
+
+function Resume() {
+    var iframe = document.getElementById("game-frame");
+    if (iframe) {
+        var iframeContent = (iframe.contentWindow || iframe.contentDocument);
+        iframeContent.Resume();
+    }
+
+    document.getElementById("pauseButton").disabled = false;
+        document.getElementById("resumeButton").disabled = true;
+}
+</script>
+
+
+
+</body>
+</html>
